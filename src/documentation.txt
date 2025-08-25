@@ -1,0 +1,18 @@
+
+
+
+manifest.json → define permissões e conecta popup, options, content e background.
+
+/popup/ → interface rápida para ativar/desativar filtros e ajustes imediatos.
+
+/options/ → configurações avançadas: personalização de cores, espaçamento, fontes, salvar presets.
+
+/content/ → injeção dos estilos e filtros no DOM da página.
+
+/background/ → faz a ponte entre popup/options e content, para manter consistência.
+
+/utils/storage.js → guarda as preferências do usuário.
+
+/assets/ → ícones, fontes acessíveis (como OpenDyslexic), imagens de exemplo.
+
+/tests/ → valida se os filtros e configurações estão funcionando como esperado.
