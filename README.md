@@ -3,6 +3,8 @@
 O **ColorLens** é uma extensão de navegador focada em **acessibilidade para pessoas com daltonismo**.  
 Seu objetivo é facilitar a navegação na web através de filtros de cor, contraste aprimorado e customizações visuais que tornam os sites mais inclusivos.
 
+Autores: João Pedro Bento Severo, Murilo de Andrade Souza, Mateus Montalvão Torres, José Severo de Abreu Junior
+
 ---
 
 ## 📂 Estrutura do Projeto
