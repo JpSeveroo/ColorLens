@@ -9,16 +9,17 @@
 <body>
 
     <div class="popup-container">
-
         <header class="header">
-            <img src="../assets/images/colorlens-logo.svg" alt="ColorLens Logo" class="logo"> <div class="header-text">
-                <h1>ColorLens</h1>
-                <p>Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades</p>
+            <div class="header-top">
+            <img src="../../assets/images/colorlens-logo.svg" alt="ColorLens Logo" class="logo">
+            <h1>ColorLens</h1>
+            <img src="../../assets/icons/profile-icon.png" alt="profile-icon" class="profile-icon">
             </div>
-            <span class="profile-icon">&#128100;</span> </header>
+            <p>Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades</p>
+        </header>
 
         <main class="main-content">
-            <h2>Filtros Genéricos</h2>
+            <h2>Filtros Genéricos:</h2>
             <div class="filters-grid">
                 <button class="filter-btn">Protanopia</button>
                 <button class="filter-btn">Deuteranopia</button>
@@ -30,6 +31,29 @@
                 <button class="filter-btn">Monocromia</button>
             </div>
             <button class="reset-btn">Resetar</button>
+            <section class="adjustments-section">
+            <h3>Ajustes</h3>
+
+            <div class="slider-control">
+                <div class="slider-label">
+                    <label for="contrast">Contraste</label>
+                    <span id="contrast-value" class="slider-value">100%</span>
+                </div>
+                <input type="range" id="contrast" min="0" max="100" value="50" class="slider">
+            </div>
+
+            <div class="slider-control">
+                <div class="slider-label">
+                    <label for="saturation">Saturação</label>
+                    <span id="saturation-value" class="slider-value">100%</span>
+                </div>
+                <input type="range" id="saturation" min="0" max="100" value="50" class="slider">
+            </div>
+        </section>
+        <section class="modes-section">
+            <button class="mode-btn">Modo leitura</button>
+            <button class="mode-btn">Visão Noturna</button>
+        </section>
         </main>
 
     </div>

@@ -29,5 +29,11 @@
     ],
     "background": {
         "service_worker": "src/background/background.js"
+    },
+     "web_accessible_resources": [
+    {
+      "resources": [ "assets/images/colorlens-logo.svg" ],
+      "matches": [ "<all_urls>" ]
     }
+  ]
 }
