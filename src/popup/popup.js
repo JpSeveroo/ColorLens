@@ -76,5 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
             nightVision: document.getElementById('night-vision').classList.contains('active')
         }
         console.log("state changed: ", settings);
+
+        chrome.runtime.sendMessage({
+            action: 'updateSettings',
+            settings: settings
+        });
     };
 });
