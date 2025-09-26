@@ -46,28 +46,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /**
-     * Atualiza a aparência de um slider (barra deslizante).
-     * @param {HTMLElement} slider - O elemento input do tipo range.
-     * @param {HTMLElement} valueDisplay - O elemento para exibir o valor em texto.
-     */
+    // --- Função para Atualizar a Aparência dos Sliders ---
     function updateSliderLook(slider, valueDisplay) {
         const min = slider.min;
         const max = slider.max;
         const value = slider.value;
         
-        // Exibe o valor atual como uma porcentagem (ex: "120%").
         valueDisplay.textContent = `${value}%`;
         
-        // Calcula a porcentagem do preenchimento da barra.
         const percentage = ((value - min) / (max - min)) * 100;
-        
-        // Aplica um gradiente para colorir a barra até o ponto selecionado.
+
         slider.style.background = `linear-gradient(to right, #66d9ef ${percentage}%, #44475a ${percentage}%)`;
     }
 
     // --- Lógica dos Sliders ---
-    // Adiciona eventos que disparam enquanto o usuário arrasta o controle.
+    // Adiciona eventos que disparam enquanto o usuário arrasta o controle
     contrastSlider.addEventListener('input', () => {
         updateSliderLook(contrastSlider, contrastValue);
         gatherAndSendState();
@@ -79,15 +72,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Inicialização ---
-    // Configura a aparência inicial dos sliders e envia o estado padrão ao abrir o popup.
+    // Configura a aparência inicial dos sliders e envia o estado padrão ao abrir o popup
     updateSliderLook(contrastSlider, contrastValue);
     updateSliderLook(saturationSlider, saturationValue);
     gatherAndSendState();
 
-    /**
-     * Reúne todas as configurações atuais em um único objeto e o envia.
-     * (Presumivelmente, para um content script que aplicará os estilos na página).
-     */
+    
+    //  Reúne todas as configurações atuais em um único objeto e o envia
+    //  para um content script que aplicará os estilos na página
+     
     function gatherAndSendState() {
         const activeFilter = document.querySelector('.filter-btn.active');
 
