@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const optionsButton = document.getElementById('options')
 
     const contrastSlider = document.getElementById('contrast');
     const contrastValue = document.getElementById('contrast-value');
@@ -10,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetButton = document.querySelector('.reset-btn');
     const modeButtons = document.querySelectorAll('.mode-btn');
     console.log('Mode buttons found:', modeButtons);
+
+    optionsButton.addEventListener('click', () => {
+        browser.runtime.openOptionsPage();
+    });
 
     filterButtons.forEach(button => {
         button.addEventListener('click', (event) => {
@@ -32,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modeButtons.forEach(button => {
         button.addEventListener('click', (event) => {
-            console.log('A mode button was clicked!');
+            console.log('A mode button foi clicada!');
             event.target.classList.toggle('active');
             gatherAndSendState();
         });
@@ -65,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gatherAndSendState();
 
-    function gatherAndSendState() {
+    async function gatherAndSendState() {
         const activeFilter = document.querySelector('.filter-btn.active');
 
         const settings = {
@@ -77,22 +82,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         console.log("Enviando estado para a página:", settings);
 
-        // 1. chrome.tabs.query: Não sabia massss, isso aqui encontra a aba que está ativa na janela atual.
-        // 2. tabs[0].id: Pega o ID da aba encontrada.
-        // 3. chrome.tabs.sendMessage: Envia o objeto 'settings' para o content script daquela aba.
-         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0]) {
-                //Resumindo a linha de baixo: tabs[0] é o endereço, settings:settings é tipo a etiqueta do objeto sendo criado
-                //E o response é o parâmetro de recebimento.
-                chrome.tabs.sendMessage(tabs[0].id, { settings: settings }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        // Trata casos onde o content script não responde.
-                        console.warn("Erro ao enviar mensagem: ", chrome.runtime.lastError.message);
-                    } else {
-                        console.log('Resposta do content script:', response.status);
-                    }
-                });
-            }
-        });
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+
+        if (!tab) return;
+
+        try {
+            await browser.scripting.executeScript({
+                target: { tabId: tab.id },
+                files: ['src/content/content.js']
+            });
+
+            const response = await browser.tabs.sendMessage(tab.id, {
+                action: 'applySettings',
+                settings: settings 
+            });
+
+            console.log('Resposta do content script:', response);
+            
+        } catch (error) {
+            console.error('Erro ao injetar script ou enviar mensagem', error);
+        }
+
+        // calma calabresio
+        // // 1. browser.tabs.query: Não sabia massss, isso aqui encontra a aba que está ativa na janela atual.
+        // // 2. tabs[0].id: Pega o ID da aba encontrada.
+        // // 3. browser.tabs.sendMessage: Envia o objeto 'settings' para o content script daquela aba.
+        //  browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        //     if (tabs[0]) {
+        //         //Resumindo a linha de baixo: tabs[0] é o endereço, settings:settings é tipo a etiqueta do objeto sendo criado
+        //         //E o response é o parâmetro de recebimento.
+        //         browser.tabs.sendMessage(tabs[0].id, { settings: settings }, (response) => {
+        //             if (browser.runtime.lastError) {
+        //                 // Trata casos onde o content script não responde.
+        //                 console.warn("Erro ao enviar mensagem: ", browser.runtime.lastError.message);
+        //             } else {
+        //                 console.log('Resposta do content script:', response.status);
+        //             }
+        //         });
+        //     }
+        // });
     };
 });

@@ -22,20 +22,27 @@
         "scripting",
         "storage"
     ],
-    "content_scripts":[
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["src/content/content.js"]
+            "js": ["src/content/content.js"],
+            "run_at": "document_start"
         }
     ],
     "background": {
-        "service_worker": "src/background/background.js",
-        "type": "module"
+        "service_worker": "src/background/background.js"
     },
-     "web_accessible_resources": [
-    {
-      "resources": [ "assets/images/colorlens-logo.svg" ],
-      "matches": [ "<all_urls>" ]
+    "web_accessible_resources": [
+        {
+            "resources": [ "assets/images/colorlens-logo.svg" ],
+            "matches": [ "<all_urls>" ]
+        }
+    ],
+    "options_ui": {
+        "page": "src/options/options.html",
+        "open_in_tab": true
     }
-  ]
 }
