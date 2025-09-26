@@ -14,7 +14,7 @@ const applyFilters = (settings) =>{
 
     //Se for modo noturno, aplicamos a inversão de cores e ajuste de matriz
     if (nightVision){
-        filterString += `invert(1) hue-rotate(180deg)`;
+        filterString += `invert(1) hue-rotate(180deg)`; //Ajeitar essa budega aqui que ta horrivel
     }
     //Testando um tipo de filtro padrão para pessoas que possuem ACHROMATOPSIA(preto e branco)
 

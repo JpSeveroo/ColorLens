@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetButton.addEventListener('click', () => {
         filterButtons.forEach(btn => btn.classList.remove('active'));
-        contrastSlider.value = 50;
-        saturationSlider.value = 50;
+        contrastSlider.value = 100;
+        saturationSlider.value = 100;
         updateSliderLook(contrastSlider, contrastValue);
         updateSliderLook(saturationSlider, saturationValue);
         gatherAndSendState();
