@@ -75,11 +75,24 @@ document.addEventListener('DOMContentLoaded', () => {
             readingMode: document.getElementById('reading-mode').classList.contains('active'),
             nightVision: document.getElementById('night-vision').classList.contains('active')
         }
-        console.log("state changed: ", settings);
+        console.log("Enviando estado para a página:", settings);
 
-        chrome.runtime.sendMessage({
-            action: 'updateSettings',
-            settings: settings
+        // 1. chrome.tabs.query: Não sabia massss, isso aqui encontra a aba que está ativa na janela atual.
+        // 2. tabs[0].id: Pega o ID da aba encontrada.
+        // 3. chrome.tabs.sendMessage: Envia o objeto 'settings' para o content script daquela aba.
+         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0]) {
+                //Resumindo a linha de baixo: tabs[0] é o endereço, settings:settings é tipo a etiqueta do objeto sendo criado
+                //E o response é o parâmetro de recebimento.
+                chrome.tabs.sendMessage(tabs[0].id, { settings: settings }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        // Trata casos onde o content script não responde.
+                        console.warn("Erro ao enviar mensagem: ", chrome.runtime.lastError.message);
+                    } else {
+                        console.log('Resposta do content script:', response.status);
+                    }
+                });
+            }
         });
     };
 });
