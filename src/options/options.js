@@ -7,20 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadAllSavedSettings() {
-    browser.storage.local.get(['userProfiles', 'customColors'])
+    chrome.storage.local.get(['userProfiles', 'customColors'])
     .then((data) => {
         updateUI(data.userProfiles, data.customColors);
     });
 }
 
 function saveProfile(profileName, settings) {
-    browser.storage.local.get('userProfiles')
+    chrome.storage.local.get('userProfiles')
     .then((data) => {
         const profiles = data.userProfiles || {};
 
         profiles[profileName] = settings;
 
-        browser.storage.local.set({ userProfiles: profiles })
+        chrome.storage.local.set({ userProfiles: profiles })
         .then(() => {
             console.log(`Perfil '${profileName}' salvo com sucesso.`);
         });
@@ -28,13 +28,13 @@ function saveProfile(profileName, settings) {
 }
 
 function loadAndApplyProfile(profileName) {
-    browser.storage.local.get('userProfiles')
+    chrome.storage.local.get('userProfiles')
     .then((data) => {
         const profiles = data.userProfiles || {};
         const profileSettings = profiles[profileName];
 
         if (profileSettings) {
-            browser.runtime.sendMessage({ 
+            chrome.runtime.sendMessage({ 
                 action: 'applySettings', 
                 settings: profileSettings 
             })
@@ -46,14 +46,14 @@ function loadAndApplyProfile(profileName) {
 }
 
 function deleteProfile(profileName) {
-    browser.storage.local.get('userProfiles')
+    chrome.storage.local.get('userProfiles')
     .then((data) => {
         const profiles = data.userProfiles || {};
         const profileExists = profiles.hasOwnProperty(profileName);
 
         if (profileExists) {
             delete profiles[profileName];
-            browser.storage.local.set({ userProfiles: profiles })
+            chrome.storage.local.set({ userProfiles: profiles })
             .then(() => {
                 console.log(`Perfil '${profileName}' excluído com sucesso.`);
             });
@@ -68,7 +68,7 @@ function saveCustomColors() {
         highlightColor: document.getElementById('highlightColor').value
     };
 
-    browser.storage.local.set({ customColors: colorSettings })
+    chrome.storage.local.set({ customColors: colorSettings })
     .then(() => {
         console.log('Cores customizadas salvas.');
         applyCustomColorsToPage(colorSettings);
@@ -76,7 +76,7 @@ function saveCustomColors() {
 }
 
 function applyCustomColorsToPage(colors) {
-    browser.runtime.sendMessage({ 
+    chrome.runtime.sendMessage({ 
         action: 'applyColors', 
         colors: colors
     });
