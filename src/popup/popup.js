@@ -82,15 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         console.log("Enviando estado para a página:", settings);
 
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-
-        if (!tab) return;
-
         try {
-            await browser.scripting.executeScript({
-                target: { tabId: tab.id },
-                files: ['src/content/content.js']
-            });
+            const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+
+            if (!tab) return;
 
             const response = await browser.tabs.sendMessage(tab.id, {
                 action: 'applySettings',

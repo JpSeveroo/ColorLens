@@ -35,16 +35,11 @@ const applyFilters = (settings) =>{
 }
 
 //É esse bixo aqui que vai até a API do google pra explicar como a página deve funcionar
-browser.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.action === 'applySettings' && request.settings) {
-    // É do popup.js que vem o request.settings
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+if (request.settings) {
     console.log('Configurações recebidas do popup:', request.settings);
     applyFilters(request.settings);
-
-    sendResponse({ status: 'ok' });
-
-    return false;
-  }
-
-  return false;
+}
+    
+sendResponse({ status: 'ok' });
 });
