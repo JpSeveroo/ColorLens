@@ -1,8 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadAllSavedSettings();
 
-    document.getElementById('save-profile-btn').addEventListener('click', () => {
-        saveProfile('Novo Perfil', gatherCurrentSettings());
+    const tabs = document.querySelectorAll(".tab-btn");
+    const sections = document.querySelectorAll(".tab-section");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => t.classList.remove("active"));
+        sections.forEach((section) => section.classList.add("hidden"));
+        tab.classList.add("active");
+
+        const target = tab.getAttribute("data-tab");
+        document.getElementById(`tab-${target}`).classList.remove("hidden");
+      });
     });
 });
 
