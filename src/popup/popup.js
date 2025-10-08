@@ -1,8 +1,10 @@
 // Aguarda o conteúdo do HTML ser totalmente carregado antes de executar o script.
 document.addEventListener('DOMContentLoaded', () => {
-    const optionsButton = document.getElementById('options')
+    
 
     // --- Seleção dos Elementos da Interface (UI) ---
+    const optionsButton = document.getElementById('options')
+
     const contrastSlider = document.getElementById('contrast');
     const contrastValue = document.getElementById('contrast-value');
     
@@ -95,11 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tab) return;
 
         try {
-            await chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                files: ['src/content/content.js']
-            });
-
             const response = await chrome.tabs.sendMessage(tab.id, {
                 action: 'applySettings',
                 settings: settings 
@@ -108,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Resposta do content script:', response);
             
         } catch (error) {
-            console.error('Erro ao injetar script ou enviar mensagem', error);
+            console.error('Erro ao enviar mensagem', error);
         }
 
         // calma calabresio
