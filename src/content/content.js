@@ -1,3 +1,5 @@
+import { loadSettings } from '../utils/storage.js';
+
 /* Criando uma função response que pegará os requests do popup.js
 e aplicará os devidos filtros. Por isso coloquei esse parâmetro de settings
 para se referir aos requests do popup. */
@@ -65,11 +67,22 @@ const applyFilters = (settings) => {
 
 // Listener para mensagens da extensão
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-    if (request.settings) {
+    // Verifica se a ação é 'applySettings'
+    if (request.action === 'applySettings' && request.settings) {
         console.log('Configurações recebidas do popup:', request.settings);
         // Garante que os filtros SVG existam na página antes de aplicá-los
         injectSvgFilters();
         applyFilters(request.settings);
+        sendResponse({ status: 'settings applied' });
+    } else {
+        sendResponse({ status: 'ignoring message' });
     }
-    sendResponse({ status: 'ok' });
+});
+
+// Aplica as configurações salvas quando o content script é carregado
+loadSettings().then(settings => {
+    if (Object.keys(settings).length > 0) {
+        injectSvgFilters();
+        applyFilters(settings);
+    }
 });

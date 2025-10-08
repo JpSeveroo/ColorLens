@@ -1,7 +1,8 @@
-// Aguarda o conteúdo do HTML ser totalmente carregado antes de executar o script.
-document.addEventListener('DOMContentLoaded', () => {
+import { saveSettings, loadSettings } from '../utils/storage.js'; 
 
-    // --- Seleção dos Elementos da Interface (UI) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const optionsButton = document.getElementById('options')
+
     const contrastSlider = document.getElementById('contrast');
     const contrastValue = document.getElementById('contrast-value');
     
@@ -11,42 +12,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const resetButton = document.querySelector('.reset-btn');
     const modeButtons = document.querySelectorAll('.mode-btn');
+    console.log('Mode buttons found:', modeButtons);
 
-    // --- Lógica dos Botões de Filtro ---
-    // Adiciona um evento de clique a cada botão de filtro.
+    optionsButton.addEventListener('click', () => {
+        chrome.runtime.openOptionsPage();
+    });
+
     filterButtons.forEach(button => {
         button.addEventListener('click', (event) => {
-            // Garante que apenas um filtro esteja ativo por vez.
             filterButtons.forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
-            gatherAndSendState(); // Envia o estado atualizado.
-        });
-    });
-
-    // --- Lógica do Botão de Reset ---
-    // Reseta todas as configurações para o valor padrão.
-    resetButton.addEventListener('click', () => {
-        filterButtons.forEach(btn => btn.classList.remove('active')); // Remove filtro ativo.
-        contrastSlider.value = 100; // Reseta contraste.
-        saturationSlider.value = 100; // Reseta saturação.
-        updateSliderLook(contrastSlider, contrastValue);
-        updateSliderLook(saturationSlider, saturationValue);
-        gatherAndSendState();
-    });
-
-    // --- Lógica dos Botões de Modo (Ex: Modo Leitura) ---
-    // Alterna o estado de 'ativo' para os botões de modo.
-    modeButtons.forEach(button => {
-        button.addEventListener('click', (event) => {
-            console.log('Um botão de modo foi clicado!'); // Log para depuração.
-            event.target.classList.toggle('active');
             gatherAndSendState();
         });
     });
 
-    // --- Função para Atualizar a Aparência dos Sliders ---
+    resetButton.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        contrastSlider.value = 100;
+        saturationSlider.value = 100;
+        updateSliderLook(contrastSlider, contrastValue);
+        updateSliderLook(saturationSlider, saturationValue);
+        gatherAndSendState();
+});
+
+    modeButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            console.log('A mode button foi clicada!');
+            event.target.classList.toggle('active');
+            gatherAndSendState();
+        });
+});
+
     function updateSliderLook(slider, valueDisplay) {
         const min = slider.min;
         const max = slider.max;
@@ -55,12 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         valueDisplay.textContent = `${value}%`;
         
         const percentage = ((value - min) / (max - min)) * 100;
-
+        
         slider.style.background = `linear-gradient(to right, #66d9ef ${percentage}%, #44475a ${percentage}%)`;
     }
 
-    // --- Lógica dos Sliders ---
-    // Adiciona eventos que disparam enquanto o usuário arrasta o controle
     contrastSlider.addEventListener('input', () => {
         updateSliderLook(contrastSlider, contrastValue);
         gatherAndSendState();
@@ -71,17 +67,38 @@ document.addEventListener('DOMContentLoaded', () => {
         gatherAndSendState();
     });
 
-    // --- Inicialização ---
     // Configura a aparência inicial dos sliders e envia o estado padrão ao abrir o popup
     updateSliderLook(contrastSlider, contrastValue);
     updateSliderLook(saturationSlider, saturationValue);
-    gatherAndSendState();
 
-    
-    //  Reúne todas as configurações atuais em um único objeto e o envia
-    //  para um content script que aplicará os estilos na página
-     
-    function gatherAndSendState() {
+    // Adiciona esta chamada para carregar as configurações ao iniciar o popup
+    loadSettings().then(settings => {
+        if (Object.keys(settings).length > 0) {
+            // Aplica as configurações salvas aos elementos da UI
+            if (settings.filter && settings.filter !== 'none') {
+                const activeFilterButton = Array.from(filterButtons).find(btn => btn.textContent === settings.filter);
+                if (activeFilterButton) {
+                    activeFilterButton.classList.add('active');
+                }
+            }
+            contrastSlider.value = settings.contrast || 100;
+            saturationSlider.value = settings.saturation || 100;
+            
+            if (settings.readingMode) {
+                document.getElementById('reading-mode').classList.add('active');
+            }
+            if (settings.nightVision) {
+                document.getElementById('night-vision').classList.add('active');
+            }
+            updateSliderLook(contrastSlider, contrastValue);
+            updateSliderLook(saturationSlider, saturationValue);
+            gatherAndSendState(); // Envia o estado carregado para o content script
+        } else {
+            gatherAndSendState(); // Se não houver configurações salvas, envia o estado padrão
+        }
+    });
+
+    async function gatherAndSendState() {
         const activeFilter = document.querySelector('.filter-btn.active');
 
         const settings = {
@@ -90,27 +107,30 @@ document.addEventListener('DOMContentLoaded', () => {
             saturation: saturationSlider.value,
             readingMode: document.getElementById('reading-mode').classList.contains('active'),
             nightVision: document.getElementById('night-vision').classList.contains('active')
-        };
-        // Aqui, o objeto 'settings' seria enviado para outra parte da extensão.
-        // Ex: chrome.tabs.sendMessage(tabId, { settings });
+        }
 
+        await saveSettings(settings);
+        
+        console.log("Enviando estado para a página:", settings);
 
-        // 1. chrome.tabs.query: Não sabia massss, isso aqui encontra a aba que está ativa na janela atual.
-        // 2. tabs[0].id: Pega o ID da aba encontrada.
-        // 3. chrome.tabs.sendMessage: Envia o objeto 'settings' para o content script daquela aba.
-         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (tabs[0]) {
-                //Resumindo a linha de baixo: tabs[0] é o endereço, settings:settings é tipo a etiqueta do objeto sendo criado
-                //E o response é o parâmetro de recebimento.
-                chrome.tabs.sendMessage(tabs[0].id, { settings: settings }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        // Trata casos onde o content script não responde.
-                        console.warn("Erro ao enviar mensagem: ", chrome.runtime.lastError.message);
-                    } else {
-                        console.log('Resposta do content script:', response.status);
-                    }
-                });
-            }
-        });
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+        if (!tab) return;
+
+        try {
+            const response = await chrome.tabs.sendMessage(tab.id, {
+                action: 'applySettings',
+                settings: settings 
+            });
+
+            console.log('Resposta do content script:', response);
+            
+        } catch (error) {
+            console.error('Erro ao injetar script ou enviar mensagem', error);
+        }
     };
+
+    // Garante que o estado seja enviado ao content script imediatamente após o carregamento do popup.
+    // Isso também acionará o salvamento inicial das configurações se nenhuma estiver presente.
+    gatherAndSendState();
 });
