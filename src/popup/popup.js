@@ -1,6 +1,8 @@
+// Aguarda o conteúdo do HTML ser totalmente carregado antes de executar o script.
 document.addEventListener('DOMContentLoaded', () => {
     const optionsButton = document.getElementById('options')
 
+    // --- Seleção dos Elementos da Interface (UI) ---
     const contrastSlider = document.getElementById('contrast');
     const contrastValue = document.getElementById('contrast-value');
     
@@ -10,14 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const resetButton = document.querySelector('.reset-btn');
     const modeButtons = document.querySelectorAll('.mode-btn');
-    console.log('Mode buttons found:', modeButtons);
 
     optionsButton.addEventListener('click', () => {
         chrome.runtime.openOptionsPage();
     });
 
+    // --- Lógica dos Botões de Filtro ---
+    // Adiciona um evento de clique a cada botão de filtro.
     filterButtons.forEach(button => {
         button.addEventListener('click', (event) => {
+            // Garante que apenas um filtro esteja ativo por vez.
             filterButtons.forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -43,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
+    // --- Função para Atualizar a Aparência dos Sliders ---
     function updateSliderLook(slider, valueDisplay) {
         const min = slider.min;
         const max = slider.max;
@@ -51,10 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
         valueDisplay.textContent = `${value}%`;
         
         const percentage = ((value - min) / (max - min)) * 100;
-        
+
         slider.style.background = `linear-gradient(to right, #66d9ef ${percentage}%, #44475a ${percentage}%)`;
     }
 
+    // --- Lógica dos Sliders ---
+    // Adiciona eventos que disparam enquanto o usuário arrasta o controle
     contrastSlider.addEventListener('input', () => {
         updateSliderLook(contrastSlider, contrastValue);
         gatherAndSendState();
@@ -65,9 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
         gatherAndSendState();
     });
 
+    // --- Inicialização ---
+    // Configura a aparência inicial dos sliders e envia o estado padrão ao abrir o popup
     updateSliderLook(contrastSlider, contrastValue);
     updateSliderLook(saturationSlider, saturationValue);
-
     gatherAndSendState();
 
     async function gatherAndSendState() {
