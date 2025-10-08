@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - ColorLens</title>
+    <link rel="stylesheet" href="options.css" />
+    <script src="options.js"></script>
+  </head>
+  <body>
+    <div class="options-container">
+      <header class="header">
+        <div class="header-top">
+          <img
+            src="../../assets/images/colorlens-logo.svg"
+            alt="Logo ColorLens"
+            class="logo"
+          />
+          <h1>ColorLens</h1>
+          <img
+            src="../../assets/icons/profile-icon.png"
+            alt="Ícone de Perfil"
+            class="profile-icon"
+          />
+        </div>
+        <h3>Configuração de Perfis (Presets)</h3>
+        <p>
+          Personalize os filtros e modos de acessibilidade para sua navegação.
+        </p>
+      </header>
+      <nav id="tabs-nav">
+        <button class="tab-btn active" data-tab="filters">Filtro Base</button>
+        <button class="tab-btn" data-tab="adjustments">Ajustes</button>
+        <button class="tab-btn" data-tab="modes">Modos</button>
+      </nav>
+
+      <main class="main-content">
+        <section id="tab-filters" class="tab-section">
+          <h2>Filtros Genéricos:</h2>
+          <div class="filters-grid">
+            <button class="filter-btn">Protanopia</button>
+            <button class="filter-btn">Deuteranopia</button>
+            <button class="filter-btn">Tritanopia</button>
+            <button class="filter-btn">Protanomalia</button>
+            <button class="filter-btn">Deuteranomalia</button>
+            <button class="filter-btn">Tritanomalia</button>
+            <button class="filter-btn">Achromatopsia</button>
+            <button class="filter-btn">Monocromia</button>
+          </div>
+        </section>
+
+        <section id="tab-adjustments" class="tab-section hidden">
+          <h3>Ajustes</h3>
+          <div class="slider-control">
+            <div class="slider-label">
+              <label for="contrast">Contraste</label>
+              <span id="contrast-value" class="slider-value">100%</span>
+            </div>
+            <input
+              type="range"
+              id="contrast"
+              min="0"
+              max="200"
+              value="100"
+              class="slider"
+            />
+          </div>
+          <div class="slider-control">
+            <div class="slider-label">
+              <label for="saturation">Saturação</label>
+              <span id="saturation-value" class="slider-value">100%</span>
+            </div>
+            <input
+              type="range"
+              id="saturation"
+              min="0"
+              max="200"
+              value="100"
+              class="slider"
+            />
+          </div>
+        </section>
+
+        <section id="tab-modes" class="tab-section hidden">
+          <button id="reading-mode" class="mode-btn">Modo leitura</button>
+          <button id="night-vision" class="mode-btn">Visão Noturna</button>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

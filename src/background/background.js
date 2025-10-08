@@ -4,14 +4,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateSettings') {
         
         // Busca a aba ativa na janela atual
-        chrome.tabs.query({ active: true, currentWindow: true}, (tabs) => {
+        chrome.tabs.query({ active: true, currentWindow: true })
+        .then((tabs) => {
             if (tabs.length > 0) {
-                // Envia mensagem para o content script da aba ativa, repassando as configurações
                 chrome.tabs.sendMessage(tabs[0].id, {
                     action: 'applySettings',
                     settings: request.settings
                 });
             }
-        });
+        })
+        .catch(error => console.error('Erro ao enviar a mensagem para o content script:', error));
     }
 });

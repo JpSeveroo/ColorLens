@@ -1,6 +1,9 @@
 import { saveSettings, loadSettings } from '../utils/storage.js'; 
 
+// Aguarda o conteúdo do HTML ser totalmente carregado antes de executar o script.
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- Seleção dos Elementos da Interface (UI) ---
     const optionsButton = document.getElementById('options')
 
     const contrastSlider = document.getElementById('contrast');
@@ -18,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.runtime.openOptionsPage();
     });
 
+    // --- Lógica dos Botões de Filtro ---
+    // Adiciona um evento de clique a cada botão de filtro.
     filterButtons.forEach(button => {
         button.addEventListener('click', (event) => {
             filterButtons.forEach(btn => {
@@ -45,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
+    // --- Função para Atualizar a Aparência dos Sliders ---
     function updateSliderLook(slider, valueDisplay) {
         const min = slider.min;
         const max = slider.max;
