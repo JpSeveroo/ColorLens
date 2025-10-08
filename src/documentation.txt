@@ -1,6 +1,4 @@
 
-
-
 manifest.json → define permissões e conecta popup, options, content e background.
 
 /popup/ → interface rápida para ativar/desativar filtros e ajustes imediatos.
@@ -16,3 +14,5 @@ manifest.json → define permissões e conecta popup, options, content e backgro
 /assets/ → ícones, fontes acessíveis (como OpenDyslexic), imagens de exemplo.
 
 /tests/ → valida se os filtros e configurações estão funcionando como esperado.
+
+/utils/filters → organiza um "svg" em matriz referente as cores vermelho, azul e verde pra cada filtro específico

@@ -1,5 +1,7 @@
+// Aguarda o conteúdo do HTML ser totalmente carregado antes de executar o script.
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- Seleção dos Elementos da Interface (UI) ---
     const contrastSlider = document.getElementById('contrast');
     const contrastValue = document.getElementById('contrast-value');
     
@@ -9,35 +11,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const resetButton = document.querySelector('.reset-btn');
     const modeButtons = document.querySelectorAll('.mode-btn');
-    console.log('Mode buttons found:', modeButtons);
 
+    // --- Lógica dos Botões de Filtro ---
+    // Adiciona um evento de clique a cada botão de filtro.
     filterButtons.forEach(button => {
         button.addEventListener('click', (event) => {
+            // Garante que apenas um filtro esteja ativo por vez.
             filterButtons.forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
+            gatherAndSendState(); // Envia o estado atualizado.
+        });
+    });
+
+    // --- Lógica do Botão de Reset ---
+    // Reseta todas as configurações para o valor padrão.
+    resetButton.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active')); // Remove filtro ativo.
+        contrastSlider.value = 100; // Reseta contraste.
+        saturationSlider.value = 100; // Reseta saturação.
+        updateSliderLook(contrastSlider, contrastValue);
+        updateSliderLook(saturationSlider, saturationValue);
+        gatherAndSendState();
+    });
+
+    // --- Lógica dos Botões de Modo (Ex: Modo Leitura) ---
+    // Alterna o estado de 'ativo' para os botões de modo.
+    modeButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            console.log('Um botão de modo foi clicado!'); // Log para depuração.
+            event.target.classList.toggle('active');
             gatherAndSendState();
         });
     });
 
-    resetButton.addEventListener('click', () => {
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        contrastSlider.value = 100;
-        saturationSlider.value = 100;
-        updateSliderLook(contrastSlider, contrastValue);
-        updateSliderLook(saturationSlider, saturationValue);
-        gatherAndSendState();
-});
-
-    modeButtons.forEach(button => {
-        button.addEventListener('click', (event) => {
-            console.log('A mode button was clicked!');
-            event.target.classList.toggle('active');
-            gatherAndSendState();
-        });
-});
-
+    // --- Função para Atualizar a Aparência dos Sliders ---
     function updateSliderLook(slider, valueDisplay) {
         const min = slider.min;
         const max = slider.max;
@@ -46,10 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
         valueDisplay.textContent = `${value}%`;
         
         const percentage = ((value - min) / (max - min)) * 100;
-        
+
         slider.style.background = `linear-gradient(to right, #66d9ef ${percentage}%, #44475a ${percentage}%)`;
     }
 
+    // --- Lógica dos Sliders ---
+    // Adiciona eventos que disparam enquanto o usuário arrasta o controle
     contrastSlider.addEventListener('input', () => {
         updateSliderLook(contrastSlider, contrastValue);
         gatherAndSendState();
@@ -60,11 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
         gatherAndSendState();
     });
 
+    // --- Inicialização ---
+    // Configura a aparência inicial dos sliders e envia o estado padrão ao abrir o popup
     updateSliderLook(contrastSlider, contrastValue);
     updateSliderLook(saturationSlider, saturationValue);
-
     gatherAndSendState();
 
+    
+    //  Reúne todas as configurações atuais em um único objeto e o envia
+    //  para um content script que aplicará os estilos na página
+     
     function gatherAndSendState() {
         const activeFilter = document.querySelector('.filter-btn.active');
 
@@ -74,8 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
             saturation: saturationSlider.value,
             readingMode: document.getElementById('reading-mode').classList.contains('active'),
             nightVision: document.getElementById('night-vision').classList.contains('active')
-        }
-        console.log("Enviando estado para a página:", settings);
+        };
+        // Aqui, o objeto 'settings' seria enviado para outra parte da extensão.
+        // Ex: chrome.tabs.sendMessage(tabId, { settings });
+
 
         // 1. chrome.tabs.query: Não sabia massss, isso aqui encontra a aba que está ativa na janela atual.
         // 2. tabs[0].id: Pega o ID da aba encontrada.
