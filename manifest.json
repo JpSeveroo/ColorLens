@@ -26,6 +26,7 @@
     "background": {
         "service_worker": "src/background/background.js"
     },
+    "options_page": "src/options/options.html",
     "web_accessible_resources": [
         {
             "resources": [

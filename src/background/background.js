@@ -49,10 +49,32 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             });
     }
 
-    // --- Lógica Antiga (Manter apenas se for essencial) ---
-    // Nota: O seu popup.js já tem a lógica de enviar diretamente (Caminho Rápido)
-    // e usa o 'injectAndApplySettings' como fallback. 
-    // Mantenha apenas a lógica de 'injectAndApplySettings' para o cenário de debug.
+    // --- Handler for Color Customization (from Options Page) ---
+    if (request.action === 'applyColors') {
+        isAsync = true;
+        const { colors } = request;
+        
+        console.log('[Background] Recebido pedido de aplicação de cores customizadas.');
+        
+        // Get current active tab and send colors to content script
+        chrome.tabs.query({ active: true, currentWindow: true })
+            .then((tabs) => {
+                if (tabs.length > 0) {
+                    return chrome.tabs.sendMessage(tabs[0].id, {
+                        action: 'applyColors',
+                        colors: colors
+                    });
+                }
+                return { status: 'no_active_tab' };
+            })
+            .then(response => {
+                sendResponse({ status: 'colors_applied', response: response });
+            })
+            .catch(error => {
+                console.error('[Background] Erro ao aplicar cores customizadas:', error);
+                sendResponse({ status: 'error', message: error.message });
+            });
+    }
     
     return isAsync;
 });

@@ -23,6 +23,19 @@ function loadAllSavedSettings() {
     });
 }
 
+function updateUI(userProfiles, customColors) {
+    // Load saved profiles and apply to UI
+    if (userProfiles) {
+        console.log('Loading user profiles:', userProfiles);
+        // TODO: Implement profile loading UI
+    }
+    
+    if (customColors) {
+        console.log('Loading custom colors:', customColors);
+        // TODO: Implement custom colors loading UI
+    }
+}
+
 function saveProfile(profileName, settings) {
     chrome.storage.local.get('userProfiles')
     .then((data) => {
