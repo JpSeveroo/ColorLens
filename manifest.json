@@ -14,12 +14,13 @@
     },
     "permissions": [
         "activeTab",
-        "storage"
+        "storage",
+        "scripting"
     ],
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["src/utils/filters.js", "src/content/content.js"]
+            "js": ["src/content/content.js"]
         }
     ],
     "background": {

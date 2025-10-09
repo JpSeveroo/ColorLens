@@ -1,4 +1,19 @@
-import { saveSettings, loadSettings } from '../utils/storage.js'; 
+// Storage utilities (copied from utils/storage.js to avoid import issues)
+const saveSettings = async (settings) => {
+    return new Promise((resolve) => {
+        chrome.storage.sync.set({ colorLensSettings: settings }, () => {
+            resolve();
+        });
+    });
+};
+
+const loadSettings = async () => {
+    return new Promise((resolve) => {
+        chrome.storage.sync.get(['colorLensSettings'], (result) => {
+            resolve(result.colorLensSettings || {});
+        });
+    });
+}; 
 
 // Aguarda o conteúdo do HTML ser totalmente carregado antes de executar o script.
 document.addEventListener('DOMContentLoaded', () => {
@@ -115,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             nightVision: document.getElementById('night-vision').classList.contains('active')
         }
 
+
         await saveSettings(settings);
         
         console.log("Enviando estado para a página:", settings);
@@ -122,17 +138,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
         if (!tab) return;
+        
+        const messagePayload = {
+            action: 'applySettings',
+            settings: settings 
+        };
 
         try {
-            const response = await chrome.tabs.sendMessage(tab.id, {
-                action: 'applySettings',
-                settings: settings 
-            });
-
+            // Tenta o envio direto (Caminho rápido)
+            const response = await chrome.tabs.sendMessage(tab.id, messagePayload);
             console.log('Resposta do content script:', response);
             
         } catch (error) {
-            console.error('Erro ao injetar script ou enviar mensagem', error);
+            const isConnectionError = error.message.includes('Could not establish connection') || error.message.includes('Receiving end does not exist');
+            
+            // Log a warning only if it's NOT the common connection error, 
+            // or if the error object itself is missing (which shouldn't happen with async/await).
+            if (error.message && !isConnectionError) {
+                 console.error(`[Unexpected Error] Failed to send direct message. Error: ${error.message}`);
+            }
+            
+            // If the fast path failed, we ALWAYS fall back to the Background Worker.
+            
+            // CRITICAL CHECK: Ensure 'tab' exists before reading its ID.
+            if (!tab || !tab.id) {
+                console.error("Não é possível enviar mensagem de fallback: Tab ID indisponível.");
+                return; // Exit cleanly
+            }
+            
+            console.warn(`[Fallback] Communication failed, delegating to Background Worker for injection.`);
+            
+            // Fire-and-Forget to the Background Worker
+            chrome.runtime.sendMessage({ 
+                action: 'injectAndApplySettings', 
+                tabId: tab.id, 
+                settings: settings 
+            });
         }
     };
 
