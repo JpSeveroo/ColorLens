@@ -1,0 +1,18 @@
+{
+    "extensionName": {
+        "message": "ColorLens",
+        "description": "O nome da extensão."
+    },
+    "extensionDescription": {
+        "message": "Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades.",
+        "description": "A descrição da extensão que aparece no popup."
+    },
+    "genericFilters": {
+        "message": "Filtros Genéricos:",
+        "description": "Título para a seção de filtros genéricos."
+    },
+    "resetButton": {
+        "message": "Resetar",
+        "description": "Texto para o botão de reset."
+    }
+}

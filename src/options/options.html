@@ -1,91 +1,87 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Perfil - ColorLens</title>
+    <title>ColorLens - Perfil</title>
     <link rel="stylesheet" href="options.css" />
-    <script src="options.js"></script>
   </head>
+
   <body>
-    <div class="options-container">
+    <div class="sidebar">
       <header class="header">
-        <div class="header-top">
-          <img
-            src="../../assets/images/colorlens-logo.svg"
-            alt="Logo ColorLens"
-            class="logo"
-          />
-          <h1>ColorLens</h1>
-          <img
-            src="../../assets/icons/profile-icon.png"
-            alt="Ícone de Perfil"
-            class="profile-icon"
-          />
-        </div>
-        <h3>Configuração de Perfis (Presets)</h3>
-        <p>
-          Personalize os filtros e modos de acessibilidade para sua navegação.
-        </p>
+        <img
+          src="../../assets/images/colorlens-logo.svg"
+          alt="ColorLens Logo"
+          class="logo"
+        />
+        <h1>ColorLens</h1>
+        <hr />
       </header>
-      <nav id="tabs-nav">
-        <button class="tab-btn active" data-tab="filters">Filtro Base</button>
-        <button class="tab-btn" data-tab="adjustments">Ajustes</button>
-        <button class="tab-btn" data-tab="modes">Modos</button>
+
+      <nav class="options-container">
+        <button class="options-btn active" data-tab="base-filters">
+          Filtros Base
+        </button>
+        <button class="options-btn" data-tab="color-custom">
+          Personalização de cores
+        </button>
+        <button class="options-btn" data-tab="visual-access">
+          Acessibilidade Visual
+        </button>
+        <button class="options-btn" data-tab="help">Sobre / Ajuda</button>
       </nav>
-
-      <main class="main-content">
-        <section id="tab-filters" class="tab-section">
-          <h2>Filtros Genéricos:</h2>
-          <div class="filters-grid">
-            <button class="filter-btn">Protanopia</button>
-            <button class="filter-btn">Deuteranopia</button>
-            <button class="filter-btn">Tritanopia</button>
-            <button class="filter-btn">Protanomalia</button>
-            <button class="filter-btn">Deuteranomalia</button>
-            <button class="filter-btn">Tritanomalia</button>
-            <button class="filter-btn">Achromatopsia</button>
-            <button class="filter-btn">Monocromia</button>
-          </div>
-        </section>
-
-        <section id="tab-adjustments" class="tab-section hidden">
-          <h3>Ajustes</h3>
-          <div class="slider-control">
-            <div class="slider-label">
-              <label for="contrast">Contraste</label>
-              <span id="contrast-value" class="slider-value">100%</span>
-            </div>
-            <input
-              type="range"
-              id="contrast"
-              min="0"
-              max="200"
-              value="100"
-              class="slider"
-            />
-          </div>
-          <div class="slider-control">
-            <div class="slider-label">
-              <label for="saturation">Saturação</label>
-              <span id="saturation-value" class="slider-value">100%</span>
-            </div>
-            <input
-              type="range"
-              id="saturation"
-              min="0"
-              max="200"
-              value="100"
-              class="slider"
-            />
-          </div>
-        </section>
-
-        <section id="tab-modes" class="tab-section hidden">
-          <button id="reading-mode" class="mode-btn">Modo leitura</button>
-          <button id="night-vision" class="mode-btn">Visão Noturna</button>
-        </section>
-      </main>
     </div>
+
+    <main class="main-content">
+      <section id="base-filters" class="content-section active">
+        <h2>Filtros Base</h2>
+      </section>
+
+      <section id="color-custom" class="content-section">
+        <h2>Personalização de cores</h2>
+      </section>
+
+      <section id="visual-access" class="content-section">
+        <h2>Acessibilidade Visual</h2>
+      </section>
+
+      <section id="help" class="content-section">
+        <h2>Sobre / Ajuda</h2>
+        <p>Entenda como o ColorLens funciona e como tirar o máximo proveito.</p>
+        <hr />
+        <p>
+          <strong>ColorLens</strong> é uma ferramenta projetada para ajudar
+          pessoas com daltonismo e outras dificuldades de visão a navegar na web
+          com mais conforto e clareza.
+        </p>
+        <p>
+          Use os filtros para ajustar as cores das páginas, crie perfis
+          personalizados para mapear cores específicas e utilize as ferramentas
+          de acessibilidade para melhorar sua experiência de leitura.
+        </p>
+        <br />
+
+        <h2>Como Usar o ColorLens</h2><br />
+        <p>
+          <strong>Filtros de Daltonismo:</strong> Escolha um tipo de daltonismo
+          para que a extensão aplique uma correção de cor em tempo real a todas
+          as páginas.
+        </p>
+        <p>
+          <strong>Personalização de Cores:</strong>Ideal para casos específicos
+          onde você precisa diferenciar cores que parecem iguais. Mapeie uma cor
+          de origem (ex: vermelho) para uma cor de destino (ex: azul) que você
+          consiga ver bem.
+        </p>
+        <p>
+          <strong>Acessibilidade Visual:</strong> Ajuste o contraste e a
+          saturação de forma global ou ative modos especiais como o de leitura
+          ou noturno para reduzir o cansaço visual.
+        </p>
+      </section>
+    </main>
+
+    <script src="options.js"></script>
   </body>
 </html>
