@@ -13,10 +13,10 @@ async function injectContentScript(tabId) {
 }
 
 
-// O Background Worker é o manipulador de mensagens central.
+// O Worker de Background é o manipulador de mensagens central.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
-    // Sempre retorne true para indicar que você usará sendResponse de forma assíncrona.
+    // Sempre retorna true para indicar que você usará sendResponse de forma assíncrona.
     let isAsync = false;
 
     // --- Lógica de Fallback de Injeção (Correção do Erro) ---
@@ -26,11 +26,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         console.log('[Background] Recebido pedido de FALLBACK. Iniciando injeção e reenvio.');
 
-        // 1. Tenta injetar/re-injetar o content script
+        // 1. Tenta injetar/re-injetar o script de conteúdo
         injectContentScript(tabId)
             .then(success => {
                 if (success) {
-                    // 2. Se a injeção foi bem-sucedida, reenvia a mensagem de settings
+                    // 2. Se a injeção foi bem-sucedida, reenvia a mensagem de configurações
                     return chrome.tabs.sendMessage(tabId, {
                         action: 'applySettings',
                         settings: settings
@@ -49,14 +49,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             });
     }
 
-    // --- Handler for Color Customization (from Options Page) ---
+    // --- Manipulador para Personalização de Cores (da Página de Opções) ---
     if (request.action === 'applyColors') {
         isAsync = true;
         const { colors } = request;
         
         console.log('[Background] Recebido pedido de aplicação de cores customizadas.');
         
-        // Get current active tab and send colors to content script
+        // Obtém a aba ativa atual e envia cores para o script de conteúdo
         chrome.tabs.query({ active: true, currentWindow: true })
             .then((tabs) => {
                 if (tabs.length > 0) {

@@ -54,12 +54,12 @@ function loadAllSavedSettings() {
 function updateUI(userProfiles, customColors) {
     if (userProfiles) {
         console.log('Loading user profiles:', userProfiles);
-        // TODO: Implement profile loading UI
+        // TODO: Implementar interface de carregamento de perfil
     }
     
     if (customColors) {
         console.log('Loading custom colors:', customColors);
-        // TODO: Implement custom colors loading UI
+        // TODO: Implementar interface de carregamento de cores personalizadas
     }
 }
 

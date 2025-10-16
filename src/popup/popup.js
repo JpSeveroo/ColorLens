@@ -1,4 +1,4 @@
-// Storage utilities (copied from utils/storage.js to avoid import issues)
+// Utilitários de armazenamento (copiados de utils/storage.js para evitar problemas de importação)
 const saveSettings = async (settings) => {
     return new Promise((resolve) => {
         chrome.storage.sync.set({ colorLensSettings: settings }, () => {
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Seleção dos Elementos da Interface (UI) ---
     const optionsButton = document.getElementById('options')
-    const tabs = document.querySelectorAll('.tab-btn'); // NEW: Select all tab buttons
-    const sections = document.querySelectorAll('.tab-section'); // NEW: Select all tab sections
+    const tabs = document.querySelectorAll('.tab-btn'); // NOVO: Seleciona todos os botões de aba
+    const sections = document.querySelectorAll('.tab-section'); // NOVO: Seleciona todas as seções de aba
 
     const contrastSlider = document.getElementById('contrast');
     const contrastValue = document.getElementById('contrast-value');
@@ -38,22 +38,22 @@ document.addEventListener('DOMContentLoaded', () => {
         chrome.runtime.openOptionsPage();
     });
 
-    // --- NEW: Tab Switching Logic ---
+    // --- NOVO: Lógica de Troca de Abas ---
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            // 1. Deactivate all tabs and hide all sections
+            // 1. Desativa todas as abas e esconde todas as seções
             tabs.forEach(t => t.classList.remove('active'));
             sections.forEach(s => s.classList.add('hidden'));
 
-            // 2. Activate the clicked tab
+            // 2. Ativa a aba clicada
             tab.classList.add('active');
 
-            // 3. Show the corresponding section
+            // 3. Mostra a seção correspondente
             const target = tab.getAttribute('data-tab');
             document.getElementById(`tab-${target}`).classList.remove('hidden');
         });
     });
-    // --- END NEW LOGIC ---
+    // --- FIM DA LÓGICA NOVA ---
 
     // --- Lógica dos Botões de Filtro ---
     // Adiciona um evento de clique a cada botão de filtro.
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Adiciona esta chamada para carregar as configurações ao iniciar o popup
     loadSettings().then(settings => {
-        // CRITICAL UPDATE: Ensure only the default tab (Filters) is shown on load
+        // ATUALIZAÇÃO CRÍTICA: Garante que apenas a aba padrão (Filtros) seja mostrada ao carregar
         tabs.forEach(t => t.classList.remove('active'));
         sections.forEach(s => s.classList.add('hidden'));
         document.querySelector('.tab-btn[data-tab="filters"]').classList.add('active');
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateSliderLook(contrastSlider, contrastValue);
             updateSliderLook(saturationSlider, saturationValue);
-            gatherAndSendState(); // Envia o estado carregado para o content script
+            gatherAndSendState(); // Envia o estado carregado para o script de conteúdo
         } else {
             gatherAndSendState(); // Se não houver configurações salvas, envia o estado padrão
         }
@@ -172,28 +172,28 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Tenta o envio direto (Caminho rápido)
             const response = await chrome.tabs.sendMessage(tab.id, messagePayload);
-            console.log('Resposta do content script:', response);
+            console.log('Resposta do script de conteúdo:', response);
             
         } catch (error) {
             const isConnectionError = error.message.includes('Could not establish connection') || error.message.includes('Receiving end does not exist');
             
-            // Log a warning only if it's NOT the common connection error, 
-            // or if the error object itself is missing (which shouldn't happen with async/await).
+            // Registra um aviso apenas se NÃO for o erro comum de conexão,
+            // ou se o objeto de erro em si estiver ausente (o que não deveria acontecer com async/await).
             if (error.message && !isConnectionError) {
                  console.error(`[Unexpected Error] Failed to send direct message. Error: ${error.message}`);
             }
             
-            // If the fast path failed, we ALWAYS fall back to the Background Worker.
+            // Se o caminho rápido falhou, SEMPRE fazemos fallback para o Worker de Background.
             
-            // CRITICAL CHECK: Ensure 'tab' exists before reading its ID.
+            // VERIFICAÇÃO CRÍTICA: Garante que 'tab' existe antes de ler seu ID.
             if (!tab || !tab.id) {
                 console.error("Não é possível enviar mensagem de fallback: Tab ID indisponível.");
-                return; // Exit cleanly
+                return; // Sair limpo
             }
             
-            console.warn(`[Fallback] Communication failed, delegating to Background Worker for injection.`);
+            console.warn(`[Fallback] Comunicação falhou, delegando para o Worker de Background para injeção.`);
             
-            // Fire-and-Forget to the Background Worker
+            // Fire-and-Forget para o Worker de Background
             chrome.runtime.sendMessage({ 
                 action: 'injectAndApplySettings', 
                 tabId: tab.id, 
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Garante que o estado seja enviado ao content script imediatamente após o carregamento do popup.
+    // Garante que o estado seja enviado ao script de conteúdo imediatamente após o carregamento do popup.
     // Isso também acionará o salvamento inicial das configurações se nenhuma estiver presente.
     gatherAndSendState();
 });

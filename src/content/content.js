@@ -1,4 +1,4 @@
-// Storage utilities (copied from utils/storage.js to avoid import issues)
+// Utilitários de armazenamento (copiados de utils/storage.js para evitar problemas de importação)
 const saveSettings = async (settings) => {
     return new Promise((resolve) => {
         chrome.storage.sync.set({ colorLensSettings: settings }, () => {
@@ -15,7 +15,7 @@ const loadSettings = async () => {
     });
 };
 
-// Color filters data (copied from utils/filters.js to avoid import issues)
+// Dados dos filtros de cor (copiados de utils/filters.js para evitar problemas de importação)
 const COLOR_FILTERS_DATA = {
     'Protanopia': {
         id: 'protanopia',
@@ -81,7 +81,7 @@ console.log('ColorLens Content Script - Carregamento OK');
 e aplicará os devidos filtros. Por isso coloquei esse parâmetro de settings
 para se referir aos requests do popup. */
 
-// Eu fui tentar fazer com um arquivo svg a parte mas não deu certo
+// Eu fui tentar fazer com um arquivo svg à parte mas não deu certo
 function injectSvgFilters() {
     // Verifica se os filtros já foram injetados pra não duplicar
     if (document.getElementById('colorlens-svg-filters')) {
@@ -161,7 +161,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     }
 });
 
-// Aplica as configurações salvas quando o content script é carregado
+// Aplica as configurações salvas quando o script de conteúdo é carregado
 loadSettings().then(settings => {
     if (Object.keys(settings).length > 0) {
         injectSvgFilters();
