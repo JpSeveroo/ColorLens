@@ -1,30 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
-    loadAllSavedSettings();
-
-    const tabs = document.querySelectorAll(".tab-btn");
-    const sections = document.querySelectorAll(".tab-section");
-
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        tabs.forEach((t) => t.classList.remove("active"));
-        sections.forEach((section) => section.classList.add("hidden"));
-        tab.classList.add("active");
-
-        const target = tab.getAttribute("data-tab");
-        document.getElementById(`tab-${target}`).classList.remove("hidden");
-      });
-    });
+    initializeTabs();
+    try {
+        loadAllSavedSettings();
+    } catch (error) {
+        console.warn('Erro ao carregar configurações:', error);
+    }
 });
 
-function loadAllSavedSettings() {
-    chrome.storage.local.get(['userProfiles', 'customColors'])
-    .then((data) => {
-        updateUI(data.userProfiles, data.customColors);
+function initializeTabs() {
+    const buttons = document.querySelectorAll('.options-btn');
+    const sections = document.querySelectorAll('.content-section');
+
+    function switchTab(targetTabId) {
+        buttons.forEach(btn => btn.classList.remove('active'));
+        sections.forEach(section => section.classList.remove('active'));
+
+        const selectedButton = document.querySelector(`[data-tab="${targetTabId}"]`);
+        const selectedSection = document.getElementById(targetTabId);
+
+        if (selectedButton && selectedSection) {
+            selectedButton.classList.add('active');
+            selectedSection.classList.add('active');
+        }
+    }
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            switchTab(tabId);
+        });
     });
+
+    if (!document.querySelector('.content-section.active')) {
+        const firstTabId = buttons[0]?.getAttribute('data-tab');
+        if (firstTabId) {
+            switchTab(firstTabId);
+        }
+    }
+}
+
+function loadAllSavedSettings() {
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+        chrome.storage.local.get(['userProfiles', 'customColors'])
+        .then((data) => {
+            updateUI(data.userProfiles, data.customColors);
+        })
+        .catch(error => {
+            console.warn('Erro ao carregar configurações:', error);
+        });
+    }
 }
 
 function updateUI(userProfiles, customColors) {
-    // Load saved profiles and apply to UI
     if (userProfiles) {
         console.log('Loading user profiles:', userProfiles);
         // TODO: Implement profile loading UI
