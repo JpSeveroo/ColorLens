@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Seleção dos Elementos da Interface (UI) ---
     const optionsButton = document.getElementById('options')
+    const tabs = document.querySelectorAll('.tab-btn'); // NEW: Select all tab buttons
+    const sections = document.querySelectorAll('.tab-section'); // NEW: Select all tab sections
 
     const contrastSlider = document.getElementById('contrast');
     const contrastValue = document.getElementById('contrast-value');
@@ -35,6 +37,23 @@ document.addEventListener('DOMContentLoaded', () => {
     optionsButton.addEventListener('click', () => {
         chrome.runtime.openOptionsPage();
     });
+
+    // --- NEW: Tab Switching Logic ---
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // 1. Deactivate all tabs and hide all sections
+            tabs.forEach(t => t.classList.remove('active'));
+            sections.forEach(s => s.classList.add('hidden'));
+
+            // 2. Activate the clicked tab
+            tab.classList.add('active');
+
+            // 3. Show the corresponding section
+            const target = tab.getAttribute('data-tab');
+            document.getElementById(`tab-${target}`).classList.remove('hidden');
+        });
+    });
+    // --- END NEW LOGIC ---
 
     // --- Lógica dos Botões de Filtro ---
     // Adiciona um evento de clique a cada botão de filtro.
@@ -94,6 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Adiciona esta chamada para carregar as configurações ao iniciar o popup
     loadSettings().then(settings => {
+        // CRITICAL UPDATE: Ensure only the default tab (Filters) is shown on load
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.add('hidden'));
+        document.querySelector('.tab-btn[data-tab="filters"]').classList.add('active');
+        document.getElementById('tab-filters').classList.remove('hidden');
+        
         if (Object.keys(settings).length > 0) {
             // Aplica as configurações salvas aos elementos da UI
             if (settings.filter && settings.filter !== 'none') {

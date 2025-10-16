@@ -18,42 +18,57 @@
             <p>Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades</p>
         </header>
 
+        <nav id="tabs-nav">
+            <button class="tab-btn active" data-tab="filters">Filtros Padrões</button>
+            <button class="tab-btn" data-tab="adjustments">Ajustes Rápidos</button>
+            <button class="tab-btn" data-tab="custom">Filtros Personalizados</button>
+        </nav>
+        
         <main class="main-content">
-            <h2>Filtros Genéricos:</h2>
-            <div class="filters-grid">
-                <button class="filter-btn">Protanopia</button>
-                <button class="filter-btn">Deuteranopia</button>
-                <button class="filter-btn">Tritanopia</button>
-                <button class="filter-btn">Protanomalia</button>
-                <button class="filter-btn">Deuteranomalia</button>
-                <button class="filter-btn">Tritanomalia</button>
-                <button class="filter-btn">Achromatopsia</button>
-                <button class="filter-btn">Monocromia</button>
-            </div>
-            <button class="reset-btn">Resetar</button>
-            <section class="adjustments-section">
-            <h3>Ajustes</h3>
-
-            <div class="slider-control">
-                <div class="slider-label">
-                    <label for="contrast">Contraste</label>
-                    <span id="contrast-value" class="slider-value">100%</span>
+            
+            <section id="tab-filters" class="tab-section">
+                <h2>Filtros Genéricos:</h2>
+                <div class="filters-grid">
+                    <button class="filter-btn">Protanopia</button>
+                    <button class="filter-btn">Deuteranopia</button>
+                    <button class="filter-btn">Tritanopia</button>
+                    <button class="filter-btn">Protanomalia</button>
+                    <button class="filter-btn">Deuteranomalia</button>
+                    <button class="filter-btn">Tritanomalia</button>
+                    <button class="filter-btn">Achromatopsia</button>
+                    <button class="filter-btn">Monocromia</button>
                 </div>
-                <input type="range" id="contrast" min="0" max="200" value="100" class="slider">
-            </div>
-
-            <div class="slider-control">
-                <div class="slider-label">
-                    <label for="saturation">Saturação</label>
-                    <span id="saturation-value" class="slider-value">100%</span>
+                <button class="reset-btn">Resetar</button>
+            </section>
+            
+            <section id="tab-adjustments" class="tab-section hidden">
+                <h3>Ajustes:</h3>
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <label for="contrast">Contraste</label>
+                        <span id="contrast-value" class="slider-value">100%</span>
+                    </div>
+                    <input type="range" id="contrast" min="0" max="200" value="100" class="slider">
                 </div>
-                <input type="range" id="saturation" min="0" max="200" value="100" class="slider">
-            </div>
-        </section>
-        <section class="modes-section">
-            <button id="reading-mode" class="mode-btn">Modo leitura</button>
-            <button id="night-vision" class="mode-btn">Visão Noturna</button>
-        </section>
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <label for="saturation">Saturação</label>
+                        <span id="saturation-value" class="slider-value">100%</span>
+                    </div>
+                    <input type="range" id="saturation" min="0" max="200" value="100" class="slider">
+                </div>
+                
+                <div class="modes-section">
+                    <h3>Modos Especiais:</h3>
+                    <button id="reading-mode" class="mode-btn">Modo leitura</button>
+                    <button id="night-vision" class="mode-btn">Visão Noturna</button>
+                </div>
+            </section>
+
+            <section id="tab-custom" class="tab-section hidden">
+                <h3>Filtros Personalizados:</h3>
+                <p>Esta seção estará disponível em breve...</p>
+            </section>
         </main>
 
     </div>
