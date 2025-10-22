@@ -21,7 +21,7 @@
         <nav id="tabs-nav">
             <button class="tab-btn active" data-tab="filters">Filtros Padrões</button>
             <button class="tab-btn" data-tab="adjustments">Ajustes Rápidos</button>
-            <button class="tab-btn" data-tab="custom">Filtros Personalizados</button>
+            <button class="tab-btn" data-tab="custom">Personalização</button>
         </nav>
         
         <main class="main-content">
@@ -48,26 +48,62 @@
                         <label for="contrast">Contraste</label>
                         <span id="contrast-value" class="slider-value">100%</span>
                     </div>
-                    <input type="range" id="contrast" min="0" max="200" value="100" class="slider">
+                    <input type="range" id="contrast" min="0" max="200" value="100" class="range-slider">
                 </div>
                 <div class="slider-control">
                     <div class="slider-label">
                         <label for="saturation">Saturação</label>
                         <span id="saturation-value" class="slider-value">100%</span>
                     </div>
-                    <input type="range" id="saturation" min="0" max="200" value="100" class="slider">
+                    <input type="range" id="saturation" min="0" max="200" value="100" class="range-slider">
                 </div>
                 
                 <div class="modes-section">
-                    <h3>Modos Especiais:</h3>
-                    <button id="reading-mode" class="mode-btn">Modo leitura</button>
-                    <button id="night-vision" class="mode-btn">Visão Noturna</button>
-                </div>
+                    <h3 style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #352957;">
+                      Modos Especiais:
+                    </h3>
+                  
+                    <div class="setting-row">
+                      <div class="setting-label">
+                        <strong>Modo de Leitura Otimizado</strong>
+                        <span>Aplica fonte e espaçamento amigáveis.</span>
+                      </div>
+                      <label class="toggle-switch">
+                        <input type="checkbox" id="reading-mode">
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  
+                    <div class="setting-row">
+                      <div class="setting-label">
+                        <strong>Modo Noturno (Dark Mode)</strong>
+                        <span>Reduz o cansaço visual.</span>
+                      </div>
+                      <label class="toggle-switch">
+                        <input type="checkbox" id="night-vision">
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
             </section>
 
             <section id="tab-custom" class="tab-section hidden">
-                <h3>Filtros Personalizados:</h3>
-                <p>Esta seção estará disponível em breve...</p>
+                <h3>Personalização</h3>
+                <div class="color-ball-container">
+                    <div class="color-ball-control">
+                        <label>Fundo</label>
+                        <input type="color" id="customBg" value="#ffffff">
+                    </div>
+                    <div class="color-ball-control">
+                        <label>Texto</label>
+                        <input type="color" id="customText" value="#000000">
+                    </div>
+                    <div class="color-ball-control">
+                        <label>Links</label>
+                        <input type="color" id="customHighlight" value="#0000ff">
+                    </div>
+                </div>
+                <button id="customResetBtn" class="reset-btn">Resetar Cores</button>
             </section>
         </main>
 

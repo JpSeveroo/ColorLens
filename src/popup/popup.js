@@ -19,7 +19,7 @@ const loadSettings = async () => {
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- Seleção dos Elementos da Interface (UI) ---
-    const optionsButton = document.getElementById('options')
+    const optionsButton = document.getElementById('options');
     const tabs = document.querySelectorAll('.tab-btn'); // NOVO: Seleciona todos os botões de aba
     const sections = document.querySelectorAll('.tab-section'); // NOVO: Seleciona todas as seções de aba
 
@@ -31,8 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filterButtons = document.querySelectorAll('.filter-btn');
     const resetButton = document.querySelector('.reset-btn');
-    const modeButtons = document.querySelectorAll('.mode-btn');
-    console.log('Mode buttons found:', modeButtons);
+    const readingModeToggle = document.getElementById('reading-mode');
+    const nightVisionToggle = document.getElementById('night-vision');
+
+    // Color picker elements
+    const customBg = document.getElementById('customBg');
+    const customText = document.getElementById('customText');
+    const customHighlight = document.getElementById('customHighlight');
+    const customResetBtn = document.getElementById('customResetBtn');
 
     optionsButton.addEventListener('click', () => {
         chrome.runtime.openOptionsPage();
@@ -71,18 +77,42 @@ document.addEventListener('DOMContentLoaded', () => {
         filterButtons.forEach(btn => btn.classList.remove('active'));
         contrastSlider.value = 100;
         saturationSlider.value = 100;
+        
+        // --- REVERTIDO CONFORME SOLICITADO ---
+        // As linhas abaixo, que redefinem os toggles,
+        // foram removidas.
+        // readingModeToggle.checked = false;
+        // nightVisionToggle.checked = false;
+        // --- FIM DA REVERSÃO ---
+
         updateSliderLook(contrastSlider, contrastValue);
         updateSliderLook(saturationSlider, saturationValue);
         gatherAndSendState();
-});
+    });
 
-    modeButtons.forEach(button => {
-        button.addEventListener('click', (event) => {
-            console.log('A mode button foi clicada!');
-            event.target.classList.toggle('active');
+    // Usando 'change' que é o evento padrão para checkboxes
+    readingModeToggle.addEventListener('change', gatherAndSendState);
+    nightVisionToggle.addEventListener('change', gatherAndSendState);
+
+    // Color picker functionality
+    const colorPickers = [
+        { input: customBg, default: '#ffffff' },
+        { input: customText, default: '#000000' },
+        { input: customHighlight, default: '#0000ff' }
+    ];
+
+    colorPickers.forEach(picker => {
+        picker.input.addEventListener('input', () => {
             gatherAndSendState();
         });
-});
+    });
+
+    customResetBtn.addEventListener('click', () => {
+        colorPickers.forEach(picker => {
+            picker.input.value = picker.default;
+        });
+        gatherAndSendState();
+    });
 
     // --- Função para Atualizar a Aparência dos Sliders ---
     function updateSliderLook(slider, valueDisplay) {
@@ -94,7 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const percentage = ((value - min) / (max - min)) * 100;
         
-        slider.style.background = `linear-gradient(to right, #66d9ef ${percentage}%, #44475a ${percentage}%)`;
+        // Cor consistente com o tema do popup.css
+        slider.style.background = `linear-gradient(to right, #7B4EAC ${percentage}%, #44475a ${percentage}%)`;
     }
 
     contrastSlider.addEventListener('input', () => {
@@ -130,17 +161,27 @@ document.addEventListener('DOMContentLoaded', () => {
             contrastSlider.value = settings.contrast || 100;
             saturationSlider.value = settings.saturation || 100;
             
-            if (settings.readingMode) {
-                document.getElementById('reading-mode').classList.add('active');
+            readingModeToggle.checked = settings.readingMode || false;
+            nightVisionToggle.checked = settings.nightVision || false;
+
+            // Load custom colors
+            if (settings.customColors) {
+                customBg.value = settings.customColors.background || '#ffffff';
+                customText.value = settings.customColors.text || '#000000';
+                customHighlight.value = settings.customColors.highlight || '#0000ff';
             }
-            if (settings.nightVision) {
-                document.getElementById('night-vision').classList.add('active');
-            }
+
             updateSliderLook(contrastSlider, contrastValue);
             updateSliderLook(saturationSlider, saturationValue);
-            gatherAndSendState(); // Envia o estado carregado para o script de conteúdo
+            
+            // Não chame gatherAndSendState() aqui durante o carregamento inicial
+            // a menos que você queira forçar uma nova gravação no storage.
+            // Os valores já estão aplicados, e o content script
+            // deve carregar seu próprio estado do storage.
+            
         } else {
-            gatherAndSendState(); // Se não houver configurações salvas, envia o estado padrão
+            // Se não houver configurações salvas, envia o estado padrão
+             gatherAndSendState(); 
         }
     });
 
@@ -151,8 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
             filter: activeFilter ? activeFilter.textContent : 'none',
             contrast: contrastSlider.value,
             saturation: saturationSlider.value,
-            readingMode: document.getElementById('reading-mode').classList.contains('active'),
-            nightVision: document.getElementById('night-vision').classList.contains('active')
+            readingMode: readingModeToggle.checked,
+            nightVision: nightVisionToggle.checked,
+            customColors: {
+                background: customBg.value,
+                text: customText.value,
+                highlight: customHighlight.value
+            }
         }
 
 
@@ -193,16 +239,16 @@ document.addEventListener('DOMContentLoaded', () => {
             
             console.warn(`[Fallback] Comunicação falhou, delegando para o Worker de Background para injeção.`);
             
-            // Fire-and-Forget para o Worker de Background
             chrome.runtime.sendMessage({ 
-                action: 'injectAndApplySettings', 
+                action: 'injectAndApplySettings', // Usando a ação do background.js
                 tabId: tab.id, 
                 settings: settings 
             });
         }
     };
 
-    // Garante que o estado seja enviado ao script de conteúdo imediatamente após o carregamento do popup.
-    // Isso também acionará o salvamento inicial das configurações se nenhuma estiver presente.
-    gatherAndSendState();
+    // NOTA: Removi a chamada gatherAndSendState() do final do 'DOMContentLoaded'
+    // O 'loadSettings().then(...)' já lida com o estado inicial
+    // Chamar aqui é redundante e pode causar uma "piscada" (flash)
+    // ao salvar desnecessariamente um estado padrão antes do carregamento.
 });

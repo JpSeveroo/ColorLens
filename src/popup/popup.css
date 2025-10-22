@@ -192,25 +192,23 @@ body {
 
 .slider-value {
     font-weight: bold;
-    /* New: Darker background for the value display */
     background-color: #352957;
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 12px;
 }
 
-.slider {
+.range-slider {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
     height: 4px;
-    /* New: Primary Accent color for active track, darker color for inactive track */
     background: linear-gradient(to right, #7B4EAC 50%, #352957 50%);
     border-radius: 2px;
     outline: none;
 }
 
-.slider::-webkit-slider-thumb {
+.range-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 12px;
@@ -222,36 +220,100 @@ body {
     transition: background 0.2s ease;
 }
 
-.slider:hover::-webkit-slider-thumb {
+.range-slider:hover::-webkit-slider-thumb {
     background: #F0F0F0;
 }
 
 .modes-section {
     margin-top: 0px;
     padding-top: 0px;
-    /* New: Divider line color */
     border-top: 1px solid #352957;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.mode-btn {
-    /* New: Matching filter button base color */
-    background-color: #4A376D;
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #6452B4;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 8px;
     color: white;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
+  }
+
+.setting-label {
+  display: flex;
+  flex-direction: column;
 }
 
-.mode-btn:hover {
-    opacity: 0.9;
+.setting-label strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.setting-label span {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #E0E0E0;
+  
+  transition: .4s;
+  border-radius: 24px;
+}
+
+/* CORREÇÃO: Seletor específico */
+.toggle-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; /* Pino */
+  width: 18px;  /* Pino */
+  left: 3px;
+  bottom: 3px;
+  
+  /* ESTILO ATUALIZADO (para image_943935.png) */
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* Sombra do pino */
+  
+  transition: .4s;
+  border-radius: 50%;
+}
+
+/* CORREÇÃO: Seletor específico */
+.toggle-switch input:checked + .slider {
+  /* ESTILO ATUALIZADO: O trilho NÃO muda de cor */
+  background-color: #917af8;
+}
+
+/* CORREÇÃO: Seletor específico */
+.toggle-switch input:checked + .slider:before {
+  /* O pino se move */
+  transform: translateX(20px);
 }
 
 /* Active State (Primary Accent) */
@@ -263,11 +325,59 @@ body {
     font-weight: bold;
 }
 
-/* Active State (Primary Accent) */
-.mode-btn.active {
-    background-color: transparent;
-    color: #f8f8f2;
-    font-weight: bold;
-    /* New: Primary Lavender Accent border */
-    border: #7B4EAC solid 3px;
+/* --- Color Ball Container Styles --- */
+.color-ball-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.color-ball-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.color-ball-control label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #F0F0F0;
+    margin-bottom: 8px;
+}
+
+.color-ball-control input[type='color'] {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: none;
+    padding: 0;
+    outline: none;
+}
+
+.color-ball-control input[type='color']:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.color-ball-control input[type='color']::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+.color-ball-control input[type='color']::-webkit-color-swatch-wrapper {
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.color-ball-control input[type='color']::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
 }
