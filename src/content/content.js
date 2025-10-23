@@ -131,10 +131,6 @@ const applyFilters = (settings) => {
     // Adiciona os filtros de ajuste
     filterString += `contrast(${contrast}%) `;
     filterString += `saturate(${saturation}%) `;
-    
-    if (nightVision) {
-        filterString += `invert(1) hue-rotate(180deg)`;
-    }
 
     // Aplica a string final de filtros ao elemento raiz do HTML
     document.documentElement.style.filter = filterString.trim();
@@ -145,6 +141,13 @@ const applyFilters = (settings) => {
     } else {
         document.body.classList.remove('colorlens-reading-mode');
     }
+
+    if (nightVision) {
+        // Usamos essa bomba: documentElement (o <html>) para garantir que a página inteira inverta
+        document.documentElement.classList.add('colorlens-night-vision')
+    } else {
+        document.documentElement.classList.remove('colorlens-night-vision');
+    }
 }
 
 // Listener para mensagens da extensão
@@ -154,6 +157,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         console.log('Configurações recebidas do popup:', request.settings);
         // Garante que os filtros SVG existam na página antes de aplicá-los
         injectSvgFilters();
+        injectUtilityStyles();
         applyFilters(request.settings);
         sendResponse({ status: 'settings applied' });
     } else {
@@ -165,6 +169,62 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
 loadSettings().then(settings => {
     if (Object.keys(settings).length > 0) {
         injectSvgFilters();
+        injectUtilityStyles();
         applyFilters(settings);
     }
 });
+
+function injectUtilityStyles() {
+    const styleSheetId = 'colorlens-utility-styles';
+    if (document.getElementById(styleSheetId)) {
+        return; // Já foi injetado
+    }
+
+    const style = document.createElement('style');
+    style.id = styleSheetId;
+
+    /*Isso aqui foi pura IA papo reto, moh preguiça estudar coloração/fonte de sites*/
+    style.textContent = `
+        /* --- MODO NOTURNO (O MÉTODO CORRETO) --- */
+
+        /* 1. Aplica a inversão no HTML (página inteira) */
+        html.colorlens-night-vision {
+            background-color: #111 !important;
+            filter: invert(1) hue-rotate(180deg) !important;
+        }
+
+        /* 2. "Des-inverte" mídias para que não fiquem parecendo negativos */
+        html.colorlens-night-vision img,
+        html.colorlens-night-vision video,
+        html.colorlens-night-vision iframe,
+        html.colorlens-night-vision [style*="background-image"] {
+            filter: invert(1) hue-rotate(180deg) !important;
+        }
+        
+        /* --- MODO DE LEITURA --- */
+        body.colorlens-reading-mode {
+            /* Força uma fonte limpa, sem viadagem. */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
+                        "Segoe UI", Roboto, Helvetica, Arial, 
+                        sans-serif !important;
+
+            font-size: 1.15rem !important; 
+            line-height: 1.8 !important; 
+            letter-spacing: 0.03em !important;
+
+            text-align: left !important;
+        }
+
+        body.colorlens-reading-mode p,
+        body.colorlens-reading-mode span,
+        body.colorlens-reading-mode div {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
+                        "Segoe UI", Roboto, Helvetica, Arial, 
+                        sans-serif !important;
+            text-align: left !important;
+        }
+
+    `;
+
+    document.head.appendChild(style);
+}
