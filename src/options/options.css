@@ -2,16 +2,18 @@
 
 body {
     font-family: 'Inter', sans-serif;
+    color: #ffffff;
     background-color: #2f234a;
     margin: 0;
     padding: 0;
     display: flex;
+    height: auto;
 }
 
 .logo {
     width: 70px;
     height: auto;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .options-container {
@@ -20,8 +22,14 @@ body {
     gap: 30px;
     margin-top: 20px;
     align-items: flex-start;
-    padding: 0 20px;
+    padding: 18px;
     box-sizing: border-box;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 15px;
+    background-color: #3b2e5a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: auto;
 }
 
 .options-btn {
@@ -40,7 +48,7 @@ body {
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.5s ease, border-color 0.3s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -48,7 +56,7 @@ body {
     width: 250px;
     background-color: #1a1425;
     padding: 20px;
-    height: 100vh;
+    height: auto;
     box-sizing: border-box;
 }
 
@@ -65,9 +73,241 @@ body {
 
 .content-section.active {
     display: block;
+    font-size: 20px;
 }
 
 .options-btn.active {
     background-color: #5a4bcf;
     font-weight: bold;
+}
+
+.preview-img {
+    margin-left: 10px;
+    padding-left: 4vh;
+    max-width: 4vh;
+}
+
+.profile-name {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-width: 2px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #3b2e5a;
+    max-width: 42vh;
+}
+
+.profile-name label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.profile-name input {
+    font-size: 16px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #222030;
+    color: white;
+}
+
+.base-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid #ccc;
+    border-width: 2px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #3b2e5a;
+    max-width: 42vh;
+}
+
+.base-filters label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.base-filters select {
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border: 2px solid #ccc;
+    background-color: #5a4bcf;
+    border-radius: 7px;
+}
+
+.base-filters option {
+    padding: 5px;
+    font-size: 14px;
+    margin: 2px;
+    border: 1px solid #ddd;
+    background-color: #3b2e5a;
+}
+
+.visual-adjusts {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid #ccc;
+    border-width: 2px;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #3b2e5a;
+    max-width: 42vh;
+}
+
+.adjustments {
+    font-weight: 100;
+}
+
+.visual-label {
+    display: block;
+    margin-bottom: 5px;
+    padding: 0 0 10px;
+}
+
+.visual-adjusts span {
+    font-weight: 100;
+    text-align: center;
+}
+
+.slider-control {
+    margin-bottom: 8px;
+}
+
+.slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.slider-value {
+    font-weight: bold;
+    background-color: #352957;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.range-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, #7B4EAC 50%, #352957 50%);
+    border-radius: 2px;
+    outline: none;
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: 0px;
+    transition: background 0.2s ease;
+}
+
+.range-slider:hover::-webkit-slider-thumb {
+    background: #F0F0F0;
+}
+
+.modes-toggle {
+    display: flex;
+    margin-top: 10px;
+    font-weight: 100;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    padding-left: 15px;
+    background-color: #6c5ce7;
+    align-items: center;
+}
+
+.modes-toggle label.switch {
+    flex-direction: column;
+    margin: 10px;
+    padding-right: 10px;
+}
+
+/* O container <label> - define o tamanho e a posição */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;  /* Largura do trilho */
+  height: 34px; /* Altura do trilho */
+}
+
+/* Esconde o <input type="checkbox"> padrão do navegador */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* O "trilho" do botão (o fundo cinza/verde) */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc; /* Cor do fundo 'off' (cinza) */
+  border-radius: 34px; /* Deixa o trilho arredondado */
+  transition: .4s; /* Animação da mudança de cor */
+}
+
+/* O "círculo" branco que se move */
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 26px;  /* Altura do círculo */
+  width: 26px;   /* Largura do círculo */
+  left: 4px;     /* Posição inicial (esquerda) */
+  bottom: 4px;   /* Posição inicial (base) */
+  background-color: white;
+  border-radius: 50%; /* Deixa o elemento perfeitamente redondo */
+  box-shadow: 0 2px 2px rgba(0,0,0,0.2); /* Sombra suave como na imagem */
+  transition: .4s; /* Animação do movimento */
+}
+
+/* --- A MÁGICA ACONTECE AQUI --- */
+
+/* Quando o <input> está marcado (checked)... */
+input:checked + .slider {
+  background-color: #4CAF50; /* ...muda a cor do trilho para verde */
+}
+
+/* Quando o <input> está marcado (checked)... */
+input:checked + .slider::before {
+  /* ...move o círculo para a direita */
+  transform: translateX(20px);
+}
+
+.color-mapping {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-width: 2px;
+    border-radius: 5px;
+    max-width: 42vh;
+}
+
+.color-mapping label.mapping-label {
+    display: inline-block;
+    font-weight: 100;
+    margin-top: 10px;
 }
