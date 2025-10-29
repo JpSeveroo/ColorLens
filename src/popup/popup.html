@@ -13,7 +13,7 @@
             <div class="header-top">
             <img src="../../assets/images/colorlens-logo.svg" alt="ColorLens Logo" class="logo">
             <h1>ColorLens</h1>
-            <img src="../../assets/icons/profile-icon.png" alt="profile-icon" class="profile-icon" id="options">
+            <img src="../../assets/icons/profile-icon.png" alt="Open Options Page" class="profile-icon" id="options">
             </div>
             <p>Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades</p>
         </header>
@@ -46,20 +46,26 @@
                 <div class="slider-control">
                     <div class="slider-label">
                         <label for="contrast">Contraste</label>
-                        <span id="contrast-value" class="slider-value">100%</span>
+                        <div class="input-unit-group">
+                            <input type="number" min="0" max="200" value="100" class="percentage-input" id="contrast-input">
+                            <span class="unit-text">%</span>
+                        </div>
                     </div>
-                    <input type="range" id="contrast" min="100" max="200" value="100" class="range-slider">
+                    <input type="range" id="contrast" min="0" max="200" value="100" class="range-slider">
                 </div>
                 <div class="slider-control">
                     <div class="slider-label">
                         <label for="saturation">Saturação</label>
-                        <span id="saturation-value" class="slider-value">100%</span>
+                        <div class="input-unit-group">
+                            <input type="number" min="0" max="200" value="100" class="percentage-input" id="saturation-input">
+                            <span class="unit-text">%</span>
+                        </div>
                     </div>
                     <input type="range" id="saturation" min="0" max="200" value="100" class="range-slider">
                 </div>
                 
                 <div class="modes-section">
-                    <h3 style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #352957;">
+                    <h3 style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-divider-subtle);">
                       Modos Especiais:
                     </h3>
                   

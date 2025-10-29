@@ -15,19 +15,77 @@ const loadSettings = async () => {
     });
 }; 
 
+// --- NOVO: SLIDER CONTROLLER UTILITY (Single Responsibility Principle) ---
+/**
+ * Encapsulates the logic for synchronizing a range slider and its corresponding number input.
+ * @param {string} rangeId - The ID of the input type="range" element.
+ * @param {string} numberId - The ID of the input type="number" element.
+ * @param {function} updateCallback - Function to call when value changes (e.g., gatherAndSendState).
+ */
+const initializeSliderController = (rangeId, numberId, updateCallback) => {
+    const rangeSlider = document.getElementById(rangeId);
+    const numberInput = document.getElementById(numberId);
+
+    if (!rangeSlider || !numberInput) return;
+
+    const min = parseInt(rangeSlider.min);
+    const max = parseInt(rangeSlider.max);
+    
+    // Fallback if CSS variables aren't available, but uses the same logic as CSS for consistency
+    const TRACK_COLOR = '#44475a'; 
+    const ACTIVE_COLOR = '#7B4EAC';
+
+    // Function to visually update the slider's gradient track
+    const updateSliderLook = (value) => {
+        const percentage = ((value - min) / (max - min)) * 100;
+        // Use the same variable names for background gradient colors as defined in popup.css
+        rangeSlider.style.background = `linear-gradient(to right, ${ACTIVE_COLOR} ${percentage}%, ${TRACK_COLOR} ${percentage}%)`;
+    };
+
+    // 1. Range Slider: Updates number input and visual look
+    rangeSlider.addEventListener('input', () => {
+        const value = rangeSlider.value;
+        numberInput.value = value;
+        updateSliderLook(value);
+        updateCallback(); 
+    });
+
+    // 2. Number Input: Updates range slider, clamps value, and visual look
+    numberInput.addEventListener('input', () => {
+        let value = parseInt(numberInput.value) || min;
+        
+        // Clamping the value to the defined min/max range
+        value = Math.min(Math.max(value, min), max); 
+
+        numberInput.value = value;
+        rangeSlider.value = value;
+        updateSliderLook(value);
+        updateCallback();
+    });
+
+    // Initial setup
+    updateSliderLook(rangeSlider.value);
+    
+    // Expose a function to allow external UI update (e.g., after loading/resetting)
+    return { 
+        updateUI: () => updateSliderLook(rangeSlider.value)
+    };
+};
+// --- FIM DO NOVO SLIDER CONTROLLER ---
+
+
 // Aguarda o conteúdo do HTML ser totalmente carregado antes de executar o script.
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- Seleção dos Elementos da Interface (UI) ---
     const optionsButton = document.getElementById('options');
-    const tabs = document.querySelectorAll('.tab-btn'); // NOVO: Seleciona todos os botões de aba
-    const sections = document.querySelectorAll('.tab-section'); // NOVO: Seleciona todas as seções de aba
+    const tabs = document.querySelectorAll('.tab-btn'); 
+    const sections = document.querySelectorAll('.tab-section'); 
 
     const contrastSlider = document.getElementById('contrast');
-    const contrastValue = document.getElementById('contrast-value');
-    
+    const contrastInput = document.getElementById('contrast-input');
     const saturationSlider = document.getElementById('saturation');
-    const saturationValue = document.getElementById('saturation-value');
+    const saturationInput = document.getElementById('saturation-input');
 
     const filterButtons = document.querySelectorAll('.filter-btn');
     const resetButton = document.querySelector('.reset-btn');
@@ -40,21 +98,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const customHighlight = document.getElementById('customHighlight');
     const customResetBtn = document.getElementById('customResetBtn');
 
+    // --- NOVO: Inicialização dos Controladores de Slider ---
+    // Substitui toda a lógica repetitiva de sincronização
+    const contrastController = initializeSliderController('contrast', 'contrast-input', gatherAndSendState);
+    const saturationController = initializeSliderController('saturation', 'saturation-input', gatherAndSendState);
+
     optionsButton.addEventListener('click', () => {
         chrome.runtime.openOptionsPage();
     });
 
-    // --- NOVO: Lógica de Troca de Abas ---
+    // --- Lógica de Troca de Abas ---
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            // 1. Desativa todas as abas e esconde todas as seções
+            // ... (unmodified tab logic) ...
             tabs.forEach(t => t.classList.remove('active'));
             sections.forEach(s => s.classList.add('hidden'));
 
-            // 2. Ativa a aba clicada
             tab.classList.add('active');
 
-            // 3. Mostra a seção correspondente
             const target = tab.getAttribute('data-tab');
             document.getElementById(`tab-${target}`).classList.remove('hidden');
         });
@@ -62,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FIM DA LÓGICA NOVA ---
 
     // --- Lógica dos Botões de Filtro ---
-    // Adiciona um evento de clique a cada botão de filtro.
     filterButtons.forEach(button => {
         button.addEventListener('click', (event) => {
             filterButtons.forEach(btn => {
@@ -73,28 +133,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Lógica do Botão de Reset ---
     resetButton.addEventListener('click', () => {
         filterButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Seta os valores padrão nos elementos
         contrastSlider.value = 100;
         saturationSlider.value = 100;
-        
-        // --- REVERTIDO CONFORME SOLICITADO ---
-        // As linhas abaixo, que redefinem os toggles,
-        // foram removidas.
-        // readingModeToggle.checked = false;
-        // nightVisionToggle.checked = false;
-        // --- FIM DA REVERSÃO ---
+        contrastInput.value = 100;
+        saturationInput.value = 100;
 
-        updateSliderLook(contrastSlider, contrastValue);
-        updateSliderLook(saturationSlider, saturationValue);
+        // NOVO: Chama o método de atualização da UI dos controladores
+        contrastController.updateUI();
+        saturationController.updateUI();
+
         gatherAndSendState();
     });
 
-    // Usando 'change' que é o evento padrão para checkboxes
+    // ... (unmodified toggle and color picker logic) ...
     readingModeToggle.addEventListener('change', gatherAndSendState);
     nightVisionToggle.addEventListener('change', gatherAndSendState);
 
-    // Color picker functionality
     const colorPickers = [
         { input: customBg, default: '#ffffff' },
         { input: customText, default: '#000000' },
@@ -113,34 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         gatherAndSendState();
     });
+    // --- FIM DA LÓGICA NÃO MODIFICADA ---
 
-    // --- Função para Atualizar a Aparência dos Sliders ---
-    function updateSliderLook(slider, valueDisplay) {
-        const min = slider.min;
-        const max = slider.max;
-        const value = slider.value;
-        
-        valueDisplay.textContent = `${value}%`;
-        
-        const percentage = ((value - min) / (max - min)) * 100;
-        
-        // Cor consistente com o tema do popup.css
-        slider.style.background = `linear-gradient(to right, #7B4EAC ${percentage}%, #44475a ${percentage}%)`;
-    }
+    // --- REMOVIDA: A função updateSliderLook original foi removida, 
+    //              pois agora está encapsulada no initializeSliderController.
 
-    contrastSlider.addEventListener('input', () => {
-        updateSliderLook(contrastSlider, contrastValue);
-        gatherAndSendState();
-    });
-
-    saturationSlider.addEventListener('input', () => {
-        updateSliderLook(saturationSlider, saturationValue);
-        gatherAndSendState();
-    });
-
-    // Configura a aparência inicial dos sliders e envia o estado padrão ao abrir o popup
-    updateSliderLook(contrastSlider, contrastValue);
-    updateSliderLook(saturationSlider, saturationValue);
+    // --- REMOVIDOS: Os antigos event listeners repetitivos foram removidos.
+    //              A lógica está agora no initializeSliderController.
+    
 
     // Adiciona esta chamada para carregar as configurações ao iniciar o popup
     loadSettings().then(settings => {
@@ -161,6 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
             contrastSlider.value = settings.contrast || 100;
             saturationSlider.value = settings.saturation || 100;
             
+            // NOVO: Os number inputs também devem ser sincronizados do storage
+            contrastInput.value = settings.contrast || 100;
+            saturationInput.value = settings.saturation || 100;
+            
             readingModeToggle.checked = settings.readingMode || false;
             nightVisionToggle.checked = settings.nightVision || false;
 
@@ -171,13 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 customHighlight.value = settings.customColors.highlight || '#0000ff';
             }
 
-            updateSliderLook(contrastSlider, contrastValue);
-            updateSliderLook(saturationSlider, saturationValue);
-            
-            // Não chame gatherAndSendState() aqui durante o carregamento inicial
-            // a menos que você queira forçar uma nova gravação no storage.
-            // Os valores já estão aplicados, e o content script
-            // deve carregar seu próprio estado do storage.
+            // NOVO: Chama o método de atualização da UI do controller APENAS UMA VEZ após carregar settings.
+            contrastController.updateUI();
+            saturationController.updateUI();
             
         } else {
             // Se não houver configurações salvas, envia o estado padrão
@@ -185,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ... (unmodified gatherAndSendState function) ...
     async function gatherAndSendState() {
         const activeFilter = document.querySelector('.filter-btn.active');
 
@@ -200,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 highlight: customHighlight.value
             }
         }
-
 
         await saveSettings(settings);
         
@@ -223,32 +262,22 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             const isConnectionError = error.message.includes('Could not establish connection') || error.message.includes('Receiving end does not exist');
             
-            // Registra um aviso apenas se NÃO for o erro comum de conexão,
-            // ou se o objeto de erro em si estiver ausente (o que não deveria acontecer com async/await).
             if (error.message && !isConnectionError) {
                  console.error(`[Unexpected Error] Failed to send direct message. Error: ${error.message}`);
             }
             
-            // Se o caminho rápido falhou, SEMPRE fazemos fallback para o Worker de Background.
-            
-            // VERIFICAÇÃO CRÍTICA: Garante que 'tab' existe antes de ler seu ID.
             if (!tab || !tab.id) {
                 console.error("Não é possível enviar mensagem de fallback: Tab ID indisponível.");
-                return; // Sair limpo
+                return; 
             }
             
             console.warn(`[Fallback] Comunicação falhou, delegando para o Worker de Background para injeção.`);
             
             chrome.runtime.sendMessage({ 
-                action: 'injectAndApplySettings', // Usando a ação do background.js
+                action: 'injectAndApplySettings', 
                 tabId: tab.id, 
                 settings: settings 
             });
         }
     };
-
-    // NOTA: Removi a chamada gatherAndSendState() do final do 'DOMContentLoaded'
-    // O 'loadSettings().then(...)' já lida com o estado inicial
-    // Chamar aqui é redundante e pode causar uma "piscada" (flash)
-    // ao salvar desnecessariamente um estado padrão antes do carregamento.
 });
