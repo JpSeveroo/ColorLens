@@ -37,7 +37,8 @@
         </p>
         <hr />
         <div class="preview-img">
-          <!--Em desenvolvimento...-->
+          <img src="../../assets/images/preview.avif" alt="Prévia de ajustes visuais">
+          <div class="color-overlay"></div>
         </div>
         <form id="profile-form">
           <div class="profile-name">
@@ -51,7 +52,7 @@
             >
           </div>
           <div class="base-filters">
-            <label for="color-blindness-select"><strong>Filtro Base:<strong/></label>
+            <label for="color-blindness-select"><strong>Filtro Base:</strong></label>
             <select id="color-blindness-select">
               <option value="none">Nenhum</option>
               <option value="protanopia">Protanopia</option>
@@ -112,7 +113,7 @@
                 Cor Original (Vermelho)
                 <input type="color" value="#ff0000" readonly class="color-selector">
                 -->
-                <input type="color" id="color1-mapper" class="color-selector">
+                <input type="color" id="color1-mapper" value="#ff0000" class="color-selector">
               </label>
             </div>
             <div class="mapper2">
@@ -120,7 +121,7 @@
                 Cor Original (Verde)<span style="opacity: 0;">......</span>
                 <input type="color" value="#00ff00" readonly class="color-selector">
                 -->
-                <input type="color" id="color2-mapper" class="color-selector">
+                <input type="color" id="color2-mapper" value="#00ff00" class="color-selector">
               </label>
             </div>
             <div class="mapper3">
@@ -128,12 +129,13 @@
                 Cor Original (Azul)<span style="opacity: 0;">........</span>
                 <input type="color" value="#0000ff" readonly class="color-selector">
                 -->
-                <input type="color" id="color3-mapper" class="color-selector">
+                <input type="color" id="color3-mapper" value="#0000ff" class="color-selector">
               </label>
             </div>
           </div>
-          <div class="save-button">
+          <div class="form-buttons">
             <input type="submit" value="Salvar Perfil" id="save-profile">
+            <button type="reset" class="reset-btn">Resetar Configurações</button>
           </div>
         </form>
       </section>
