@@ -265,6 +265,21 @@ input:checked + .slider:before {
   margin-top: 10px;
 }
 
+.mapping-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+  background: #2c2248; /* Mesmo fundo dos outros toggles */
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.mapping-toggle label {
+  margin-bottom: 0; /* Remove a margem extra do label */
+  font-weight: 600;
+}
+
 /* BOTÕES DO FORMULÁRIO */
 .form-buttons {
   display: flex;

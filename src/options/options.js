@@ -92,6 +92,8 @@ resetBtn.addEventListener("click", (e) => {
   const overlay = document.querySelector(".color-overlay");
   overlay.style.background = "none";
 
+  // Resetar Mapeamento de Cores
+  document.getElementById('enable-color-mapping').checked = false;
   document.getElementById("color1-mapper").value = "#ff0000";
   document.getElementById("color2-mapper").value = "#00ff00";
   document.getElementById("color3-mapper").value = "#0000ff";
@@ -106,6 +108,7 @@ resetBtn.addEventListener("click", (e) => {
   updateSliderLook(contrastSlider, contrastValue);
   updateSliderLook(saturationSlider, saturationValue);
   applyVisualEffects(previewImg); // Aplica filtros (com 'none') e modos (desligados)
+  applyColorMapping();
 });
 
 /* ---------- Sliders de Contraste e Saturação ---------- */
@@ -344,6 +347,7 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
       red: document.getElementById("color1-mapper").value,
       green: document.getElementById("color2-mapper").value,
       blue: document.getElementById("color3-mapper").value,
+      enabled: document.getElementById('enable-color-mapping').checked
     },
     savedAt: new Date().toISOString(),
   };
@@ -377,18 +381,32 @@ function initializeColorMapping() {
     document.getElementById("color3-mapper"),
   ];
 
+  const enableToggle = document.getElementById('enable-color-mapping');
+
+  const updateAndSave = () => {
+    applyColorMapping();
+    saveColorMapping();
+  };
+
   colorInputs.forEach((input) => {
-    input.addEventListener("input", () => {
-      applyColorMapping();
-      saveColorMapping();
-    });
+    input.addEventListener("input", updateAndSave);
   });
+
+  if (enableToggle) {
+    enableToggle.addEventListener('change', updateAndSave);
+  }
 }
 
 /* ---------- Aplica as cores mapeadas na imagem ---------- */
 function applyColorMapping() {
   const overlay = document.querySelector(".color-overlay");
   if (!overlay) return;
+
+  const isEnabled = document.getElementById('enable-color-mapping').checked;
+  if (!isEnabled) {
+    overlay.style.background = 'none';
+    return;
+  }
 
   const red = document.getElementById("color1-mapper").value;
   const green = document.getElementById("color2-mapper").value;
@@ -404,6 +422,7 @@ function saveColorMapping() {
     red: document.getElementById("color1-mapper").value,
     green: document.getElementById("color2-mapper").value,
     blue: document.getElementById("color3-mapper").value,
+    enabled: document.getElementById('enable-color-mapping').checked
   };
 
   if (typeof chrome !== "undefined" && chrome.storage) {
@@ -425,6 +444,8 @@ function loadColorMapping() {
           colors.green || "#00ff00";
         document.getElementById("color3-mapper").value =
           colors.blue || "#0000ff";
+        document.getElementById('enable-color-mapping').checked = !!colors.enabled;
+
         applyColorMapping(document.querySelector(".preview-img img"));
       }
     });
@@ -483,6 +504,7 @@ function populateProfileSelector() {
       document.getElementById("color1-mapper").value = profile.colorMap.red;
       document.getElementById("color2-mapper").value = profile.colorMap.green;
       document.getElementById("color3-mapper").value = profile.colorMap.blue;
+      document.getElementById('enable-color-mapping').checked = !!profile.colorMap.enabled;
 
       updateSliderLook(
         document.getElementById("contrast-range"),
@@ -493,7 +515,7 @@ function populateProfileSelector() {
         document.getElementById("saturation-value")
       );
       applyVisualEffects(document.querySelector(".preview-img img"));
-      applyColorMapping(document.querySelector(".preview-img img"));
+      applyColorMapping();
     });
   });
 }
