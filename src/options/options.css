@@ -251,7 +251,6 @@ input:checked + .slider:before {
 .color-mapping label {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-top: 8px;
 }
 
@@ -286,7 +285,7 @@ input:checked + .slider:before {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    box-shadow: none;
+    box-shadow: one;
   }
 
   .main-content {
