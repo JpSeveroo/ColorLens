@@ -207,3 +207,108 @@ function updateUI(userProfiles, customColors) {
     if (userProfiles) console.log('Loading user profiles:', userProfiles);
     if (customColors) console.log('Loading custom colors:', customColors);
 }
+
+/* ---------- Salvar perfil completo ---------- */
+document.getElementById('profile-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const profileName = document.getElementById('profile-name-input').value.trim();
+    if (!profileName) {
+        alert('Digite um nome para o perfil.');
+        return;
+    }
+
+    const profileData = {
+        name: profileName,
+        baseFilter: document.getElementById('color-blindness-select').value,
+        contrast: document.getElementById('contrast-range').value,
+        saturation: document.getElementById('saturation-range').value,
+        readingMode: document.getElementById('reading-mode').checked,
+        nightVision: document.getElementById('night-vision').checked,
+        colorMap: {
+            red: document.getElementById('color1-mapper').value,
+            green: document.getElementById('color2-mapper').value,
+            blue: document.getElementById('color3-mapper').value
+        },
+        savedAt: new Date().toISOString()
+    };
+
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+        chrome.storage.local.get(['userProfiles']).then((data) => {
+            const profiles = data.userProfiles || [];
+            const existingIndex = profiles.findIndex(p => p.name === profileName);
+
+            if (existingIndex >= 0) {
+                profiles[existingIndex] = profileData; // Atualiza se já existir
+            } else {
+                profiles.push(profileData); // Adiciona novo
+            }
+
+            chrome.storage.local.set({ userProfiles: profiles }).then(() => {
+                console.log('Perfil salvo:', profileData);
+                alert('Perfil salvo com sucesso!');
+            });
+        });
+    }
+});
+
+/* ---------- Carregar perfis salvos (preset) ---------- */
+function populateProfileSelector() {
+    const profileNameDiv = document.querySelector('.profile-name');
+    if (!profileNameDiv) return;
+
+    let selector = document.getElementById('saved-profiles');
+    if (!selector) {
+        const label = document.createElement('label');
+        label.textContent = 'Perfis Salvos:';
+        label.style.marginTop = '10px'
+
+        selector = document.createElement('select');
+        selector.id = 'saved-profiles';
+        selector.innerHTML = '<option value="">Selecione um perfil...</option>';
+
+        profileNameDiv.appendChild(label);
+        profileNameDiv.appendChild(selector);
+    }
+
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+        chrome.storage.local.get(['userProfiles']).then((data) => {
+            const profiles = data.userProfiles || [];
+            selector.innerHTML = '<option value="">Selecione um perfil...</option>';
+            profiles.forEach((p) => {
+                const opt = document.createElement('option');
+                opt.value = p.name;
+                opt.textContent = p.name;
+                selector.appendChild(opt);
+            });
+        });
+    }
+
+    selector.addEventListener('change', (e) => {
+        const selected = e.target.value;
+        if (!selected) return;
+
+        chrome.storage.local.get(['userProfiles']).then((data) => {
+            const profile = (data.userProfiles || []).find(p => p.name === selected);
+            if (!profile) return;
+
+            // Preenche os campos com o preset
+            document.getElementById('profile-name-input').value = profile.name;
+            document.getElementById('color-blindness-select').value = profile.baseFilter;
+            document.getElementById('contrast-range').value = profile.contrast;
+            document.getElementById('saturation-range').value = profile.saturation;
+            document.getElementById('reading-mode').checked = profile.readingMode;
+            document.getElementById('night-vision').checked = profile.nightVision;
+            document.getElementById('color1-mapper').value = profile.colorMap.red;
+            document.getElementById('color2-mapper').value = profile.colorMap.green;
+            document.getElementById('color3-mapper').value = profile.colorMap.blue;
+
+            // Atualiza UI visual
+            updateSliderLook(document.getElementById('contrast-range'), document.getElementById('contrast-value'));
+            updateSliderLook(document.getElementById('saturation-range'), document.getElementById('saturation-value'));
+            applyVisualEffects(document.querySelector('.preview-img img'));
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', populateProfileSelector);
