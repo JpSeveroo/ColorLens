@@ -159,11 +159,64 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         injectSvgFilters();
         injectUtilityStyles();
         applyFilters(request.settings);
+        applyCustomColors(request.settings.customColors);
         sendResponse({ status: 'settings applied' });
     } else {
         sendResponse({ status: 'ignoring message' });
     }
 });
+
+//Id para a Style a seguir (Eu não faço a mínima eideia de como essa função ta funcionando)
+const CUSTOM_STYLE_ID = 'colorlens-custom-colors-style';
+
+/**
+ * Aplica as cores base (Fundo, Texto, Links) injetando CSS na página.
+ * @param {object} colors - O objeto { background, text, highlight }
+ */
+function applyCustomColors(colors) {
+    let styleTag = document.getElementById(CUSTOM_STYLE_ID);
+    if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.id = CUSTOM_STYLE_ID;
+        document.head.appendChild(styleTag);
+    }
+
+    // Se o objeto de cores não for válido (ex: no reset), 
+    // limpamos o conteúdo da tag e saímos
+    if (!colors || !colors.background) {
+        styleTag.textContent = '';
+        return;
+    }
+
+    const { background, text, highlight } = colors;
+
+    // Criamos as regras de CSS. O !important é CRUCIAL
+    // para sobrescrever o CSS de qualquer site.
+    styleTag.textContent = `
+        /* 1. Fundo (Aplicado no HTML) */
+        html {
+            background-color: ${background} !important;
+        }
+        
+        /* 2. Fundo (Aplicado no Body, e remove imagem de fundo) */
+        body {
+            background-color: ${background} !important;
+            background-image: none !important;
+        }
+
+        /* 3. Texto (Aplicado de forma geral) */
+        /* Usamos seletores comuns para garantir a cobertura */
+        body, p, span, div, h1, h2, h3, h4, h5, h6, li, th, td, label {
+            color: ${text} !important;
+        }
+
+        /* 4. Links (Sobrescreve a regra de texto) */
+        /* Incluímos 'a *' para pegar links com <span> ou <div> dentro */
+        a, a:visited, a *, a:visited * {
+            color: ${highlight} !important;
+        }
+    `;
+}
 
 // Aplica as configurações salvas quando o script de conteúdo é carregado
 loadSettings().then(settings => {
@@ -171,6 +224,7 @@ loadSettings().then(settings => {
         injectSvgFilters();
         injectUtilityStyles();
         applyFilters(settings);
+        applyCustomColors(settings.customColors);
     }
 });
 

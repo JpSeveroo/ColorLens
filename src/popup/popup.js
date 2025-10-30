@@ -34,9 +34,12 @@ const CUSTOM_PROFILE_CLASS = 'custom-profile-btn';
  */
 const applyProfileToUI = (profileData, controllers) => {
     // 1. Atualiza Sliders e Inputs de Ajuste
-    document.getElementById('contrast').value = profileData.contrast || 100;
+    const visualContrast = mapFunctionalToVisual(profileData.contrast || 100);
+    document.getElementById('contrast').value = visualContrast;
+    document.getElementById('contrast-input').value = visualContrast;
+
+    // Saturação continua normal
     document.getElementById('saturation').value = profileData.saturation || 100;
-    document.getElementById('contrast-input').value = profileData.contrast || 100;
     document.getElementById('saturation-input').value = profileData.saturation || 100;
 
     // 2. Atualiza Modos
@@ -157,6 +160,50 @@ const initializeSliderController = (rangeId, numberId, updateCallback) => {
         updateUI: () => updateSliderLook(rangeSlider.value)
     };
 };
+
+/**
+ * Traduz o valor VISUAL (0-200) do slider para o valor FUNCIONAL (50-200).
+ * @param {number} visualValue O valor do slider (0-200).
+ * @returns {number} O valor para o CSS (50-200).
+ */
+function mapContrastToFunctional(visualValue) {
+    const val = Number(visualValue);
+    
+    // Mapeia a primeira metade do slider (0-100) para o intervalo (50-100)
+    if (val <= 100) {
+        // (visualValue / 100) -> 0 a 1
+        // (visualValue / 100) * 50 -> 0 a 50
+        // 50 + (visualValue / 100) * 50 -> 50 a 100
+        return 50 + (val / 100) * 50;
+    }
+    
+    // Mapeia a segunda metade do slider (100-200) para o intervalo (100-200)
+    // (val - 100) -> 0 a 100
+    // ((val - 100) / 100) * 100 -> 0 a 100
+    // 100 + ((val - 100) / 100) * 100 -> 100 a 200
+    // Simplificando:
+    return val;
+}
+
+/**
+ * Traduz o valor FUNCIONAL (50-200) salvo para o valor VISUAL (0-200) do slider.
+ * @param {number} functionalValue O valor salvo (50-200).
+ * @returns {number} O valor para o slider (0-200).
+ */
+function mapFunctionalToVisual(functionalValue) {
+    const val = Number(functionalValue);
+
+    // Mapeia o intervalo (50-100) de volta para (0-100)
+    if (val < 100) {
+        // (val - 50) -> 0 a 50
+        // (val - 50) / 50 -> 0 a 1
+        // ((val - 50) / 50) * 100 -> 0 a 100
+        return ((val - 50) / 50) * 100;
+    }
+    
+    // O intervalo (100-200) é o mesmo
+    return val;
+}
 // --- FIM DO NOVO SLIDER CONTROLLER ---
 
 
@@ -175,6 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const standardFilterButtons = document.querySelectorAll('#tab-filters .filter-btn'); // Seleciona apenas os botões da aba de filtros padrão
     const resetButton = document.querySelector('.reset-btn');
+    const adjustmentsResetBtn = document.getElementById('adjustmentsResetBtn');
     const readingModeToggle = document.getElementById('reading-mode');
     const nightVisionToggle = document.getElementById('night-vision');
 
@@ -238,10 +286,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- MODIFICADA: Lógica do Botão de Reset ---
     resetButton.addEventListener('click', () => {
+        // Ação: Limpa apenas os botões de filtro padrão
         standardFilterButtons.forEach(btn => btn.classList.remove('active'));
-        customProfileButtons.forEach(btn => btn.classList.remove('active')); // NOVO: Reset também limpa perfis customizados
         
-        // Seta os valores padrão nos elementos
+        // Ação: Limpa apenas os botões de filtro personalizados (na outra aba)
+        customProfileButtons.forEach(btn => btn.classList.remove('active')); 
+
+        // Envia o estado (agora sem filtro ativo)
+        gatherAndSendState();
+    });
+
+    // Lógica do Botão de Reset (Aba Ajustes) ---
+    adjustmentsResetBtn.addEventListener('click', () => {
+        
+        // Seta os valores padrão nos elementos de ajuste
         contrastSlider.value = 100;
         saturationSlider.value = 100;
         contrastInput.value = 100;
@@ -249,10 +307,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         readingModeToggle.checked = false;
         nightVisionToggle.checked = false;
 
-        // NOVO: Chama o método de atualização da UI dos controladores
-        contrastController.updateUI();
-        saturationController.updateUI();
+        // Chama o método de atualização da UI dos controladores
+        if (controllers.contrastController) controllers.contrastController.updateUI();
+        if (controllers.saturationController) controllers.saturationController.updateUI();
 
+        // Envia o novo estado
         gatherAndSendState();
     });
 
@@ -308,7 +367,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (Object.keys(settings).length > 0) {
             
-            // NOVO: Handle case where a custom profile was last active
             if (settings.activeProfileName) {
                 const activeProfileButton = Array.from(customProfileButtons).find(btn => btn.textContent === settings.activeProfileName);
                 if (activeProfileButton) {
@@ -322,11 +380,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
             
-            // Aplica as configurações salvas aos elementos da UI
-            contrastSlider.value = settings.contrast || 100;
-            saturationSlider.value = settings.saturation || 100;
+            // --- INÍCIO DA MODIFICAÇÃO ---
             
-            contrastInput.value = settings.contrast || 100;
+            // 1. Pega o valor FUNCIONAL salvo (ex: 50 a 200)
+            const functionalContrast = settings.contrast || 100;
+            
+            // 2. Traduz para o valor VISUAL (ex: 0 a 200)
+            const visualContrast = mapFunctionalToVisual(functionalContrast);
+
+            // 3. Aplica o valor VISUAL (traduzido) aos elementos da UI
+            contrastSlider.value = visualContrast;
+            contrastInput.value = visualContrast;
+
+            // --- FIM DA MODIFICAÇÃO ---
+
+            // O resto permanece o mesmo
+            saturationSlider.value = settings.saturation || 100;
             saturationInput.value = settings.saturation || 100;
             
             readingModeToggle.checked = settings.readingMode || false;
@@ -361,7 +430,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             filter: activeStandardFilter ? activeStandardFilter.textContent : 'none',
             activeProfileName: activeCustomProfile ? activeCustomProfile.textContent : null, // NOVO: Salva o nome do perfil
             
-            contrast: contrastSlider.value,
+            contrast: mapContrastToFunctional(contrastSlider.value),
             saturation: saturationSlider.value,
             readingMode: readingModeToggle.checked,
             nightVision: nightVisionToggle.checked,
