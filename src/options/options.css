@@ -129,6 +129,69 @@ hr {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+.with-info-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.info-btn {
+  position: relative;
+  background-color: var(--primary-dark); /* cor parecida com a da imagem */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 8px;
+  flex-shrink: 0; /* evita o botão de encolher */
+  box-shadow: 0 0 8px rgba(124, 77, 255, 0.4);
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.info-btn .info-btn-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: var(--primary-dark);
+  color: #fff;
+  font-size: 15px;
+  font-weight: normal;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.info-btn .info-btn-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--primary-dark) transparent transparent transparent;
+}
+
+.info-btn:hover .info-btn-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.info-btn:hover {
+  background-color: var(--primary);
+  transform: scale(1.03);
+}
+
 label {
   font-weight: 600;
   margin-bottom: 6px;
@@ -301,15 +364,26 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
+  font-weight: bold;
   background: var(--primary-dark);
+  border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
+  transition: background 0.3s ease, transform 0.1s ease;
+  transform: scale(1.03);
+}
+
+input[type="submit"]:focus {
+  font-weight: bold;
+  background-color: var(--primary);
   border-color: var(--primary);
   box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
 }
 
-input[type="submit"]:focus {
+input[type="submit"]:active {
   background: var(--primary);
   font-weight: bold;
   box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
+  transform: scale(0.97);
 }
 
 .reset-btn {
@@ -326,15 +400,25 @@ input[type="submit"]:focus {
 }
 
 .reset-btn:hover {
+  font-weight: bold;
   background: var(--primary-dark);
+  border-color: var(--primary);
+  box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
+  transform: scale(1.03);
+}
+
+.reset-btn:focus {
+  font-weight: bold;
+  background-color: var(--primary);
   border-color: var(--primary);
   box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
 }
 
-.reset-btn:focus {
-  background: var(--primary);
+.reset-btn:active {
   font-weight: bold;
+  background: var(--primary);
   box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
+  transform: scale(0.97);
 }
 
 /* IMAGEM PREVIEW */
@@ -369,6 +453,58 @@ input[type="submit"]:focus {
   transition: background 0.3s ease;
   padding: 10px;
 }
+
+.edit-profile {
+  margin-top: 10px;
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+}
+
+#rename-profile-btn {
+  background-color: #1717a8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+#rename-profile-btn:hover {
+  background-color: #1c1cc4;
+  transform: scale(1.03);
+}
+
+#rename-profile-btn:active {
+  background-color: #111180;
+  transform: scale(0.97);
+}
+
+#delete-profile-btn {
+  background-color: #b71c1c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+#delete-profile-btn:hover {
+  background-color: #d32f2f;
+  transform: scale(1.03);
+}
+
+#delete-profile-btn:active {
+  background-color: #880e0e;
+  transform: scale(0.97);
+}
+
 
 /* RESPONSIVO */
 @media (max-width: 768px) {

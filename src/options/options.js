@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initializeColorMapping();
   populateProfileSelector();
+  initializeDeleteProfile();
+  initializeRenameProfile();
   loadColorMapping();
 
   try {
@@ -367,6 +369,9 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
         console.log("Perfil salvo:", profileData);
         alert("Perfil salvo com sucesso!");
       });
+    
+    populateProfileSelector();
+
     });
   }
 
@@ -454,8 +459,8 @@ function loadColorMapping() {
 
 /* ---------- Carregar e aplicar presets ---------- */
 function populateProfileSelector() {
-  const baseFiltersDiv = document.querySelector(".base-filters");
-  if (!baseFiltersDiv) return;
+  const profileNameDiv = document.querySelector(".profile-name");
+  if (!profileNameDiv) return;
 
   let selector = document.getElementById("saved-profiles");
   if (!selector) {
@@ -467,8 +472,8 @@ function populateProfileSelector() {
     selector.id = "saved-profiles";
     selector.innerHTML = '<option value="">Selecione um perfil...</option>';
 
-    baseFiltersDiv.appendChild(label);
-    baseFiltersDiv.appendChild(selector);
+    profileNameDiv.appendChild(label);
+    profileNameDiv.appendChild(selector);
   }
 
   if (typeof chrome !== "undefined" && chrome.storage) {
@@ -516,6 +521,81 @@ function populateProfileSelector() {
       );
       applyVisualEffects(document.querySelector(".preview-img img"));
       applyColorMapping();
+    });
+  });
+}
+
+/* ---------- Excluir perfil salvo ---------- */
+function initializeDeleteProfile() {
+  const deleteBtn = document.getElementById('delete-profile-btn');
+  const selector = document.getElementById('saved-profiles');
+
+  if (!deleteBtn || !selector) return;
+
+  deleteBtn.addEventListener('click', () => {
+    const selectedProfile = selector.value;
+    if (!selectedProfile) {
+      alert('Selecione um perfil para excluir.');
+      return;
+    }
+
+    if (!confirm(`Tem certeza que deseja excluir o perfil "${selectedProfile}"?`)) {
+      return;
+    }
+
+    chrome.storage.local.get(['userProfiles']).then((data) => {
+      let profiles = data.userProfiles || [];
+      profiles = profiles.filter(p => p.name !== selectedProfile);
+
+      chrome.storage.local.set({ userProfiles: profiles }).then(() => {
+        alert(`Perfil "${selectedProfile}" excluído com sucesso!`);
+        populateProfileSelector(); // recarrega lista
+        document.getElementById("reset-form-btn").click();
+      });
+    });
+  });
+}
+
+/* ---------- Renomear perfil salvo ---------- */
+function initializeRenameProfile() {
+  const renameBtn = document.getElementById('rename-profile-btn');
+  const selector = document.getElementById('saved-profiles');
+
+  if (!renameBtn || !selector) return;
+
+  renameBtn.addEventListener('click', () => {
+    const selectedProfile = selector.value;
+    if (!selectedProfile) {
+      alert('Selecione um perfil para renomear.');
+      return;
+    }
+
+    const newName = prompt('Digite o novo nome para o perfil:', selectedProfile);
+    if (!newName || newName.trim() === '' || newName === selectedProfile) return;
+
+    chrome.storage.local.get(['userProfiles']).then((data) => {
+      const profiles = data.userProfiles || [];
+      const existing = profiles.find(p => p.name === selectedProfile);
+
+      if (!existing) {
+        alert('Perfil não encontrado.');
+        return;
+      }
+
+      // Verifica se já existe outro com o mesmo nome
+      const duplicate = profiles.some(p => p.name === newName.trim());
+      if (duplicate) {
+        alert('Já existe um perfil com esse nome.');
+        return;
+      }
+
+      existing.name = newName.trim();
+
+      chrome.storage.local.set({ userProfiles: profiles }).then(() => {
+        alert(`Perfil "${selectedProfile}" renomeado para "${newName}"`);
+        populateProfileSelector(); // atualiza a lista
+        document.getElementById('profile-name-input').value = newName;
+      });
     });
   });
 }

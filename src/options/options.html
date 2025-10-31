@@ -42,7 +42,12 @@
         </div>
         <form id="profile-form">
           <div class="profile-name">
-            <label for="profile-name-input"><strong>Nome do Perfil:</strong></label>
+            <div class="with-info-label">
+              <label for="profile-name-input"><strong>Nome do Perfil:</strong></label>
+              <button type="button" class="info-btn">?
+                <span class="info-btn-text">Aqui você deve digitar um nome para seu perfil</span>
+              </button>
+            </div>
             <input
             type="text",
             id="profile-name-input",
@@ -50,9 +55,29 @@
             size="30",
             required
             >
+            <div>
+              <div class="with-info-label">
+                <label style="margin-top: 10px;">Perfis Salvos:</label>
+                <button type="button" class="info-btn">?
+                  <span class="info-btn-text">Aqui você pode escolher entre os perfis já criados</span>
+                </button>
+              </div>
+              <select id="saved-profiles">
+                <option value="">Selecione um perfil...</option>
+              </select>
+            </div>
+            <div class="edit-profile">
+              <button type="button" id="rename-profile-btn">Renomear Perfil</button>
+              <button type="button" id="delete-profile-btn">Excluir Perfil</button>
+            </div>
           </div>
           <div class="base-filters">
-            <label for="color-blindness-select"><strong>Filtro Base:</strong></label>
+            <div class="with-info-label">
+              <label for="color-blindness-select"><strong>Filtro Base:</strong></label>
+              <button type="button" class="info-btn">?
+                <span class="info-btn-text">Aqui você pode escolher um filtro de daltonismo para usar como base</span>
+              </button>
+            </div>
             <select id="color-blindness-select">
               <option value="none">Nenhum</option>
               <option value="protanopia">Protanopia</option>
@@ -66,7 +91,13 @@
             </select>
           </div>
           <div class="visual-adjusts">
-            <label class="visual-label">Acessibilidade Visual:</label>
+            <div class="with-info-label">
+              <label class="visual-label">Acessibilidade Visual:</label>
+              <button type="button" class="info-btn">?
+                <span class="info-btn-text">Ajuste o contraste e a saturação para o seu perfil, 
+                  e escolha os modos visuais que deseja utilizar</span>
+              </button>
+            </div>
             <label for="contrast-range" class="slider-label">Contraste:</label>
             <span id="contrast-value" class="slider-value">100%</span>
             <input
@@ -107,7 +138,13 @@
             </div>
           </div>
           <div class="color-mapping">
-            <label>Mapeamento de Cores:</label>
+            <div class="with-info-label">
+              <label>Mapeamento de Cores:</label>
+              <button type="button" class="info-btn">?
+                <span class="info-btn-text">Crie seu próprio mapeamento de cores para seu filtro. 
+                  Ative o mapeamento para aplicá-lo em seu perfil</span>
+              </button>
+            </div>
             <div class="mapping-toggle">
               <label for="enable-color-mapping">Ativar Mapeamento de Cores</label>
               <label class="switch">
@@ -145,7 +182,7 @@
           </div>
           <div class="form-buttons">
             <input type="submit" value="Salvar Perfil" id="save-profile">
-            <button type="reset" class="reset-btn">Resetar Configurações</button>
+            <button type="reset" class="reset-btn" id="reset-form-btn">Resetar Configurações</button>
           </div>
         </form>
       </section>
