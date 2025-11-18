@@ -166,56 +166,186 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     }
 });
 
-//Id para a Style a seguir (Eu não faço a mínima eideia de como essa função ta funcionando)
-const CUSTOM_STYLE_ID = 'colorlens-custom-colors-style';
+/**
+ * Converte uma cor hexadecimal para componentes RGB normalizados (0-1).
+ * @param {string} hex - Cor em formato hexadecimal (ex: "#FF0000" ou "FF0000")
+ * @returns {Object} Objeto com r, g, b normalizados entre 0 e 1
+ */
+function hexToRgbNormalized(hex) {
+    // Remove o # se presente
+    hex = hex.replace('#', '');
+    
+    // Converte para inteiros 0-255
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    // Normaliza para 0-1
+    return {
+        r: r / 255,
+        g: g / 255,
+        b: b / 255
+    };
+}
 
 /**
- * Aplica as cores base (Fundo, Texto, Links) injetando CSS na página.
- * @param {object} colors - O objeto { background, text, highlight }
+ * Constrói uma matriz de transformação feColorMatrix que mapeia:
+ * - Canal Red original → Cor de Fundo (background)
+ * - Canal Green original → Cor de Texto (text)
+ * - Canal Blue original → Cor de Links (highlight)
+ * 
+ * A matriz feColorMatrix tem formato:
+ * [R']   [a b c d e]   [R]
+ * [G'] = [f g h i j] × [G]
+ * [B']   [k l m n o]   [B]
+ * [A']   [p q r s t]   [A]
+ *                      [1]
+ * 
+ * @param {string} backgroundHex - Cor de fundo em hexadecimal
+ * @param {string} textHex - Cor de texto em hexadecimal
+ * @param {string} highlightHex - Cor de links em hexadecimal
+ * @returns {string} String de valores da matriz para feColorMatrix
+ */
+function buildColorMatrix(backgroundHex, textHex, highlightHex) {
+    const bg = hexToRgbNormalized(backgroundHex);
+    const text = hexToRgbNormalized(textHex);
+    const highlight = hexToRgbNormalized(highlightHex);
+    
+    // Matriz de transformação que mapeia canais RGB originais para cores completas:
+    // 
+    // R original (alto) → Cor de Fundo completa (bg.r, bg.g, bg.b)
+    // G original (alto) → Cor de Texto completa (text.r, text.g, text.b)
+    // B original (alto) → Cor de Links completa (highlight.r, highlight.g, highlight.b)
+    //
+    // Para cada canal do resultado (R', G', B'), combinamos os canais originais:
+    // R' = R_original × bg.r + G_original × text.r + B_original × highlight.r
+    // G' = R_original × bg.g + G_original × text.g + B_original × highlight.g
+    // B' = R_original × bg.b + G_original × text.b + B_original × highlight.b
+    
+    // Linha 1 (R' do resultado): Combinação dos canais originais mapeados para R de cada cor
+    const r1 = bg.r;        // R original → R de fundo
+    const r2 = text.r;      // G original → R de texto
+    const r3 = highlight.r; // B original → R de links
+    const r4 = 0;           // Alpha preservado
+    const r5 = 0;           // Offset
+    
+    // Linha 2 (G' do resultado): Combinação dos canais originais mapeados para G de cada cor
+    const g1 = bg.g;        // R original → G de fundo
+    const g2 = text.g;      // G original → G de texto
+    const g3 = highlight.g; // B original → G de links
+    const g4 = 0;           // Alpha preservado
+    const g5 = 0;           // Offset
+    
+    // Linha 3 (B' do resultado): Combinação dos canais originais mapeados para B de cada cor
+    const b1 = bg.b;        // R original → B de fundo
+    const b2 = text.b;      // G original → B de texto
+    const b3 = highlight.b; // B original → B de links
+    const b4 = 0;           // Alpha preservado
+    const b5 = 0;           // Offset
+    
+    // Linha 4 (A'): Preserva o alpha original
+    const a1 = 0;
+    const a2 = 0;
+    const a3 = 0;
+    const a4 = 1;           // Alpha inalterado
+    const a5 = 0;           // Offset
+    
+    // Formata a matriz como string para feColorMatrix
+    // Os valores são separados por espaços e vírgulas alternadamente
+    return `${r1}, ${r2}, ${r3}, ${r4}, ${r5} ` +
+           `${g1}, ${g2}, ${g3}, ${g4}, ${g5} ` +
+           `${b1}, ${b2}, ${b3}, ${b4}, ${b5} ` +
+           `${a1}, ${a2}, ${a3}, ${a4}, ${a5}`;
+}
+
+/**
+ * Cria ou atualiza o filtro SVG customizado para mapeamento de cores.
+ * @param {string} backgroundHex - Cor de fundo em hexadecimal
+ * @param {string} textHex - Cor de texto em hexadecimal
+ * @param {string} highlightHex - Cor de links em hexadecimal
+ */
+function injectCustomColorFilter(backgroundHex, textHex, highlightHex) {
+    // Garante que o container SVG existe
+    injectSvgFilters();
+    
+    let svgContainer = document.getElementById('colorlens-svg-filters');
+    if (!svgContainer) {
+        return;
+    }
+    
+    let defs = svgContainer.querySelector('defs');
+    if (!defs) {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        svgContainer.appendChild(defs);
+    }
+    
+    // Remove o filtro customizado anterior se existir
+    const existingFilter = defs.querySelector('#colorlens-custom-color-mapping');
+    if (existingFilter) {
+        defs.removeChild(existingFilter);
+    }
+    
+    // Constrói a matriz de transformação
+    const matrixValues = buildColorMatrix(backgroundHex, textHex, highlightHex);
+    
+    // Cria o elemento filter
+    const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    filter.setAttribute('id', 'colorlens-custom-color-mapping');
+    
+    const feColorMatrix = document.createElementNS('http://www.w3.org/2000/svg', 'feColorMatrix');
+    feColorMatrix.setAttribute('in', 'SourceGraphic');
+    feColorMatrix.setAttribute('type', 'matrix');
+    feColorMatrix.setAttribute('values', matrixValues);
+    
+    filter.appendChild(feColorMatrix);
+    defs.appendChild(filter);
+}
+
+/**
+ * Aplica as cores customizadas usando transformação matricial SVG feColorMatrix.
+ * Substitui a abordagem destrutiva de CSS !important por uma transformação elegante no espaço RGB.
+ * 
+ * @param {object} colors - O objeto { background, text, highlight } com cores em hexadecimal
  */
 function applyCustomColors(colors) {
-    let styleTag = document.getElementById(CUSTOM_STYLE_ID);
-    if (!styleTag) {
-        styleTag = document.createElement('style');
-        styleTag.id = CUSTOM_STYLE_ID;
-        document.head.appendChild(styleTag);
-    }
-
-    // Se o objeto de cores não for válido (ex: no reset), 
-    // limpamos o conteúdo da tag e saímos
-    if (!colors || !colors.background) {
-        styleTag.textContent = '';
+    // Se não há cores válidas, remove o filtro customizado
+    if (!colors || !colors.background || !colors.text || !colors.highlight) {
+        const svgContainer = document.getElementById('colorlens-svg-filters');
+        if (svgContainer) {
+            const defs = svgContainer.querySelector('defs');
+            if (defs) {
+                const existingFilter = defs.querySelector('#colorlens-custom-color-mapping');
+                if (existingFilter) {
+                    defs.removeChild(existingFilter);
+                }
+            }
+        }
+        
+        // Remove o filtro do elemento raiz
+        const currentFilter = document.documentElement.style.filter || '';
+        const newFilter = currentFilter
+            .replace(/url\(#colorlens-custom-color-mapping\)\s*/g, '')
+            .trim();
+        document.documentElement.style.filter = newFilter || '';
         return;
     }
 
     const { background, text, highlight } = colors;
 
-    // Criamos as regras de CSS. O !important é CRUCIAL
-    // para sobrescrever o CSS de qualquer site.
-    styleTag.textContent = `
-        /* 1. Fundo (Aplicado no HTML) */
-        html {
-            background-color: ${background} !important;
-        }
-        
-        /* 2. Fundo (Aplicado no Body, e remove imagem de fundo) */
-        body {
-            background-color: ${background} !important;
-            background-image: none !important;
-        }
+    // Injeta o filtro SVG customizado
+    injectCustomColorFilter(background, text, highlight);
 
-        /* 3. Texto (Aplicado de forma geral) */
-        /* Usamos seletores comuns para garantir a cobertura */
-        body, p, span, div, h1, h2, h3, h4, h5, h6, li, th, td, label {
-            color: ${text} !important;
-        }
-
-        /* 4. Links (Sobrescreve a regra de texto) */
-        /* Incluímos 'a *' para pegar links com <span> ou <div> dentro */
-        a, a:visited, a *, a:visited * {
-            color: ${highlight} !important;
-        }
-    `;
+    // Aplica o filtro ao elemento raiz (html)
+    // O filtro será combinado com outros filtros já existentes
+    const currentFilter = document.documentElement.style.filter || '';
+    
+    // Remove a referência anterior ao filtro customizado se existir
+    let newFilter = currentFilter.replace(/url\(#colorlens-custom-color-mapping\)\s*/g, '');
+    
+    // Adiciona o novo filtro customizado no início (para que seja aplicado primeiro)
+    newFilter = `url(#colorlens-custom-color-mapping) ${newFilter}`.trim();
+    
+    document.documentElement.style.filter = newFilter;
 }
 
 // Aplica as configurações salvas quando o script de conteúdo é carregado

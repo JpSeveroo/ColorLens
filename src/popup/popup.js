@@ -48,8 +48,8 @@ const applyProfileToUI = (profileData, controllers) => {
 
     // 3. Atualiza Cores Base (Mismatch: Mapeando colorMap.red/green/blue para customBg/Text/Highlight)
     if (profileData.colorMap) {
-        document.getElementById('customBg').value = profileData.colorMap.red || '#ffffff'; 
-        document.getElementById('customText').value = profileData.colorMap.green || '#000000';
+        document.getElementById('customBg').value = profileData.colorMap.red || '#ff0000'; 
+        document.getElementById('customText').value = profileData.colorMap.green || '#00ff00';
         document.getElementById('customHighlight').value = profileData.colorMap.blue || '#0000ff';
     }
     
@@ -320,9 +320,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     nightVisionToggle.addEventListener('change', gatherAndSendState);
 
     const colorPickers = [
-        { input: customBg, default: '#ffffff' },
-        { input: customText, default: '#000000' },
-        { input: customHighlight, default: '#0000ff' }
+        { input: customBg, default: '#ff0000' }, // Alterado de #ffffff para #ff0000
+        { input: customText, default: '#00ff00' }, // Alterado de #000000 para #00ff00
+        { input: customHighlight, default: '#0000ff' } // Azul permanece
     ];
 
     colorPickers.forEach(picker => {
@@ -403,8 +403,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Load custom colors
             if (settings.customColors) {
-                customBg.value = settings.customColors.background || '#ffffff';
-                customText.value = settings.customColors.text || '#000000';
+                // FALLBACKS atualizados
+                customBg.value = settings.customColors.background || '#ff0000';
+                customText.value = settings.customColors.text || '#00ff00';
                 customHighlight.value = settings.customColors.highlight || '#0000ff';
             }
 
