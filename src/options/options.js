@@ -67,10 +67,12 @@ const previewImg = previewContainer?.querySelector("img");
 
 const profileName = document.getElementById("profile-name-input");
 const baseFilter = document.getElementById("color-blindness-select");
-const contrastSlider = document.getElementById("contrast-range");
-const saturationSlider = document.getElementById("saturation-range");
-const contrastValue = document.getElementById("contrast-value");
-const saturationValue = document.getElementById("saturation-value");
+
+// IDs corrigidos
+const contrastSlider = document.getElementById("contrast");
+const saturationSlider = document.getElementById("saturation");
+const contrastValueInput = document.getElementById("contrast-input");
+const saturationValueInput = document.getElementById("saturation-input");
 const resetBtn = document.querySelector(".reset-btn");
 
 resetBtn.addEventListener("click", (e) => {
@@ -84,8 +86,8 @@ resetBtn.addEventListener("click", (e) => {
   // Resetar Sliders (valor e visualização)
   contrastSlider.value = 100;
   saturationSlider.value = 100;
-  if (contrastValue) contrastValue.textContent = "100%";
-  if (saturationValue) saturationValue.textContent = "100%";
+  if (contrastValueInput) contrastValueInput.value = 100;
+  if (saturationValueInput) saturationValueInput.value = 100;
 
   // Resetar Toggles
   document.getElementById("reading-mode").checked = false;
@@ -107,8 +109,8 @@ resetBtn.addEventListener("click", (e) => {
   }
 
   // Sincroniza TODAS as atualizações visuais
-  updateSliderLook(contrastSlider, contrastValue);
-  updateSliderLook(saturationSlider, saturationValue);
+  updateSliderLook(contrastSlider, contrastValueInput);
+  updateSliderLook(saturationSlider, saturationValueInput);
   applyVisualEffects(previewImg); // Aplica filtros (com 'none') e modos (desligados)
   applyColorMapping();
 });
@@ -116,18 +118,42 @@ resetBtn.addEventListener("click", (e) => {
 /* ---------- Sliders de Contraste e Saturação ---------- */
 function initializeSliders() {
   if (contrastSlider && saturationSlider) {
-    updateSliderLook(contrastSlider, contrastValue);
-    updateSliderLook(saturationSlider, saturationValue);
+    updateSliderLook(contrastSlider, contrastValueInput);
+    updateSliderLook(saturationSlider, saturationValueInput);
     applyVisualEffects(previewImg);
 
     contrastSlider.addEventListener("input", () => {
-      updateSliderLook(contrastSlider, contrastValue);
+      contrastValueInput.value = contrastSlider.value;
+      updateSliderLook(contrastSlider, contrastValueInput);
+      applyVisualEffects(previewImg);
+      saveVisualSettings();
+    });
+
+    contrastValueInput?.addEventListener("input", () => {
+      let value = parseInt(contrastValueInput.value, 10);
+      if (isNaN(value) || value < 0) value = 0;
+      if (value > 200) value = 200;
+      contrastValueInput.value = value;
+      contrastSlider.value = value;
+      updateSliderLook(contrastSlider, contrastValueInput);
       applyVisualEffects(previewImg);
       saveVisualSettings();
     });
 
     saturationSlider.addEventListener("input", () => {
-      updateSliderLook(saturationSlider, saturationValue);
+      saturationValueInput.value = saturationSlider.value;
+      updateSliderLook(saturationSlider, saturationValueInput);
+      applyVisualEffects(previewImg);
+      saveVisualSettings();
+    });
+
+    saturationValueInput?.addEventListener("input", () => {
+      let value = parseInt(saturationValueInput.value, 10);
+      if (isNaN(value) || value < 0) value = 0;
+      if (value > 200) value = 200;
+      saturationValueInput.value = value;
+      saturationSlider.value = value;
+      updateSliderLook(saturationSlider, saturationValueInput);
       applyVisualEffects(previewImg);
       saveVisualSettings();
     });
@@ -144,11 +170,11 @@ if (colorBlindnessSelect) {
 }
 
 /* ---------- Atualização visual dos sliders ---------- */
-function updateSliderLook(slider, valueDisplay) {
-  const min = slider.min;
-  const max = slider.max;
-  const value = slider.value;
-  valueDisplay.textContent = `${value}%`;
+function updateSliderLook(slider, valueInput) {
+  const min = parseInt(slider.min, 10);
+  const max = parseInt(slider.max, 10);
+  const value = parseInt(slider.value, 10);
+  if (valueInput) valueInput.value = value;
   const percentage = ((value - min) / (max - min)) * 100;
   slider.style.background = `linear-gradient(to right, #7B4EAC ${percentage}%, #352957 ${percentage}%)`;
 }
@@ -158,8 +184,8 @@ function applyVisualEffects(previewImg) {
   if (!previewImg) return;
 
   // 1. Coleta TODOS os valores
-  const contrast = document.getElementById("contrast-range").value;
-  const saturation = document.getElementById("saturation-range").value;
+  const contrast = document.getElementById("contrast").value;
+  const saturation = document.getElementById("saturation").value;
   const readingMode = document.getElementById("reading-mode").checked;
   const nightVision = document.getElementById("night-vision").checked;
   const filterType = document.getElementById("color-blindness-select").value;
@@ -245,8 +271,8 @@ function initializeModeToggles() {
 
 /* ---------- Salva valores ---------- */
 function saveVisualSettings() {
-  const contrast = document.getElementById("contrast-range").value;
-  const saturation = document.getElementById("saturation-range").value;
+  const contrast = document.getElementById("contrast").value;
+  const saturation = document.getElementById("saturation").value;
   const readingMode = document.getElementById("reading-mode").checked;
   const nightVision = document.getElementById("night-vision").checked;
   const colorBlindness = document.getElementById(
@@ -288,10 +314,11 @@ function loadAllSavedSettings() {
             readingMode,
             nightVision,
           } = data.visualSettings;
-          const contrastSlider = document.getElementById("contrast-range");
-          const saturationSlider = document.getElementById("saturation-range");
-          const contrastValue = document.getElementById("contrast-value");
-          const saturationValue = document.getElementById("saturation-value");
+
+          const contrastSlider = document.getElementById("contrast");
+          const saturationSlider = document.getElementById("saturation");
+          const contrastValueInput = document.getElementById("contrast-input");
+          const saturationValueInput = document.getElementById("saturation-input");
           const previewImg = document.querySelector(".preview-img img");
           const readingToggle = document.getElementById("reading-mode");
           const nightToggle = document.getElementById("night-vision");
@@ -304,8 +331,8 @@ function loadAllSavedSettings() {
           if (contrastSlider && saturationSlider) {
             contrastSlider.value = contrast || 100;
             saturationSlider.value = saturation || 100;
-            updateSliderLook(contrastSlider, contrastValue);
-            updateSliderLook(saturationSlider, saturationValue);
+            updateSliderLook(contrastSlider, contrastValueInput);
+            updateSliderLook(saturationSlider, saturationValueInput);
           }
 
           if (readingToggle) readingToggle.checked = !!readingMode;
@@ -341,8 +368,8 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
   const profileData = {
     name: profileName,
     baseFilter: document.getElementById("color-blindness-select").value,
-    contrast: document.getElementById("contrast-range").value,
-    saturation: document.getElementById("saturation-range").value,
+    contrast: document.getElementById("contrast").value,
+    saturation: document.getElementById("saturation").value,
     readingMode: document.getElementById("reading-mode").checked,
     nightVision: document.getElementById("night-vision").checked,
     colorMap: {
@@ -376,7 +403,7 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
     });
   }
 
-  applyColorMapping(document.querySelector(".preview-img img"));
+  applyColorMapping();
 });
 
 /* ---------- Mapeamento de cores ---------- */
@@ -452,7 +479,7 @@ function loadColorMapping() {
           colors.blue || "#0000ff";
         document.getElementById('enable-color-mapping').checked = !!colors.enabled;
 
-        applyColorMapping(document.querySelector(".preview-img img"));
+        applyColorMapping();
       }
     });
   }
@@ -503,8 +530,13 @@ function populateProfileSelector() {
       document.getElementById("profile-name-input").value = profile.name;
       document.getElementById("color-blindness-select").value =
         profile.baseFilter;
-      document.getElementById("contrast-range").value = profile.contrast;
-      document.getElementById("saturation-range").value = profile.saturation;
+      const contrastRange = document.getElementById("contrast");
+      const saturationRange = document.getElementById("saturation");
+      const contrastInput = document.getElementById("contrast-input");
+      const saturationInput = document.getElementById("saturation-input");
+
+      contrastRange.value = profile.contrast;
+      saturationRange.value = profile.saturation;
       document.getElementById("reading-mode").checked = profile.readingMode;
       document.getElementById("night-vision").checked = profile.nightVision;
       document.getElementById("color1-mapper").value = profile.colorMap.red;
@@ -512,14 +544,8 @@ function populateProfileSelector() {
       document.getElementById("color3-mapper").value = profile.colorMap.blue;
       document.getElementById('enable-color-mapping').checked = !!profile.colorMap.enabled;
 
-      updateSliderLook(
-        document.getElementById("contrast-range"),
-        document.getElementById("contrast-value")
-      );
-      updateSliderLook(
-        document.getElementById("saturation-range"),
-        document.getElementById("saturation-value")
-      );
+      updateSliderLook(contrastRange, contrastInput);
+      updateSliderLook(saturationRange, saturationInput);
       applyVisualEffects(document.querySelector(".preview-img img"));
       applyColorMapping();
     });

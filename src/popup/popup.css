@@ -111,12 +111,36 @@ body {
     display: none;
 }
 
+/* --- CUSTOM PROFILES SCROLL BOX --- */
+.custom-profiles-scroll-box {
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: var(--spacing-default);
+    padding-right: 8px;
+    background-color: var(--color-secondary-dark);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.custom-profiles-scroll-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-profiles-scroll-box::-webkit-scrollbar-thumb {
+    background: var(--color-secondary-dark);
+    border-radius: 4px;
+}
+
+.custom-profiles-scroll-box::-webkit-scrollbar-track {
+    background: var(--color-background-deep);
+}
+
 /* --- FILTER GRID --- */
 .filters-grid {
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two columns for buttons */
     gap: 10px;
-    margin-bottom: var(--spacing-default);
+    margin-bottom: 0;
 }
 
 .filter-btn {

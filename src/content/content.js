@@ -407,7 +407,6 @@ function injectUtilityStyles() {
                         sans-serif !important;
             text-align: left !important;
         }
-
     `;
 
     document.head.appendChild(style);
