@@ -143,8 +143,17 @@ const applyFilters = (settings) => {
     }
 
     if (nightVision) {
-        // Usamos essa bomba: documentElement (o <html>) para garantir que a página inteira inverta
-        document.documentElement.classList.add('colorlens-night-vision')
+        // ANTES DE APLICAR, VERIFICA Essa casseta:
+        const isDark = isPageAlreadyDark();
+
+        if (isDark) {
+            console.log("ColorLens: Página já é escura. Modo noturno inteligente ignorou a inversão.");
+            // Remove a classe caso ela já estivesse lá por engano
+            document.documentElement.classList.remove('colorlens-night-vision');
+        } else {
+            // Página é clara, pode inverter!
+            document.documentElement.classList.add('colorlens-night-vision');
+        }
     } else {
         document.documentElement.classList.remove('colorlens-night-vision');
     }
@@ -358,6 +367,56 @@ loadSettings().then(settings => {
     }
 });
 
+/**
+ * Verifica se a página já possui um fundo escuro.
+ * Retorna true se for escura, false se for clara.
+ */
+function isPageAlreadyDark() {
+    // 1. Verifica se o site respeita a preferência do sistema (Maneira mais rápida)
+    // Se o sistema do usuário é Dark e o site responde a isso, assumimos que é dark.
+    /* Nota: Isso pode falhar se o usuário tiver sistema Dark mas forçar o site Light. 
+       Se quiser ser mais preciso, pode remover esse bloco e confiar só na cor. */
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // Verifica se o site não tem background branco explícito definindo uma regra de exceção
+        // Mas geralmente, confiar na cor computada abaixo é mais seguro.
+    }
+
+    // 2. Análise da cor computada (Maneira mais precisa)
+    const body = document.body;
+    const html = document.documentElement;
+    
+    if (!body) return false;
+
+    // Pega a cor de fundo do body e do html
+    const bgBody = window.getComputedStyle(body).backgroundColor;
+    const bgHtml = window.getComputedStyle(html).backgroundColor;
+
+    // Função auxiliar para extrair números do rgb(r, g, b)
+    const parseColor = (colorStr) => {
+        // Se for transparente, retorna null
+        if (colorStr === 'rgba(0, 0, 0, 0)' || colorStr === 'transparent') return null;
+        
+        const match = colorStr.match(/\d+/g);
+        if (!match) return null;
+        return { r: parseInt(match[0]), g: parseInt(match[1]), b: parseInt(match[2]) };
+    };
+
+    // Tenta pegar a cor do body, se for transparente, tenta do html
+    const color = parseColor(bgBody) || parseColor(bgHtml);
+
+    // Se tudo for transparente, o navegador renderiza branco por padrão.
+    // Então a página NÃO é escura.
+    if (!color) return false;
+
+    // Fórmula de luminância padrão (percepção humana)
+    // Y = 0.299*R + 0.587*G + 0.114*B
+    const brightness = (color.r * 299 + color.g * 587 + color.b * 114) / 1000;
+
+    // Se o brilho for menor que 128 (metade de 255), é considerado escuro.
+    // Vamos ser conservadores e usar 50 para garantir que é REALMENTE escuro.
+    return brightness < 50;
+}
+
 function injectUtilityStyles() {
     const styleSheetId = 'colorlens-utility-styles';
     if (document.getElementById(styleSheetId)) {
@@ -367,44 +426,49 @@ function injectUtilityStyles() {
     const style = document.createElement('style');
     style.id = styleSheetId;
 
-    /*Isso aqui foi pura IA papo reto, moh preguiça estudar coloração/fonte de sites*/
     style.textContent = `
-        /* --- MODO NOTURNO (O MÉTODO CORRETO) --- */
+        /* --- MODO NOTURNO APRIMORADO --- */
 
-        /* 1. Aplica a inversão no HTML (página inteira) */
         html.colorlens-night-vision {
-            background-color: #111 !important;
+            background-color: #121212 !important; /* Um cinza muito escuro, melhor que preto absoluto */
             filter: invert(1) hue-rotate(180deg) !important;
+            scrollbar-color: #454a4d #202324 !important; /* Firefox scrollbar */
         }
 
-        /* 2. "Des-inverte" mídias para que não fiquem parecendo negativos */
+        /* Proteção contra inversão dupla: "Des-inverte" mídias para voltarem ao normal */
         html.colorlens-night-vision img,
         html.colorlens-night-vision video,
         html.colorlens-night-vision iframe,
-        html.colorlens-night-vision [style*="background-image"] {
+        html.colorlens-night-vision canvas,
+        html.colorlens-night-vision svg,
+        html.colorlens-night-vision :not(object):not(body)[style*="background-image"] {
             filter: invert(1) hue-rotate(180deg) !important;
         }
-        
-        /* --- MODO DE LEITURA --- */
-        body.colorlens-reading-mode {
-            /* Força uma fonte limpa, sem viadagem. */
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
-                        "Segoe UI", Roboto, Helvetica, Arial, 
-                        sans-serif !important;
 
+        /* Corrige sombras que ficam estranhas invertidas */
+        html.colorlens-night-vision * {
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        /* --- MODO DE LEITURA (Mantido como estava) --- */
+        body.colorlens-reading-mode {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
             font-size: 1.20rem !important; 
             line-height: 1.8 !important; 
             letter-spacing: 0.05em !important;
-
             text-align: left !important;
+            max-width: 900px !important; /* Limita largura para leitura confortável */
+            margin: 0 auto !important;
+            background-color: #fdf6e3 !important; /* Cor de papel suave */
+            color: #333 !important;
+            padding: 2rem !important;
         }
 
         body.colorlens-reading-mode p,
         body.colorlens-reading-mode span,
         body.colorlens-reading-mode div {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
-                        "Segoe UI", Roboto, Helvetica, Arial, 
-                        sans-serif !important;
+            font-family: inherit !important;
             text-align: left !important;
         }
     `;
