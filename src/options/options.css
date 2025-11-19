@@ -303,6 +303,14 @@ select:focus {
   transition: 0.3s;
 }
 
+.switch .slider {
+  cursor: pointer;
+}
+
+.switch .slider::before {
+  cursor: pointer;
+}
+
 input:checked + .slider {
   background-color: var(--primary);
 }
@@ -331,6 +339,7 @@ input:checked + .slider:before {
 .mapper1,
 .mapper2,
 .mapper3 {
+  display: flex;
   margin-top: 10px;
 }
 
