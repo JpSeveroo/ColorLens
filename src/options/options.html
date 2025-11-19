@@ -98,26 +98,26 @@
                   e escolha os modos visuais que deseja utilizar</span>
               </button>
             </div>
-            <label for="contrast-range" class="slider-label">Contraste:</label>
-            <span id="contrast-value" class="slider-value">100%</span>
-            <input
-            type="range"
-            id="contrast-range"
-            min="0"
-            max="200"
-            value="100"
-            class="range-slider"
-            >
-            <label for="saturation-range" class="slider-label">Saturação:</label>
-            <span id="saturation-value" class="slider-value">100%</span>
-            <input
-            type="range"
-            id="saturation-range"
-            min="0"
-            max="200"
-            value="100"
-            class="range-slider"
-            >
+            <div class="slider-control">
+              <div class="slider-label">
+                  <label for="contrast">Contraste</label>
+                  <div class="input-unit-group">
+                      <input type="number" min="0" max="200" value="100" class="percentage-input" id="contrast-input">
+                      <span class="unit-text">%</span>
+                  </div>
+              </div>
+              <input type="range" id="contrast" min="0" max="200" value="100" class="range-slider">
+          </div>
+          <div class="slider-control">
+              <div class="slider-label">
+                  <label for="saturation">Saturação</label>
+                  <div class="input-unit-group">
+                      <input type="number" min="0" max="200" value="100" class="percentage-input" id="saturation-input">
+                      <span class="unit-text">%</span>
+                  </div>
+              </div>
+              <input type="range" id="saturation" min="0" max="200" value="100" class="range-slider">
+          </div>
             <div class="modes-toggle">
               <label for="reading-mode">Modo de Leitura</label>
               <label class="switch">

@@ -227,8 +227,10 @@ select:focus {
 .slider-label {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 14px;
   margin-top: 8px;
+  margin-bottom: 4px;
 }
 
 .slider-value {
@@ -236,6 +238,41 @@ select:focus {
   padding: 2px 6px;
   background: #261f3e;
   border-radius: 5px;
+}
+
+.input-unit-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: var(--bg-light);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+.unit-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-left: 4px;
+}
+
+.percentage-input {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+  padding: 0;
+  margin: 0;
+  width: 36px;
+  outline: none;
+}
+
+.percentage-input::-webkit-inner-spin-button,
+.percentage-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .range-slider {
