@@ -360,6 +360,7 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
       const existingIndex = profiles.findIndex((p) => p.name === profileName);
 
       if (existingIndex >= 0) {
+        if (!confirm("Já existe um perfil com esse nome. Deseja sobrescrevê-lo?")) return;
         profiles[existingIndex] = profileData; // Atualiza
       } else {
         profiles.push(profileData); // Novo

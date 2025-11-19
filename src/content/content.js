@@ -392,9 +392,9 @@ function injectUtilityStyles() {
                         "Segoe UI", Roboto, Helvetica, Arial, 
                         sans-serif !important;
 
-            font-size: 1.15rem !important; 
+            font-size: 1.20rem !important; 
             line-height: 1.8 !important; 
-            letter-spacing: 0.03em !important;
+            letter-spacing: 0.05em !important;
 
             text-align: left !important;
         }
