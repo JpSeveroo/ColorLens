@@ -32,20 +32,29 @@
         <h2>Criação de Perfil</h2>
         <hr />
         <p>
-          Crie um perfil personalizado mapeando cores que você tem dificuldade
-          em distinguir para cores que você consegue ver claramente.
+          Crie um perfil de visualização adaptado às suas próprias necessidades. Sinta-se à vontade para configurar cores que são difíceis de distinguir e substituí-las por tonalidades mais perceptíveis ao seu tipo de visão.
         </p>
         <hr />
-        <div class="preview-img">
-          <img src="../../assets/images/preview.avif" alt="Prévia de ajustes visuais">
-          <div class="color-overlay"></div>
+        <div class="preview-container">
+          <div class="preview-img">
+            <img src="../../assets/images/imagem balao teste 1.jpg" alt="Prévia de ajustes visuais">
+            <div class="color-overlay"></div>
+          </div>
+          <div class="preview-img">
+            <img src="../../assets/images/lapiz de cor 4k.jpg" alt="Prévia de ajustes visuais">
+            <div class="color-overlay"></div>
+          </div>
+          <div class="preview-img">
+            <img src="../../assets/images/arara 4k1.jpeg" alt="Prévia de ajustes visuais">
+            <div class="color-overlay"></div>
+          </div>
         </div>
         <form id="profile-form">
           <div class="profile-name">
             <div class="with-info-label">
               <label for="profile-name-input"><strong>Nome do Perfil:</strong></label>
               <button type="button" class="info-btn">?
-                <span class="info-btn-text">Aqui você deve digitar um nome para seu perfil</span>
+                <span class="info-btn-text">Defina um nome descritivo para este perfil. Ele ajudará você a identificar rapidamente o conjunto de ajustes configurados.</span>
               </button>
             </div>
             <input
@@ -59,7 +68,7 @@
               <div class="with-info-label">
                 <label style="margin-top: 10px;">Perfis Salvos:</label>
                 <button type="button" class="info-btn">?
-                  <span class="info-btn-text">Aqui você pode escolher entre os perfis já criados</span>
+                  <span class="info-btn-text">Selecione um perfil existente para editar suas configurações, renomeá-lo ou removê-lo.</span>
                 </button>
               </div>
               <select id="saved-profiles">
@@ -75,7 +84,7 @@
             <div class="with-info-label">
               <label for="color-blindness-select"><strong>Filtro Base:</strong></label>
               <button type="button" class="info-btn">?
-                <span class="info-btn-text">Aqui você pode escolher um filtro de daltonismo para usar como base</span>
+                <span class="info-btn-text">Escolha um filtro inicial que corresponda ao seu tipo de daltonismo. Ele servirá como base para os ajustes visuais do seu perfil.</span>
               </button>
             </div>
             <select id="color-blindness-select">
@@ -141,8 +150,7 @@
             <div class="with-info-label">
               <label>Mapeamento de Cores:</label>
               <button type="button" class="info-btn">?
-                <span class="info-btn-text">Crie seu próprio mapeamento de cores para seu filtro. 
-                  Ative o mapeamento para aplicá-lo em seu perfil</span>
+                <span class="info-btn-text">Indique quais cores você tem dificuldade em diferenciar e selecione alternativas mais visíveis para seu tipo de visão.</span>
               </button>
             </div>
             <div class="mapping-toggle">
@@ -158,7 +166,7 @@
             <div class="mapper1">
               <label for="color1-mapper" class="mapping-label">
                 Cor Original (Vermelho)
-                <input type="color" value="#ff0000" disabled class="color-selector">
+                <input type="color" value="#ff0000" disabled class="color-selector-disabled">
                 -->
                 <input type="color" id="color1-mapper" value="#ff0000" class="color-selector">
               </label>
@@ -166,7 +174,7 @@
             <div class="mapper2">
               <label for="color2-mapper" class="mapping-label">
                 Cor Original (Verde)<span style="opacity: 0;">......</span>
-                <input type="color" value="#00ff00" disabled class="color-selector">
+                <input type="color" value="#00ff00" disabled class="color-selector-disabled">
                 -->
                 <input type="color" id="color2-mapper" value="#00ff00" class="color-selector">
               </label>
@@ -174,7 +182,7 @@
             <div class="mapper3">
               <label for="color3-mapper" class="mapping-label">
                 Cor Original (Azul)<span style="opacity: 0;">........</span>
-                <input type="color" value="#0000ff" disabled class="color-selector">
+                <input type="color" value="#0000ff" disabled class="color-selector-disabled">
                 -->
                 <input type="color" id="color3-mapper" value="#0000ff" class="color-selector">
               </label>

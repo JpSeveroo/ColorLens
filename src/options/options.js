@@ -50,20 +50,29 @@ function initializeTabs() {
 }
 
 /* ---------- Botões ---------- */
-const previewContainer = document.querySelector(".preview-img");
+const previewContainer = document.querySelector(".preview-container");
 
 // Cria imagem de pré-visualização se não existir
 if (previewContainer && previewContainer.children.length === 0) {
-  const img = document.createElement("img");
-  img.src = "../../assets/images/preview.avif"; // substitua se necessário
-  img.alt = "Prévia de ajustes visuais";
-  img.style.width = "300px";
-  img.style.borderRadius = "10px";
-  img.style.transition = "filter 0.3s ease, background-color 0.3s ease";
-  previewContainer.appendChild(img);
+  const list = [
+    "../../assets/images/imagem balao teste 1.jpg",
+    "../../assets/images/lapiz de cor 4k.jpg",
+    "../../assets/images/arara 4k1.jpeg"
+  ];
+  for (let i = 0; i < 3; i++) {
+    const img = document.createElement("img");
+    img.src = list[i]; // substitua se necessário
+    img.alt = "Prévia de ajustes visuais";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.style.borderRadius = "inherit";
+    img.style.transition = "filter 0.3s ease, background-color 0.3s ease";
+    previewContainer.appendChild(img);
+  }
 }
 
-const previewImg = previewContainer?.querySelector("img");
+const previewImgs = previewContainer?.querySelectorAll("img");
 
 const profileName = document.getElementById("profile-name-input");
 const baseFilter = document.getElementById("color-blindness-select");
@@ -111,7 +120,7 @@ resetBtn.addEventListener("click", (e) => {
   // Sincroniza TODAS as atualizações visuais
   updateSliderLook(contrastSlider, contrastValueInput);
   updateSliderLook(saturationSlider, saturationValueInput);
-  applyVisualEffects(previewImg); // Aplica filtros (com 'none') e modos (desligados)
+  applyVisualEffects(previewImgs); // Aplica filtros (com 'none') e modos (desligados)
   applyColorMapping();
 });
 
@@ -120,12 +129,12 @@ function initializeSliders() {
   if (contrastSlider && saturationSlider) {
     updateSliderLook(contrastSlider, contrastValueInput);
     updateSliderLook(saturationSlider, saturationValueInput);
-    applyVisualEffects(previewImg);
+    applyVisualEffects(previewImgs);
 
     contrastSlider.addEventListener("input", () => {
       contrastValueInput.value = contrastSlider.value;
       updateSliderLook(contrastSlider, contrastValueInput);
-      applyVisualEffects(previewImg);
+      applyVisualEffects(previewImgs);
       saveVisualSettings();
     });
 
@@ -136,14 +145,14 @@ function initializeSliders() {
       contrastValueInput.value = value;
       contrastSlider.value = value;
       updateSliderLook(contrastSlider, contrastValueInput);
-      applyVisualEffects(previewImg);
+      applyVisualEffects(previewImgs);
       saveVisualSettings();
     });
 
     saturationSlider.addEventListener("input", () => {
       saturationValueInput.value = saturationSlider.value;
       updateSliderLook(saturationSlider, saturationValueInput);
-      applyVisualEffects(previewImg);
+      applyVisualEffects(previewImgs);
       saveVisualSettings();
     });
 
@@ -154,7 +163,7 @@ function initializeSliders() {
       saturationValueInput.value = value;
       saturationSlider.value = value;
       updateSliderLook(saturationSlider, saturationValueInput);
-      applyVisualEffects(previewImg);
+      applyVisualEffects(previewImgs);
       saveVisualSettings();
     });
   }
@@ -164,7 +173,7 @@ const colorBlindnessSelect = document.getElementById("color-blindness-select");
 
 if (colorBlindnessSelect) {
   colorBlindnessSelect.addEventListener("change", () => {
-    applyVisualEffects(previewImg);
+    applyVisualEffects(previewImgs);
     saveVisualSettings(); // salva o filtro no storage
   });
 }
@@ -180,8 +189,8 @@ function updateSliderLook(slider, valueInput) {
 }
 
 /* ---------- Aplica contraste, saturação e modos ---------- */
-function applyVisualEffects(previewImg) {
-  if (!previewImg) return;
+function applyVisualEffects(previewImgs) {
+  if (!previewImgs) return;
 
   // 1. Coleta TODOS os valores
   const contrast = document.getElementById("contrast").value;
@@ -238,32 +247,36 @@ function applyVisualEffects(previewImg) {
   }
 
   // 4. Aplica o fundo
-  previewImg.style.backgroundColor = backgroundColor;
+  previewImgs.forEach((img) => {
+    img.style.backgroundColor = backgroundColor;
+  });
 
   // 5. Aplica TODOS os filtros de uma vez na ordem correta
-  previewImg.style.filter = `
+  previewImgs.forEach((img) => {
+    img.style.filter = `
         ${filterCSS}
         contrast(${contrast}%)
         saturate(${saturation}%)
         brightness(${brightness}%)
         hue-rotate(${hueRotate}deg)
     `;
+  });
 }
 
 /* ---------- Modos: Leitura e Noturno ---------- */
 function initializeModeToggles() {
   const readingToggle = document.getElementById("reading-mode");
   const nightToggle = document.getElementById("night-vision");
-  const previewImg = document.querySelector(".preview-img img");
+  const previewImgs = document.querySelectorAll(".preview-img img");
 
   if (readingToggle && nightToggle) {
     readingToggle.addEventListener("change", () => {
-      applyVisualEffects(previewImg);
+      applyVisualEffects(previewImgs);
       saveVisualSettings();
     });
 
     nightToggle.addEventListener("change", () => {
-      applyVisualEffects(previewImg);
+      applyVisualEffects(previewImgs);
       saveVisualSettings();
     });
   }
@@ -386,6 +399,11 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
       const profiles = data.userProfiles || [];
       const existingIndex = profiles.findIndex((p) => p.name === profileName);
 
+      if (profiles.length >= 6 && existingIndex === -1) {
+        alert("Limite de 6 perfis atingido. Exclua um perfil existente para salvar um novo.");
+        return;
+      }
+
       if (existingIndex >= 0) {
         if (!confirm("Já existe um perfil com esse nome. Deseja sobrescrevê-lo?")) return;
         profiles[existingIndex] = profileData; // Atualiza
@@ -432,12 +450,14 @@ function initializeColorMapping() {
 
 /* ---------- Aplica as cores mapeadas na imagem ---------- */
 function applyColorMapping() {
-  const overlay = document.querySelector(".color-overlay");
-  if (!overlay) return;
+  const overlays = document.querySelectorAll(".color-overlay");
+  if (!overlays) return;
 
   const isEnabled = document.getElementById('enable-color-mapping').checked;
   if (!isEnabled) {
-    overlay.style.background = 'none';
+    overlays.forEach(el => {
+      el.style.background = 'none';
+    });
     return;
   }
 
@@ -446,7 +466,9 @@ function applyColorMapping() {
   const blue = document.getElementById("color3-mapper").value;
 
   // Cria gradiente suave entre as cores mapeadas
-  overlay.style.background = `linear-gradient(135deg, ${red} 0%, ${green} 50%, ${blue} 100%)`;
+  overlays.forEach(el => {
+    el.style.background = `linear-gradient(135deg, ${red} 0%, ${green} 50%, ${blue} 100%)`;
+  });
 }
 
 /* ---------- Salva apenas o mapeamento ---------- */
@@ -546,7 +568,7 @@ function populateProfileSelector() {
 
       updateSliderLook(contrastRange, contrastInput);
       updateSliderLook(saturationRange, saturationInput);
-      applyVisualEffects(document.querySelector(".preview-img img"));
+      applyVisualEffects(document.querySelectorAll(".preview-img img"));
       applyColorMapping();
     });
   });
