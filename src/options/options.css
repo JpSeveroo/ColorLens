@@ -357,7 +357,8 @@ input:checked + .slider:before {
 }
 
 /* COLOR MAPPING */
-.color-selector {
+.color-selector,
+.color-selector-disabled {
   margin-left: 10px;
   border: none;
   border-radius: 8px;
@@ -365,6 +366,10 @@ input:checked + .slider:before {
   height: 24px;
   cursor: pointer;
   background: transparent;
+}
+
+.color-selector-disabled {
+  cursor: default;
 }
 
 .color-mapping label {
@@ -474,23 +479,37 @@ input[type="submit"]:active {
 }
 
 /* IMAGEM PREVIEW */
-.preview-img {
-  position: relative;
-  display: flex; 
-  align-items: center; /* Centraliza verticalmente (se tiver altura) */
-  justify-content: center; /* Centraliza horizontalmente */
-  width: fit-content;
-  margin: 20px auto;
-  max-width: 400px; /* opcional, define um limite */
+.preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  padding: 20px;
 }
 
-.preview-img img {
-  width: 300px;
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px; /* opcional: cantos arredondados */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* opcional: sombra leve */
+/* Card padrão */
+.preview-img {
+  position: relative;
+  width: 260px;          /* largura fixa igual para todos */
+  height: 260px;         /* altura igual */
+  border-radius: 18px;
+  overflow: hidden;      /* IMPORTANTE: recorta a imagem */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  background: #1e1b40;   /* cor de fundo enquanto carrega */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+/* Imagem recortada proporcional */
+.preview-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;     /* mantém proporção sem distorcer */
+  border-radius: inherit;
+}
+
 
 .color-overlay {
   position: absolute;
@@ -503,7 +522,6 @@ input[type="submit"]:active {
   mix-blend-mode: overlay;   /* mistura as cores */
   opacity: 0.7;
   transition: background 0.3s ease;
-  padding: 10px;
 }
 
 .edit-profile {
