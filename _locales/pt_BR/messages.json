@@ -1,18 +1,70 @@
 {
-    "extensionName": {
-        "message": "ColorLens",
-        "description": "O nome da extensão."
-    },
-    "extensionDescription": {
-        "message": "Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades.",
-        "description": "A descrição da extensão que aparece no popup."
-    },
-    "genericFilters": {
-        "message": "Filtros Genéricos:",
-        "description": "Título para a seção de filtros genéricos."
-    },
-    "resetButton": {
-        "message": "Resetar",
-        "description": "Texto para o botão de reset."
-    }
+  "extensionName": {
+    "message": "ColorLens",
+    "description": "O nome da extensão."
+  },
+  "extensionDescription": {
+    "message": "Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades.",
+    "description": "A descrição da extensão que aparece no popup."
+  },
+  "defaultFiltersTab": {
+    "message": "Filtros Padrões",
+    "description": "Rótulo para a aba de Filtros Padrões."
+  },
+  "quickAdjustmentsTab": {
+    "message": "Ajustes Rápidos",
+    "description": "Rótulo para a aba de Ajustes Rápidos."
+  },
+  "customizationTab": {
+    "message": "Personalização",
+    "description": "Rótulo para a aba de Personalização."
+  },
+  "resetButton": {
+    "message": "Resetar",
+    "description": "Rótulo para o botão de resetar."
+  },
+  
+  /* --- Conteúdo da Aba 1: Filtros Padrões --- */
+  "genericFiltersTitle": {
+    "message": "Filtros Genéricos:",
+    "description": "Título para a seção de filtros genéricos."
+  },
+  "protanopiaFilter": { "message": "Protanopia" },
+  "deuteranopiaFilter": { "message": "Deuteranopia" },
+  "tritanopiaFilter": { "message": "Tritanopia" },
+  "protanomalyFilter": { "message": "Protanomalia" },
+  "deuteranomalyFilter": { "message": "Deuteranomalia" },
+  "tritanomalyFilter": { "message": "Tritanomalia" },
+  "achromatopsiaFilter": { "message": "Acromatopsia" },
+  "monochromacyFilter": { "message": "Monocromia" },
+  
+  /* --- Conteúdo da Aba 2: Ajustes Rápidos --- */
+  "adjustmentsTitle": {
+    "message": "Ajustes:",
+    "description": "Título para a seção de ajustes (Contraste, Saturação)."
+  },
+  "contrastLabel": { "message": "Contraste" },
+  "saturationLabel": { "message": "Saturação" },
+  "specialModesTitle": {
+    "message": "Modos Especiais:",
+    "description": "Título para a seção de Modos Especiais."
+  },
+  "optimizedReadingModeLabel": { "message": "Modo de Leitura Otimizado" },
+  "optimizedReadingModeDescription": { "message": "Aplica fonte e espaçamento amigáveis." },
+  "nightModeLabel": { "message": "Modo Noturno" },
+  "nightModeDescription": { "message": "Reduz o cansaço visual." },
+  
+  /* --- Conteúdo da Aba 3: Personalização --- */
+  "customFiltersTitle": {
+    "message": "Filtros Personalizados:",
+    "description": "Título da seção Filtros Personalizados."
+  },
+  "baseColorsTitle": {
+    "message": "Cores Base:",
+    "description": "Título da seção Cores Base."
+  },
+  "colorRed": { "message": "Vermelho" },
+  "colorGreen": { "message": "Verde" },
+  "colorBlue": { "message": "Azul" },
+  "resetColorsButton": { "message": "Resetar Cores" }
 }

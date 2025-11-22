@@ -7,13 +7,64 @@
     "message": "Apply filters to simulate different types of color blindness and other features.",
     "description": "The extension description that appears in the popup."
   },
-  "genericFilters": {
-    "message": "Generic Filters:",
-    "description": "Title for the generic filters section."
+  "defaultFiltersTab": {
+    "message": "Default Filters",
+    "description": "Label for the Default Filters tab."
+  },
+  "quickAdjustmentsTab": {
+    "message": "Quick Adjustments",
+    "description": "Label for the Quick Adjustments tab."
+  },
+  "customizationTab": {
+    "message": "Customization",
+    "description": "Label for the Customization tab."
   },
   "resetButton": {
     "message": "Reset",
     "description": "Label for the reset button."
-  }
+  },
   
+  /* --- Conteúdo da Aba 1: Default Filters --- */
+  "genericFiltersTitle": {
+    "message": "Generic Filters:",
+    "description": "Title for the generic filters section."
+  },
+  "protanopiaFilter": { "message": "Protanopia" },
+  "deuteranopiaFilter": { "message": "Deuteranopia" },
+  "tritanopiaFilter": { "message": "Tritanopia" },
+  "protanomalyFilter": { "message": "Protanomaly" },
+  "deuteranomalyFilter": { "message": "Deuteranomaly" },
+  "tritanomalyFilter": { "message": "Tritanomaly" },
+  "achromatopsiaFilter": { "message": "Achromatopsia" },
+  "monochromacyFilter": { "message": "Monochromacy" },
+  
+  /* --- Conteúdo da Aba 2: Quick Adjustments --- */
+  "adjustmentsTitle": {
+    "message": "Adjustments:",
+    "description": "Title for the adjustments section (Contrast, Saturation)."
+  },
+  "contrastLabel": { "message": "Contrast" },
+  "saturationLabel": { "message": "Saturation" },
+  "specialModesTitle": {
+    "message": "Special Modes:",
+    "description": "Title for the Special Modes section."
+  },
+  "optimizedReadingModeLabel": { "message": "Optimized Reading Mode" },
+  "optimizedReadingModeDescription": { "message": "Applies friendly font and spacing." },
+  "nightModeLabel": { "message": "Night Mode" },
+  "nightModeDescription": { "message": "Reduces eye strain." },
+  
+  /* --- Conteúdo da Aba 3: Customization --- */
+  "customFiltersTitle": {
+    "message": "Custom Filters:",
+    "description": "Title of the Custom Filters section."
+  },
+  "baseColorsTitle": {
+    "message": "Base Colors:",
+    "description": "Title of the Base Colors section."
+  },
+  "colorRed": { "message": "Red" },
+  "colorGreen": { "message": "Green" },
+  "colorBlue": { "message": "Blue" },
+  "resetColorsButton": { "message": "Reset Colors" }
 }
