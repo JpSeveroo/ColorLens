@@ -15,29 +15,74 @@ const loadSettings = async () => {
     });
 };
 
-// Carrega os filtros de cor compartilhados (arquivo JSON em utils)
-let COLOR_FILTERS_DATA = {};
-const filtersLoadedPromise = (async () => {
-    try {
-        const url = chrome.runtime.getURL('src/utils/filters.json');
-        const res = await fetch(url);
-        COLOR_FILTERS_DATA = await res.json();
-        console.log('COLOR_FILTERS_DATA carregado (content)');
-    } catch (err) {
-        console.warn('Falha ao carregar filtros compartilhados:', err);
-        COLOR_FILTERS_DATA = {};
-    }
-})();
+// Dados dos filtros de cor (copiados de utils/filters.js para evitar problemas de importação)
+const COLOR_FILTERS_DATA = {
+    'Protanopia': {
+        id: 'protanopia',
+        svg: `
+            <filter id="protanopia">
+                <feColorMatrix in="SourceGraphic" type="matrix"
+                    values="0.567, 0.433, 0, 0, 0 0.558, 0.442, 0, 0, 0 0, 0.242, 0.758, 0, 0 0, 0, 0, 1, 0"/>
+            </filter>
+        `
+    },
+    'Deuteranopia': {
+        id: 'deuteranopia',
+        svg: `
+            <filter id="deuteranopia">
+                <feColorMatrix in="SourceGraphic" type="matrix"
+                    values="0.625, 0.375, 0, 0, 0 0.7, 0.3, 0, 0, 0 0, 0.3, 0.7, 0, 0 0, 0, 0, 1, 0"/>
+            </filter>
+        `
+    },
+    'Tritanopia': {
+        id: 'tritanopia',
+        svg: `
+            <filter id="tritanopia">
+                <feColorMatrix in="SourceGraphic" type="matrix"
+                    values="0.95, 0.05, 0, 0, 0 0, 0.433, 0.567, 0, 0 0, 0.475, 0.525, 0, 0 0, 0, 0, 1, 0"/>
+            </filter>
+        `
+    },
+    'Protanomalia': {
+        id: 'protanomaly',
+        svg: `
+            <filter id="protanomaly">
+                <feColorMatrix in="SourceGraphic" type="matrix"
+                    values="0.817, 0.183, 0, 0, 0 0.333, 0.667, 0, 0, 0 0, 0.125, 0.875, 0, 0 0, 0, 0, 1, 0"/>
+            </filter>
+        `
+    },
+    'Deuteranomalia': {
+        id: 'deuteranomaly',
+        svg: `
+            <filter id="deuteranomaly">
+                <feColorMatrix in="SourceGraphic" type="matrix"
+                    values="0.8, 0.2, 0, 0, 0 0.258, 0.742, 0, 0, 0 0, 0.142, 0.858, 0, 0 0, 0, 0, 1, 0"/>
+            </filter>
+        `
+    },
+    'Tritanomalia': {
+        id: 'tritanomaly',
+        svg: `
+            <filter id="tritanomaly">
+                <feColorMatrix in="SourceGraphic" type="matrix"
+                    values="0.967, 0.033, 0, 0, 0 0, 0.733, 0.267, 0, 0 0, 0.183, 0.817, 0, 0 0, 0, 0, 1, 0"/>
+            </filter>
+        `
+    },
+    // Filtros que não dependem de SVG
+    'Achromatopsia': { id: 'achromatopsia', value: 'grayscale(100%)' },
+    'Monocromia': { id: 'monocromia', value: 'grayscale(100%)' },
+    'none': { id: 'none', value: '' }
+};
 console.log('ColorLens Content Script - Carregamento OK');
 /* Criando uma função response que pegará os requests do popup.js
 e aplicará os devidos filtros. Por isso coloquei esse parâmetro de settings
 para se referir aos requests do popup. */
 
 // Eu fui tentar fazer com um arquivo svg à parte mas não deu certo
-async function injectSvgFilters() {
-    // Aguarda o carregamento do JSON de filtros
-    await filtersLoadedPromise;
-
+function injectSvgFilters() {
     // Verifica se os filtros já foram injetados pra não duplicar
     if (document.getElementById('colorlens-svg-filters')) {
         return;
@@ -51,50 +96,46 @@ async function injectSvgFilters() {
     
     // Pega todas as definições de filtro do nosso objeto e as adiciona ao SVG
     for (const key in COLOR_FILTERS_DATA) {
-        const entry = COLOR_FILTERS_DATA[key];
-        if (entry && entry.svg) {
-            defs.innerHTML += entry.svg;
+        if (COLOR_FILTERS_DATA[key].svg) {
+            defs.innerHTML += COLOR_FILTERS_DATA[key].svg;
         }
     }
 
     svgContainer.appendChild(defs);
+    
+    // CORREÇÃO: Usar document.documentElement (o elemento <html>) é mais robusto
+    // para injetar recursos globais como definições de filtros SVG, garantindo que
+    // eles estejam disponíveis para o CSS antes que o <body> esteja totalmente carregado.
     document.documentElement.appendChild(svgContainer);
 }
 
 
-// Substitua a função applyFilters antiga por esta:
+// Função que aplica os estilos com base nas configurações recebidas
 const applyFilters = (settings) => {
     const { filter, contrast, saturation, readingMode, nightVision } = settings;
 
     let filterString = '';
 
-    // Busca o filtro de cor no objeto (normaliza para lowercase id)
-    const key = (filter || 'none').toLowerCase();
-    const colorFilterData = COLOR_FILTERS_DATA[key] || COLOR_FILTERS_DATA['none'] || {};
+    // Busca o filtro de cor no objeto
+    const colorFilterData = COLOR_FILTERS_DATA[filter] || COLOR_FILTERS_DATA['none'];
 
+    // Se for um filtro SVG, usa a sintaxe de URL com o ID (#)
     if (colorFilterData.svg) {
         filterString += `url(#${colorFilterData.id}) `;
-    } else if (colorFilterData.value) {
+    } 
+    // Se for um valor CSS direto (como grayscale), usa o valor
+    else if (colorFilterData.value) {
         filterString += `${colorFilterData.value} `;
     }
     
-    // 2. Ajustes do Usuário (Sliders)
-    // O contraste e saturação escolhidos no popup entram aqui
+    // Adiciona os filtros de ajuste
     filterString += `contrast(${contrast}%) `;
     filterString += `saturate(${saturation}%) `;
 
-    // 3. Modo Noturno (Integrado ao JS)
-    // Se estiver ativo, ADICIONAMOS o escurecimento e o sepia na "receita" do filtro
-    if (nightVision) {
-        // brightness(80%): Escurece
-        // sepia(20%): Conforto visual (amarelado)
-        filterString += `brightness(80%) sepia(20%) `;
-    }
-
-    // Aplica a mistura completa no HTML
+    // Aplica a string final de filtros ao elemento raiz do HTML
     document.documentElement.style.filter = filterString.trim();
 
-    // Lógica para classes de estilo (Layout e Background)
+    // Lógica para o modo de leitura
     if (readingMode) {
         document.body.classList.add('colorlens-reading-mode');
     } else {
@@ -102,7 +143,17 @@ const applyFilters = (settings) => {
     }
 
     if (nightVision) {
-        document.documentElement.classList.add('colorlens-night-vision');
+        // ANTES DE APLICAR, VERIFICA Essa casseta:
+        const isDark = isPageAlreadyDark();
+
+        if (isDark) {
+            console.log("ColorLens: Página já é escura. Modo noturno inteligente ignorou a inversão.");
+            // Remove a classe caso ela já estivesse lá por engano
+            document.documentElement.classList.remove('colorlens-night-vision');
+        } else {
+            // Página é clara, pode inverter!
+            document.documentElement.classList.add('colorlens-night-vision');
+        }
     } else {
         document.documentElement.classList.remove('colorlens-night-vision');
     }
@@ -114,11 +165,10 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     if (request.action === 'applySettings' && request.settings) {
         console.log('Configurações recebidas do popup:', request.settings);
         // Garante que os filtros SVG existam na página antes de aplicá-los
-        injectSvgFilters().then(() => {
-            injectUtilityStyles();
-            applyFilters(request.settings);
-            applyCustomColors(request.settings.customColors);
-        });
+        injectSvgFilters();
+        injectUtilityStyles();
+        applyFilters(request.settings);
+        applyCustomColors(request.settings.customColors);
         sendResponse({ status: 'settings applied' });
     } else {
         sendResponse({ status: 'ignoring message' });
@@ -310,12 +360,10 @@ function applyCustomColors(colors) {
 // Aplica as configurações salvas quando o script de conteúdo é carregado
 loadSettings().then(settings => {
     if (Object.keys(settings).length > 0) {
-        // Garantir que os filtros foram carregados e injetados antes de aplicar
-        injectSvgFilters().then(() => {
-            injectUtilityStyles();
-            applyFilters(settings);
-            applyCustomColors(settings.customColors);
-        });
+        injectSvgFilters();
+        injectUtilityStyles();
+        applyFilters(settings);
+        applyCustomColors(settings.customColors);
     }
 });
 
@@ -369,40 +417,51 @@ function isPageAlreadyDark() {
     return brightness < 50;
 }
 
-// Substitua a função injectUtilityStyles antiga por esta:
 function injectUtilityStyles() {
     const styleSheetId = 'colorlens-utility-styles';
-    
-    // Remove estilo antigo para garantir atualização
-    const existingStyle = document.getElementById(styleSheetId);
-    if (existingStyle) {
-        existingStyle.remove();
+    if (document.getElementById(styleSheetId)) {
+        return; // Já foi injetado
     }
 
     const style = document.createElement('style');
     style.id = styleSheetId;
 
     style.textContent = `
-        /* --- MODO NOTURNO (Apenas Background) --- */
+        /* --- MODO NOTURNO APRIMORADO --- */
+
         html.colorlens-night-vision {
-            /* Removemos o 'filter' daqui! Agora quem manda nele é o JS. */
-            /* Apenas garantimos que o fundo da página seja escuro */
-            background-color: #121212 !important;
+            background-color: #121212 !important; /* Um cinza muito escuro, melhor que preto absoluto */
+            filter: invert(1) hue-rotate(180deg) !important;
+            scrollbar-color: #454a4d #202324 !important; /* Firefox scrollbar */
         }
 
-        /* --- MODO DE LEITURA --- */
+        /* Proteção contra inversão dupla: "Des-inverte" mídias para voltarem ao normal */
+        html.colorlens-night-vision img,
+        html.colorlens-night-vision video,
+        html.colorlens-night-vision iframe,
+        html.colorlens-night-vision canvas,
+        html.colorlens-night-vision svg,
+        html.colorlens-night-vision :not(object):not(body)[style*="background-image"] {
+            filter: invert(1) hue-rotate(180deg) !important;
+        }
+
+        /* Corrige sombras que ficam estranhas invertidas */
+        html.colorlens-night-vision * {
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        /* --- MODO DE LEITURA (Mantido como estava) --- */
         body.colorlens-reading-mode {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
-                        "Segoe UI", Roboto, Helvetica, Arial, 
-                        sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
             font-size: 1.20rem !important; 
             line-height: 1.8 !important; 
             letter-spacing: 0.05em !important;
             text-align: left !important;
-            background-color: #fdf6e3 !important; 
-            color: #333 !important;
-            max-width: 900px !important;
+            max-width: 900px !important; /* Limita largura para leitura confortável */
             margin: 0 auto !important;
+            background-color: #fdf6e3 !important; /* Cor de papel suave */
+            color: #333 !important;
             padding: 2rem !important;
         }
 
