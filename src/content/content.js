@@ -62,7 +62,7 @@ async function injectSvgFilters() {
 }
 
 
-// Função que aplica os estilos com base nas configurações recebidas
+// Substitua a função applyFilters antiga por esta:
 const applyFilters = (settings) => {
     const { filter, contrast, saturation, readingMode, nightVision } = settings;
 
@@ -72,23 +72,29 @@ const applyFilters = (settings) => {
     const key = (filter || 'none').toLowerCase();
     const colorFilterData = COLOR_FILTERS_DATA[key] || COLOR_FILTERS_DATA['none'] || {};
 
-    // Se for um filtro SVG, usa a sintaxe de URL com o ID (#)
     if (colorFilterData.svg) {
         filterString += `url(#${colorFilterData.id}) `;
-    } 
-    // Se for um valor CSS direto (como grayscale), usa o valor
-    else if (colorFilterData.value) {
+    } else if (colorFilterData.value) {
         filterString += `${colorFilterData.value} `;
     }
     
-    // Adiciona os filtros de ajuste
+    // 2. Ajustes do Usuário (Sliders)
+    // O contraste e saturação escolhidos no popup entram aqui
     filterString += `contrast(${contrast}%) `;
     filterString += `saturate(${saturation}%) `;
 
-    // Aplica a string final de filtros ao elemento raiz do HTML
+    // 3. Modo Noturno (Integrado ao JS)
+    // Se estiver ativo, ADICIONAMOS o escurecimento e o sepia na "receita" do filtro
+    if (nightVision) {
+        // brightness(80%): Escurece
+        // sepia(20%): Conforto visual (amarelado)
+        filterString += `brightness(80%) sepia(20%) `;
+    }
+
+    // Aplica a mistura completa no HTML
     document.documentElement.style.filter = filterString.trim();
 
-    // Lógica para o modo de leitura
+    // Lógica para classes de estilo (Layout e Background)
     if (readingMode) {
         document.body.classList.add('colorlens-reading-mode');
     } else {
@@ -96,17 +102,7 @@ const applyFilters = (settings) => {
     }
 
     if (nightVision) {
-        // ANTES DE APLICAR, VERIFICA Essa casseta:
-        const isDark = isPageAlreadyDark();
-
-        if (isDark) {
-            console.log("ColorLens: Página já é escura. Modo noturno inteligente ignorou a inversão.");
-            // Remove a classe caso ela já estivesse lá por engano
-            document.documentElement.classList.remove('colorlens-night-vision');
-        } else {
-            // Página é clara, pode inverter!
-            document.documentElement.classList.add('colorlens-night-vision');
-        }
+        document.documentElement.classList.add('colorlens-night-vision');
     } else {
         document.documentElement.classList.remove('colorlens-night-vision');
     }
@@ -373,51 +369,40 @@ function isPageAlreadyDark() {
     return brightness < 50;
 }
 
+// Substitua a função injectUtilityStyles antiga por esta:
 function injectUtilityStyles() {
     const styleSheetId = 'colorlens-utility-styles';
-    if (document.getElementById(styleSheetId)) {
-        return; // Já foi injetado
+    
+    // Remove estilo antigo para garantir atualização
+    const existingStyle = document.getElementById(styleSheetId);
+    if (existingStyle) {
+        existingStyle.remove();
     }
 
     const style = document.createElement('style');
     style.id = styleSheetId;
 
     style.textContent = `
-        /* --- MODO NOTURNO APRIMORADO --- */
-
+        /* --- MODO NOTURNO (Apenas Background) --- */
         html.colorlens-night-vision {
-            background-color: #121212 !important; /* Um cinza muito escuro, melhor que preto absoluto */
-            filter: invert(1) hue-rotate(180deg) !important;
-            scrollbar-color: #454a4d #202324 !important; /* Firefox scrollbar */
+            /* Removemos o 'filter' daqui! Agora quem manda nele é o JS. */
+            /* Apenas garantimos que o fundo da página seja escuro */
+            background-color: #121212 !important;
         }
 
-        /* Proteção contra inversão dupla: "Des-inverte" mídias para voltarem ao normal */
-        html.colorlens-night-vision img,
-        html.colorlens-night-vision video,
-        html.colorlens-night-vision iframe,
-        html.colorlens-night-vision canvas,
-        html.colorlens-night-vision svg,
-        html.colorlens-night-vision :not(object):not(body)[style*="background-image"] {
-            filter: invert(1) hue-rotate(180deg) !important;
-        }
-
-        /* Corrige sombras que ficam estranhas invertidas */
-        html.colorlens-night-vision * {
-            box-shadow: none !important;
-            text-shadow: none !important;
-        }
-
-        /* --- MODO DE LEITURA (Mantido como estava) --- */
+        /* --- MODO DE LEITURA --- */
         body.colorlens-reading-mode {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
+                        "Segoe UI", Roboto, Helvetica, Arial, 
+                        sans-serif !important;
             font-size: 1.20rem !important; 
             line-height: 1.8 !important; 
             letter-spacing: 0.05em !important;
             text-align: left !important;
-            max-width: 900px !important; /* Limita largura para leitura confortável */
-            margin: 0 auto !important;
-            background-color: #fdf6e3 !important; /* Cor de papel suave */
+            background-color: #fdf6e3 !important; 
             color: #333 !important;
+            max-width: 900px !important;
+            margin: 0 auto !important;
             padding: 2rem !important;
         }
 

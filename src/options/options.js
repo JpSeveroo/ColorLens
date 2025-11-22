@@ -224,13 +224,14 @@ function updateSliderLook(slider, valueInput) {
 function applyVisualEffects(previewImgs) {
   if (!previewImgs) return;
 
-  // 1. Coleta TODOS os valores
+  // 1. Coleta TODOS os valores dos inputs
   const contrast = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
   const filterType = document.getElementById("color-blindness-select").value;
 
-  // 2. Lógica dos Modos (Brilho, Saturação, Cor de Fundo)
+  // 2. Lógica dos Modos (Brilho, Saturação, Sepia, Cor de Fundo)
   let brightness = 100;
+  let sepia = 0;
   let hueRotate = 0;
   let backgroundColor = "transparent";
 
@@ -253,10 +254,15 @@ function applyVisualEffects(previewImgs) {
     filterCSS = '';
   }
 
-  // 4. Aplica o fundo
-  previewImgs.forEach((img) => {
-    img.style.backgroundColor = backgroundColor;
-  });
+  // 4. Aplica o fundo (importante para o modo noturno funcionar no preview)
+  // Se for uma NodeList (várias imagens), itera sobre elas. Se for um elemento só, aplica direto.
+  if (previewImgs.length !== undefined) {
+      previewImgs.forEach((img) => {
+        img.style.backgroundColor = backgroundColor;
+      });
+  } else {
+      previewImgs.style.backgroundColor = backgroundColor;
+  }
 
   // 5. Aplica TODOS os filtros de uma vez na ordem correta
   previewImgs.forEach((img) => {
