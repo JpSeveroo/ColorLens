@@ -85,7 +85,7 @@ const renderCustomFilters = (profiles) => {
 /**
  * Anexa o listener de clique para a grade de filtros personalizados.
  */
-const attachCustomFilterListener = (grid, standardFilterButtons, customProfileButtons, controllers) => {
+const attachCustomFilterListener = (grid, standardFilterButtons, customProfileButtons, controllers, stateUpdater) => {
     if (!grid) return;
 
     grid.addEventListener('click', (event) => {
@@ -107,7 +107,9 @@ const attachCustomFilterListener = (grid, standardFilterButtons, customProfileBu
             // Se já estava ativo e foi clicado, desativa. A UI fica com os últimos valores.
         }
 
-        gatherAndSendState();
+        if (typeof stateUpdater === 'function') {
+            stateUpdater();
+        }
     });
 };
 
@@ -267,7 +269,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     renderCustomFilters(customProfiles);
     const customProfileButtons = document.querySelectorAll(`.${CUSTOM_PROFILE_CLASS}`); // Seleciona os botões recém-renderizados
-    attachCustomFilterListener(document.getElementById('custom-filters-grid'), standardFilterButtons, customProfileButtons, controllers);
+    attachCustomFilterListener(document.getElementById('custom-filters-grid'), standardFilterButtons, customProfileButtons, controllers, gatherAndSendState);
 
 
     // --- MODIFICADA: Lógica dos Botões de Filtro Padrão ---
