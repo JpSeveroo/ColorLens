@@ -17,8 +17,7 @@ const loadSettings = async () => {
 }; 
 
 const loadCustomProfiles = async () => {
-    return new  Promise((resolve) => {
-        // User profiles are stored in chrome.storage.local under the key 'userProfiles'
+    return new Promise((resolve) => {
         chrome.storage.local.get(['userProfiles'], (result) => {
             resolve(result.userProfiles || []);
         });
@@ -27,11 +26,6 @@ const loadCustomProfiles = async () => {
 
 const CUSTOM_PROFILE_CLASS = 'custom-profile-btn';
 
-/**
- * Aplica os dados de um perfil salvo (criado na options.js) aos elementos de UI do popup.
- * @param {object} profileData - O objeto de perfil completo.
- * @param {object} controllers - Os objetos controladores para atualização visual.
- */
 const applyProfileToUI = (profileData, controllers) => {
     // 1. Atualiza Sliders e Inputs de Ajuste
     const visualContrast = mapFunctionalToVisual(profileData.contrast || 100);
