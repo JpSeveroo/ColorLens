@@ -1,22 +1,58 @@
 document.addEventListener("DOMContentLoaded", () => {
-  initializeTabs();
-  initializeSliders();
-  initializeModeToggles();
+  // Carrega os filtros compartilhados antes de inicializar a UI
+  loadSharedFilters().then(() => {
+    initializeTabs();
+    initializeSliders();
+    initializeModeToggles();
 
-  initializeColorMapping();
-  populateProfileSelector();
-  initializeDeleteProfile();
-  initializeRenameProfile();
-  loadColorMapping();
+    initializeColorMapping();
+    populateProfileSelector();
+    initializeDeleteProfile();
+    initializeRenameProfile();
+    loadColorMapping();
 
-  try {
-    loadAllSavedSettings();
-  } catch (error) {
-    console.warn("Erro ao carregar configurações:", error);
-  }
+    try {
+      loadAllSavedSettings();
+    } catch (error) {
+      console.warn("Erro ao carregar configurações:", error);
+    }
+  });
 });
 
 /* ---------- Navegação entre abas ---------- */
+
+// --- Carregamento dos filtros compartilhados (JSON) ---
+let SHARED_FILTERS = {};
+async function loadSharedFilters() {
+  try {
+    const url = chrome.runtime.getURL('src/utils/filters.json');
+    const res = await fetch(url);
+    SHARED_FILTERS = await res.json();
+    injectSvgFiltersForOptions();
+    console.log('Filtros compartilhados carregados (options)');
+  } catch (err) {
+    console.warn('Não foi possível carregar filtros compartilhados:', err);
+    SHARED_FILTERS = {};
+  }
+}
+
+function injectSvgFiltersForOptions() {
+  if (!SHARED_FILTERS) return;
+  if (document.getElementById('colorlens-svg-filters-options')) return;
+
+  const svgContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgContainer.id = 'colorlens-svg-filters-options';
+  svgContainer.style.display = 'none';
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  for (const key in SHARED_FILTERS) {
+    const entry = SHARED_FILTERS[key];
+    if (entry && entry.svg) defs.innerHTML += entry.svg;
+  }
+
+  svgContainer.appendChild(defs);
+  document.documentElement.appendChild(svgContainer);
+}
 function initializeTabs() {
   const buttons = document.querySelectorAll(".options-btn");
   const sections = document.querySelectorAll(".content-section");
@@ -97,10 +133,6 @@ resetBtn.addEventListener("click", (e) => {
   saturationSlider.value = 100;
   if (contrastValueInput) contrastValueInput.value = 100;
   if (saturationValueInput) saturationValueInput.value = 100;
-
-  // Resetar Toggles
-  document.getElementById("reading-mode").checked = false;
-  document.getElementById("night-vision").checked = false;
 
   const overlay = document.querySelector(".color-overlay");
   overlay.style.background = "none";
@@ -195,8 +227,6 @@ function applyVisualEffects(previewImgs) {
   // 1. Coleta TODOS os valores
   const contrast = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
-  const readingMode = document.getElementById("reading-mode").checked;
-  const nightVision = document.getElementById("night-vision").checked;
   const filterType = document.getElementById("color-blindness-select").value;
 
   // 2. Lógica dos Modos (Brilho, Saturação, Cor de Fundo)
@@ -204,46 +234,23 @@ function applyVisualEffects(previewImgs) {
   let hueRotate = 0;
   let backgroundColor = "transparent";
 
-  if (readingMode) {
-    brightness = 110;
-    backgroundColor = "#fdf6e3"; // tom amarelado de papel
-  }
-
-  if (nightVision) {
-    brightness = 70;
-    hueRotate = 180;
-    backgroundColor = "#0d0d1a";
-  }
-
-  // 3. Lógica dos Filtros de Daltonismo
-  let filterCSS = "none";
-  switch (filterType) {
-    case "protanopia":
-      filterCSS = 'url("#protanopia")';
-      break;
-    case "deuteranopia":
-      filterCSS = 'url("#deuteranopia")';
-      break;
-    case "tritanopia":
-      filterCSS = 'url("#tritanopia")';
-      break;
-    case "protanomalia":
-      filterCSS = "grayscale(0.4) sepia(0.3) hue-rotate(-15deg)";
-      break;
-    case "deuteranomalia":
-      filterCSS = "grayscale(0.3) sepia(0.3) hue-rotate(-10deg)";
-      break;
-    case "tritanomalia":
-      filterCSS = "grayscale(0.3) sepia(0.4) hue-rotate(35deg)";
-      break;
-    case "achromatopsia":
-      filterCSS = "grayscale(100%)";
-      break;
-    case "monocromia":
-      filterCSS = "grayscale(80%) contrast(120%)";
-      break;
-    default:
-      filterCSS = ""; // As outras configs tbm podem ser alteradas, independente do filtro
+  // 3. Lógica dos Filtros de Daltonismo (usa os filtros carregados em SHARED_FILTERS)
+  let filterCSS = '';
+  try {
+    const key = (filterType || 'none').toLowerCase();
+    const entry = SHARED_FILTERS[key];
+    if (entry) {
+      if (entry.svg) {
+        filterCSS = `url("#${entry.id}")`;
+      } else if (entry.value) {
+        filterCSS = entry.value;
+      }
+    } else {
+      filterCSS = '';
+    }
+  } catch (err) {
+    console.warn('Erro ao aplicar filtro compartilhado:', err);
+    filterCSS = '';
   }
 
   // 4. Aplica o fundo
@@ -263,31 +270,10 @@ function applyVisualEffects(previewImgs) {
   });
 }
 
-/* ---------- Modos: Leitura e Noturno ---------- */
-function initializeModeToggles() {
-  const readingToggle = document.getElementById("reading-mode");
-  const nightToggle = document.getElementById("night-vision");
-  const previewImgs = document.querySelectorAll(".preview-img img");
-
-  if (readingToggle && nightToggle) {
-    readingToggle.addEventListener("change", () => {
-      applyVisualEffects(previewImgs);
-      saveVisualSettings();
-    });
-
-    nightToggle.addEventListener("change", () => {
-      applyVisualEffects(previewImgs);
-      saveVisualSettings();
-    });
-  }
-}
-
 /* ---------- Salva valores ---------- */
 function saveVisualSettings() {
   const contrast = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
-  const readingMode = document.getElementById("reading-mode").checked;
-  const nightVision = document.getElementById("night-vision").checked;
   const colorBlindness = document.getElementById(
     "color-blindness-select"
   ).value;
@@ -295,8 +281,6 @@ function saveVisualSettings() {
   const settings = {
     contrast,
     saturation,
-    readingMode,
-    nightVision,
     colorBlindness,
   };
 
@@ -324,8 +308,6 @@ function loadAllSavedSettings() {
             colorBlindness,
             contrast,
             saturation,
-            readingMode,
-            nightVision,
           } = data.visualSettings;
 
           const contrastSlider = document.getElementById("contrast");
@@ -333,8 +315,6 @@ function loadAllSavedSettings() {
           const contrastValueInput = document.getElementById("contrast-input");
           const saturationValueInput = document.getElementById("saturation-input");
           const previewImg = document.querySelector(".preview-img img");
-          const readingToggle = document.getElementById("reading-mode");
-          const nightToggle = document.getElementById("night-vision");
 
           if (colorBlindness) {
             document.getElementById("color-blindness-select").value =
@@ -347,9 +327,6 @@ function loadAllSavedSettings() {
             updateSliderLook(contrastSlider, contrastValueInput);
             updateSliderLook(saturationSlider, saturationValueInput);
           }
-
-          if (readingToggle) readingToggle.checked = !!readingMode;
-          if (nightToggle) nightToggle.checked = !!nightVision;
 
           applyVisualEffects(previewImg);
         }
@@ -383,8 +360,6 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
     baseFilter: document.getElementById("color-blindness-select").value,
     contrast: document.getElementById("contrast").value,
     saturation: document.getElementById("saturation").value,
-    readingMode: document.getElementById("reading-mode").checked,
-    nightVision: document.getElementById("night-vision").checked,
     colorMap: {
       red: document.getElementById("color1-mapper").value,
       green: document.getElementById("color2-mapper").value,
@@ -559,8 +534,6 @@ function populateProfileSelector() {
 
       contrastRange.value = profile.contrast;
       saturationRange.value = profile.saturation;
-      document.getElementById("reading-mode").checked = profile.readingMode;
-      document.getElementById("night-vision").checked = profile.nightVision;
       document.getElementById("color1-mapper").value = profile.colorMap.red;
       document.getElementById("color2-mapper").value = profile.colorMap.green;
       document.getElementById("color3-mapper").value = profile.colorMap.blue;

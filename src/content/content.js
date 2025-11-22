@@ -15,74 +15,29 @@ const loadSettings = async () => {
     });
 };
 
-// Dados dos filtros de cor (copiados de utils/filters.js para evitar problemas de importação)
-const COLOR_FILTERS_DATA = {
-    'Protanopia': {
-        id: 'protanopia',
-        svg: `
-            <filter id="protanopia">
-                <feColorMatrix in="SourceGraphic" type="matrix"
-                    values="0.567, 0.433, 0, 0, 0 0.558, 0.442, 0, 0, 0 0, 0.242, 0.758, 0, 0 0, 0, 0, 1, 0"/>
-            </filter>
-        `
-    },
-    'Deuteranopia': {
-        id: 'deuteranopia',
-        svg: `
-            <filter id="deuteranopia">
-                <feColorMatrix in="SourceGraphic" type="matrix"
-                    values="0.625, 0.375, 0, 0, 0 0.7, 0.3, 0, 0, 0 0, 0.3, 0.7, 0, 0 0, 0, 0, 1, 0"/>
-            </filter>
-        `
-    },
-    'Tritanopia': {
-        id: 'tritanopia',
-        svg: `
-            <filter id="tritanopia">
-                <feColorMatrix in="SourceGraphic" type="matrix"
-                    values="0.95, 0.05, 0, 0, 0 0, 0.433, 0.567, 0, 0 0, 0.475, 0.525, 0, 0 0, 0, 0, 1, 0"/>
-            </filter>
-        `
-    },
-    'Protanomalia': {
-        id: 'protanomaly',
-        svg: `
-            <filter id="protanomaly">
-                <feColorMatrix in="SourceGraphic" type="matrix"
-                    values="0.817, 0.183, 0, 0, 0 0.333, 0.667, 0, 0, 0 0, 0.125, 0.875, 0, 0 0, 0, 0, 1, 0"/>
-            </filter>
-        `
-    },
-    'Deuteranomalia': {
-        id: 'deuteranomaly',
-        svg: `
-            <filter id="deuteranomaly">
-                <feColorMatrix in="SourceGraphic" type="matrix"
-                    values="0.8, 0.2, 0, 0, 0 0.258, 0.742, 0, 0, 0 0, 0.142, 0.858, 0, 0 0, 0, 0, 1, 0"/>
-            </filter>
-        `
-    },
-    'Tritanomalia': {
-        id: 'tritanomaly',
-        svg: `
-            <filter id="tritanomaly">
-                <feColorMatrix in="SourceGraphic" type="matrix"
-                    values="0.967, 0.033, 0, 0, 0 0, 0.733, 0.267, 0, 0 0, 0.183, 0.817, 0, 0 0, 0, 0, 1, 0"/>
-            </filter>
-        `
-    },
-    // Filtros que não dependem de SVG
-    'Achromatopsia': { id: 'achromatopsia', value: 'grayscale(100%)' },
-    'Monocromia': { id: 'monocromia', value: 'grayscale(100%)' },
-    'none': { id: 'none', value: '' }
-};
+// Carrega os filtros de cor compartilhados (arquivo JSON em utils)
+let COLOR_FILTERS_DATA = {};
+const filtersLoadedPromise = (async () => {
+    try {
+        const url = chrome.runtime.getURL('src/utils/filters.json');
+        const res = await fetch(url);
+        COLOR_FILTERS_DATA = await res.json();
+        console.log('COLOR_FILTERS_DATA carregado (content)');
+    } catch (err) {
+        console.warn('Falha ao carregar filtros compartilhados:', err);
+        COLOR_FILTERS_DATA = {};
+    }
+})();
 console.log('ColorLens Content Script - Carregamento OK');
 /* Criando uma função response que pegará os requests do popup.js
 e aplicará os devidos filtros. Por isso coloquei esse parâmetro de settings
 para se referir aos requests do popup. */
 
 // Eu fui tentar fazer com um arquivo svg à parte mas não deu certo
-function injectSvgFilters() {
+async function injectSvgFilters() {
+    // Aguarda o carregamento do JSON de filtros
+    await filtersLoadedPromise;
+
     // Verifica se os filtros já foram injetados pra não duplicar
     if (document.getElementById('colorlens-svg-filters')) {
         return;
@@ -96,16 +51,13 @@ function injectSvgFilters() {
     
     // Pega todas as definições de filtro do nosso objeto e as adiciona ao SVG
     for (const key in COLOR_FILTERS_DATA) {
-        if (COLOR_FILTERS_DATA[key].svg) {
-            defs.innerHTML += COLOR_FILTERS_DATA[key].svg;
+        const entry = COLOR_FILTERS_DATA[key];
+        if (entry && entry.svg) {
+            defs.innerHTML += entry.svg;
         }
     }
 
     svgContainer.appendChild(defs);
-    
-    // CORREÇÃO: Usar document.documentElement (o elemento <html>) é mais robusto
-    // para injetar recursos globais como definições de filtros SVG, garantindo que
-    // eles estejam disponíveis para o CSS antes que o <body> esteja totalmente carregado.
     document.documentElement.appendChild(svgContainer);
 }
 
@@ -116,8 +68,9 @@ const applyFilters = (settings) => {
 
     let filterString = '';
 
-    // Busca o filtro de cor no objeto
-    const colorFilterData = COLOR_FILTERS_DATA[filter] || COLOR_FILTERS_DATA['none'];
+    // Busca o filtro de cor no objeto (normaliza para lowercase id)
+    const key = (filter || 'none').toLowerCase();
+    const colorFilterData = COLOR_FILTERS_DATA[key] || COLOR_FILTERS_DATA['none'] || {};
 
     // Se for um filtro SVG, usa a sintaxe de URL com o ID (#)
     if (colorFilterData.svg) {
@@ -165,10 +118,11 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     if (request.action === 'applySettings' && request.settings) {
         console.log('Configurações recebidas do popup:', request.settings);
         // Garante que os filtros SVG existam na página antes de aplicá-los
-        injectSvgFilters();
-        injectUtilityStyles();
-        applyFilters(request.settings);
-        applyCustomColors(request.settings.customColors);
+        injectSvgFilters().then(() => {
+            injectUtilityStyles();
+            applyFilters(request.settings);
+            applyCustomColors(request.settings.customColors);
+        });
         sendResponse({ status: 'settings applied' });
     } else {
         sendResponse({ status: 'ignoring message' });
@@ -360,10 +314,12 @@ function applyCustomColors(colors) {
 // Aplica as configurações salvas quando o script de conteúdo é carregado
 loadSettings().then(settings => {
     if (Object.keys(settings).length > 0) {
-        injectSvgFilters();
-        injectUtilityStyles();
-        applyFilters(settings);
-        applyCustomColors(settings.customColors);
+        // Garantir que os filtros foram carregados e injetados antes de aplicar
+        injectSvgFilters().then(() => {
+            injectUtilityStyles();
+            applyFilters(settings);
+            applyCustomColors(settings.customColors);
+        });
     }
 });
 
