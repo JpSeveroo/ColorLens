@@ -98,10 +98,6 @@ resetBtn.addEventListener("click", (e) => {
   if (contrastValueInput) contrastValueInput.value = 100;
   if (saturationValueInput) saturationValueInput.value = 100;
 
-  // Resetar Toggles
-  document.getElementById("reading-mode").checked = false;
-  document.getElementById("night-vision").checked = false;
-
   const overlay = document.querySelector(".color-overlay");
   overlay.style.background = "none";
 
