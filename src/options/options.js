@@ -192,15 +192,16 @@ function updateSliderLook(slider, valueInput) {
 function applyVisualEffects(previewImgs) {
   if (!previewImgs) return;
 
-  // 1. Coleta TODOS os valores
+  // 1. Coleta TODOS os valores dos inputs
   const contrast = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
   const readingMode = document.getElementById("reading-mode").checked;
   const nightVision = document.getElementById("night-vision").checked;
   const filterType = document.getElementById("color-blindness-select").value;
 
-  // 2. Lógica dos Modos (Brilho, Saturação, Cor de Fundo)
+  // 2. Lógica dos Modos (Brilho, Saturação, Sepia, Cor de Fundo)
   let brightness = 100;
+  let sepia = 0;
   let hueRotate = 0;
   let backgroundColor = "transparent";
 
@@ -210,9 +211,11 @@ function applyVisualEffects(previewImgs) {
   }
 
   if (nightVision) {
-    brightness = 70;
-    hueRotate = 180;
-    backgroundColor = "#0d0d1a";
+    // NOVA LÓGICA: Foco em conforto visual sem inverter cores
+    brightness = 70;       // Reduz o brilho da tela
+    sepia = 30;            // Adiciona tom quente para filtrar luz azul
+    backgroundColor = "#121212"; // Fundo escuro suave
+    // Removemos o hueRotate daqui para não distorcer o azul para laranja
   }
 
   // 3. Lógica dos Filtros de Daltonismo
@@ -243,24 +246,37 @@ function applyVisualEffects(previewImgs) {
       filterCSS = "grayscale(80%) contrast(120%)";
       break;
     default:
-      filterCSS = ""; // As outras configs tbm podem ser alteradas, independente do filtro
+      filterCSS = ""; 
   }
 
-  // 4. Aplica o fundo
-  previewImgs.forEach((img) => {
-    img.style.backgroundColor = backgroundColor;
-  });
+  // 4. Aplica o fundo (importante para o modo noturno funcionar no preview)
+  // Se for uma NodeList (várias imagens), itera sobre elas. Se for um elemento só, aplica direto.
+  if (previewImgs.length !== undefined) {
+      previewImgs.forEach((img) => {
+        img.style.backgroundColor = backgroundColor;
+      });
+  } else {
+      previewImgs.style.backgroundColor = backgroundColor;
+  }
 
-  // 5. Aplica TODOS os filtros de uma vez na ordem correta
-  previewImgs.forEach((img) => {
-    img.style.filter = `
-        ${filterCSS}
-        contrast(${contrast}%)
-        saturate(${saturation}%)
-        brightness(${brightness}%)
-        hue-rotate(${hueRotate}deg)
-    `;
-  });
+  // 5. Aplica a string final de filtros
+  // A ordem importa: filtros SVG primeiro, depois os ajustes visuais.
+  const finalFilter = `
+      ${filterCSS}
+      contrast(${contrast}%)
+      saturate(${saturation}%)
+      brightness(${brightness}%)
+      sepia(${sepia}%)
+      hue-rotate(${hueRotate}deg)
+  `;
+
+  if (previewImgs.length !== undefined) {
+      previewImgs.forEach((img) => {
+        img.style.filter = finalFilter;
+      });
+  } else {
+      previewImgs.style.filter = finalFilter;
+  }
 }
 
 /* ---------- Modos: Leitura e Noturno ---------- */

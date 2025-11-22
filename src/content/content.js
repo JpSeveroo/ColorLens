@@ -427,41 +427,41 @@ function injectUtilityStyles() {
     style.id = styleSheetId;
 
     style.textContent = `
-        /* --- MODO NOTURNO APRIMORADO --- */
-
+        /* --- MODO NOTURNO CORRIGIDO (Sem inversão de cor) --- */
+        
         html.colorlens-night-vision {
-            background-color: #121212 !important; /* Um cinza muito escuro, melhor que preto absoluto */
-            filter: invert(1) hue-rotate(180deg) !important;
-            scrollbar-color: #454a4d #202324 !important; /* Firefox scrollbar */
+            /* Em vez de inverter (que estraga fotos), nós aplicamos um filtro
+               que reduz o brilho (0.8), adiciona um tom sepia (0.2) para conforto
+               e reforça levemente o contraste (1.1).
+            */
+            filter: brightness(0.8) sepia(0.2) contrast(1.1) !important;
+            
+            /* Garante um fundo escuro por trás de tudo */
+            background-color: #121212 !important;
         }
 
-        /* Proteção contra inversão dupla: "Des-inverte" mídias para voltarem ao normal */
-        html.colorlens-night-vision img,
-        html.colorlens-night-vision video,
-        html.colorlens-night-vision iframe,
-        html.colorlens-night-vision canvas,
-        html.colorlens-night-vision svg,
-        html.colorlens-night-vision :not(object):not(body)[style*="background-image"] {
-            filter: invert(1) hue-rotate(180deg) !important;
-        }
+        /* IMPORTANTE: Removemos as regras antigas que tentavam "des-inverter" 
+           imagens (img, video), pois agora não estamos mais invertendo nada. 
+           As imagens ficarão apenas um pouco mais escuras, preservando as cores originais.
+        */
 
-        /* Corrige sombras que ficam estranhas invertidas */
-        html.colorlens-night-vision * {
-            box-shadow: none !important;
-            text-shadow: none !important;
-        }
-
-        /* --- MODO DE LEITURA (Mantido como estava) --- */
+        /* --- MODO DE LEITURA (Mantido Original) --- */
         body.colorlens-reading-mode {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
+                        "Segoe UI", Roboto, Helvetica, Arial, 
+                        sans-serif !important;
+
             font-size: 1.20rem !important; 
             line-height: 1.8 !important; 
             letter-spacing: 0.05em !important;
             text-align: left !important;
-            max-width: 900px !important; /* Limita largura para leitura confortável */
-            margin: 0 auto !important;
-            background-color: #fdf6e3 !important; /* Cor de papel suave */
+            
+            /* Força cores de leitura agradáveis */
+            background-color: #fdf6e3 !important; 
             color: #333 !important;
+            
+            max-width: 900px !important;
+            margin: 0 auto !important;
             padding: 2rem !important;
         }
 
