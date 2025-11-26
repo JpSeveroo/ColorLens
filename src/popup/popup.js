@@ -1,7 +1,6 @@
-// Utilitários de armazenamento (copiados de utils/storage.js para evitar problemas de importação)
+
 const saveSettings = async (settings) => {
     return new Promise((resolve) => {
-        // Nota: Mantenho o sync para o ColorLensSettings, mas userProfiles usa local.
         chrome.storage.sync.set({ colorLensSettings: settings }, () => {
             resolve();
         });
@@ -297,10 +296,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Seta os valores padrão nos elementos de ajuste
         contrastSlider.value = 100;
+        contrastSlider.dispatchEvent(new Event('input'));
         saturationSlider.value = 100;
+        saturationSlider.dispatchEvent(new Event('input'));
         contrastInput.value = 100;
         saturationInput.value = 100;
-        readingModeToggle.checked = false;
         nightVisionToggle.checked = false;
 
         // Chama o método de atualização da UI dos controladores
@@ -312,7 +312,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // ... (unmodified toggle and color picker logic) ...
-    readingModeToggle.addEventListener('change', gatherAndSendState);
     nightVisionToggle.addEventListener('change', gatherAndSendState);
 
     const colorPickers = [
@@ -394,7 +393,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             saturationSlider.value = settings.saturation || 100;
             saturationInput.value = settings.saturation || 100;
             
-            readingModeToggle.checked = settings.readingMode || false;
             nightVisionToggle.checked = settings.nightVision || false;
 
             // Load custom colors
@@ -429,7 +427,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             contrast: mapContrastToFunctional(contrastSlider.value),
             saturation: saturationSlider.value,
-            readingMode: readingModeToggle.checked,
             nightVision: nightVisionToggle.checked,
             customColors: {
                 background: customBg.value,

@@ -457,6 +457,7 @@ function injectUtilityStyles() {
             font-family: inherit !important;
             text-align: left !important;
         }
+            
     `;
 
     document.head.appendChild(style);
