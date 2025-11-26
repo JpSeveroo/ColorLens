@@ -450,13 +450,6 @@ function injectUtilityStyles() {
             box-shadow: none !important;
             text-shadow: none !important;
         }
-
-        body.colorlens-reading-mode p,
-        body.colorlens-reading-mode span,
-        body.colorlens-reading-mode div {
-            font-family: inherit !important;
-            text-align: left !important;
-        }
     `;
 
     document.head.appendChild(style);
