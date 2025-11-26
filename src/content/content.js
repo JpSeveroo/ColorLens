@@ -451,20 +451,6 @@ function injectUtilityStyles() {
             text-shadow: none !important;
         }
 
-        /* --- MODO DE LEITURA (Mantido como estava) --- */
-        body.colorlens-reading-mode {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-            font-size: 1.20rem !important; 
-            line-height: 1.8 !important; 
-            letter-spacing: 0.05em !important;
-            text-align: left !important;
-            max-width: 900px !important; /* Limita largura para leitura confortável */
-            margin: 0 auto !important;
-            background-color: #fdf6e3 !important; /* Cor de papel suave */
-            color: #333 !important;
-            padding: 2rem !important;
-        }
-
         body.colorlens-reading-mode p,
         body.colorlens-reading-mode span,
         body.colorlens-reading-mode div {
