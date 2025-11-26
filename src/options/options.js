@@ -1,4 +1,7 @@
+import { COLOR_FILTERS_DATA } from "../utils/filters.js";
+
 document.addEventListener("DOMContentLoaded", () => {
+  injectSvgFilters();
   initializeTabs();
   initializeSliders();
   initializeModeToggles();
@@ -46,6 +49,26 @@ function initializeTabs() {
   if (!document.querySelector(".content-section.active")) {
     const firstTabId = buttons[0]?.getAttribute("data-tab");
     if (firstTabId) switchTab(firstTabId);
+  }
+}
+
+function populateFilterSelect() {
+  const filterSelect = document.getElementById('color-blindness-select');
+  if (!filterSelect) return;
+
+  const noneOption = document.createElement('option');
+  noneOption.value = 'none';
+  noneOption.textContent = 'Nenhum';
+  filterSelect.appendChild(noneOption);
+
+  for (const key in COLOR_FILTERS_DATA) {
+    if (key === 'none') continue;
+
+    const filterData = COLOR_FILTERS_DATA[key];
+    const option = document.createElement('option');
+    option.value = filterData.id;
+    option.textContent = key;
+    filterSelect.appendChild(option);
   }
 }
 
@@ -198,39 +221,41 @@ function applyVisualEffects(previewImgs) {
   let hueRotate = 0;
   let backgroundColor = "transparent";
 
-  
-
   // 3. Lógica dos Filtros de Daltonismo
   let filterCSS = "none";
-  switch (filterType) {
-    case "protanopia":
-      filterCSS = 'url("#protanopia")';
-      break;
-    case "deuteranopia":
-      filterCSS = 'url("#deuteranopia")';
-      break;
-    case "tritanopia":
-      filterCSS = 'url("#tritanopia")';
-      break;
-    case "protanomalia":
-      filterCSS = "grayscale(0.4) sepia(0.3) hue-rotate(-15deg)";
-      break;
-    case "deuteranomalia":
-      filterCSS = "grayscale(0.3) sepia(0.3) hue-rotate(-10deg)";
-      break;
-    case "tritanomalia":
-      filterCSS = "grayscale(0.3) sepia(0.4) hue-rotate(35deg)";
-      break;
-    case "achromatopsia":
-      filterCSS = "grayscale(100%)";
-      break;
-    case "monocromia":
-      filterCSS = "grayscale(80%) contrast(120%)";
-      break;
-    default:
-      filterCSS = ""; // As outras configs tbm podem ser alteradas, independente do filtro
+
+  const filterDataMap = {}
+  for (const key in COLOR_FILTERS_DATA) {
+    filterDataMap[COLOR_FILTERS_DATA[key].id] = COLOR_FILTERS_DATA[key];
   }
 
+  const selectedFilter = filterDataMap[filterType];
+
+  if (selectedFilter) {
+    if (filterType === 'protanopia' || filterType === 'deuteranopia' || filterType === 'tritanopia') {
+      filterCSS = `url("#${selectedFilter.id}")`;
+    }
+
+    else if (filterType === 'achromatopsia' || filterType === 'monocromia') {
+      filterCSS = selectedFilter.value;
+    }
+
+    else {
+      switch (filterType) {
+        case "protanomaly":
+            filterCSS = "grayscale(0.4) sepia(0.3) hue-rotate(-15deg)";
+            break;
+        case "deuteranomaly":
+            filterCSS = "grayscale(0.3) sepia(0.3) hue-rotate(-10deg)";
+            break;
+        case "tritanomaly":
+            filterCSS = "grayscale(0.3) sepia(0.4) hue-rotate(35deg)";
+            break;
+        default:
+            filterCSS = "";
+      }
+    }
+  }
   // 4. Aplica o fundo
   previewImgs.forEach((img) => {
     img.style.backgroundColor = backgroundColor;
@@ -246,6 +271,28 @@ function applyVisualEffects(previewImgs) {
         hue-rotate(${hueRotate}deg)
     `;
   });
+}
+
+function injectSvgFilters() {
+    if (document.getElementById('colorlens-svg-filters')) {
+        return;
+    }
+
+    const svgContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgContainer.id = 'colorlens-svg-filters';
+    svgContainer.style.display = 'none';
+
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    
+    for (const key in COLOR_FILTERS_DATA) {
+        if (COLOR_FILTERS_DATA[key].svg) {
+            defs.innerHTML += COLOR_FILTERS_DATA[key].svg;
+        }
+    }
+
+    svgContainer.appendChild(defs);
+
+    document.documentElement.appendChild(svgContainer);
 }
 
 /* ---------- Modos: Leitura e Noturno ---------- */
@@ -317,7 +364,7 @@ function loadAllSavedSettings() {
           const saturationSlider = document.getElementById("saturation");
           const contrastValueInput = document.getElementById("contrast-input");
           const saturationValueInput = document.getElementById("saturation-input");
-          const previewImg = document.querySelector(".preview-img img");
+          const previewImgs = document.querySelectorAll(".preview-img img");
           const readingToggle = document.getElementById("reading-mode");
           const nightToggle = document.getElementById("night-vision");
 
@@ -336,7 +383,7 @@ function loadAllSavedSettings() {
           if (readingToggle) readingToggle.checked = !!readingMode;
           if (nightToggle) nightToggle.checked = !!nightVision;
 
-          applyVisualEffects(previewImg);
+          applyVisualEffects(previewImgs);
         }
       })
       .catch((error) => {

@@ -55,6 +55,6 @@ export const COLOR_FILTERS_DATA = {
     },
     // Filtros que não dependem de SVG
     'Achromatopsia': { id: 'achromatopsia', value: 'grayscale(100%)' },
-    'Monocromia': { id: 'monocromia', value: 'grayscale(100%)' },
+    'Monocromia': { id: 'monocromia', value: 'grayscale(80%) contrast(120%)' },
     'none': { id: 'none', value: '' }
 };
