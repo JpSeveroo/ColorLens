@@ -98,10 +98,6 @@ resetBtn.addEventListener("click", (e) => {
   if (contrastValueInput) contrastValueInput.value = 100;
   if (saturationValueInput) saturationValueInput.value = 100;
 
-  // Resetar Toggles
-  document.getElementById("reading-mode").checked = false;
-  document.getElementById("night-vision").checked = false;
-
   const overlay = document.querySelector(".color-overlay");
   overlay.style.background = "none";
 
@@ -195,8 +191,6 @@ function applyVisualEffects(previewImgs) {
   // 1. Coleta TODOS os valores
   const contrast = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
-  const readingMode = document.getElementById("reading-mode").checked;
-  const nightVision = document.getElementById("night-vision").checked;
   const filterType = document.getElementById("color-blindness-select").value;
 
   // 2. Lógica dos Modos (Brilho, Saturação, Cor de Fundo)
@@ -204,16 +198,7 @@ function applyVisualEffects(previewImgs) {
   let hueRotate = 0;
   let backgroundColor = "transparent";
 
-  if (readingMode) {
-    brightness = 110;
-    backgroundColor = "#fdf6e3"; // tom amarelado de papel
-  }
-
-  if (nightVision) {
-    brightness = 70;
-    hueRotate = 180;
-    backgroundColor = "#0d0d1a";
-  }
+  
 
   // 3. Lógica dos Filtros de Daltonismo
   let filterCSS = "none";
@@ -414,10 +399,9 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
       chrome.storage.local.set({ userProfiles: profiles }).then(() => {
         console.log("Perfil salvo:", profileData);
         alert("Perfil salvo com sucesso!");
-      });
-    
-    populateProfileSelector();
 
+        populateProfileSelector();
+      });
     });
   }
 

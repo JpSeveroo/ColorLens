@@ -295,7 +295,7 @@ select:focus {
 
 /* SWITCHES */
 .modes-toggle {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px 24px;
@@ -444,16 +444,16 @@ input[type="submit"]:active {
 }
 
 .reset-btn {
-  background-color: #474747;
+  background-color: #1717a8;
   border: 2px solid transparent;
-  border-color: #585858;
+  border-color: #1c1cc4;
   color: var(--text);
   font-size: 15px;
   padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px rgba(0, 0, 255, 0.4);
 }
 
 .reset-btn:hover {
@@ -509,7 +509,6 @@ input[type="submit"]:active {
   object-fit: cover;     /* mantém proporção sem distorcer */
   border-radius: inherit;
 }
-
 
 .color-overlay {
   position: absolute;
