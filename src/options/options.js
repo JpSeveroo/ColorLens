@@ -224,7 +224,7 @@ function applyVisualEffects(previewImgs) {
   // 3. Lógica dos Filtros de Daltonismo
   let filterCSS = "none";
 
-  const filterDataMap = {}
+  const filterDataMap = {};
   for (const key in COLOR_FILTERS_DATA) {
     filterDataMap[COLOR_FILTERS_DATA[key].id] = COLOR_FILTERS_DATA[key];
   }
@@ -232,29 +232,21 @@ function applyVisualEffects(previewImgs) {
   const selectedFilter = filterDataMap[filterType];
 
   if (selectedFilter) {
-    if (filterType === 'protanopia' || filterType === 'deuteranopia' || filterType === 'tritanopia') {
-      filterCSS = `url("#${selectedFilter.id}")`;
-    }
+    // Lista de filtros que devem usar SVG (Opias E Anomalias)
+    const svgFilters = [
+      'protanopia', 'deuteranopia', 'tritanopia', 
+      'protanomaly', 'deuteranomaly', 'tritanomaly'
+    ];
 
+    if (svgFilters.includes(filterType)) {
+      // Agora todos usam a referência ao ID do SVG injetado
+      filterCSS = `url("#${filterType}")`; 
+    }
     else if (filterType === 'achromatopsia' || filterType === 'monocromia') {
       filterCSS = selectedFilter.value;
     }
-
-    else {
-      switch (filterType) {
-        case "protanomaly":
-            filterCSS = "grayscale(0.4) sepia(0.3) hue-rotate(-15deg)";
-            break;
-        case "deuteranomaly":
-            filterCSS = "grayscale(0.3) sepia(0.3) hue-rotate(-10deg)";
-            break;
-        case "tritanomaly":
-            filterCSS = "grayscale(0.3) sepia(0.4) hue-rotate(35deg)";
-            break;
-        default:
-            filterCSS = "";
-      }
-    }
+    else { filterCSS = '' }
+    // Removemos o switch com grayscale/hue-rotate pois agora usamos SVG
   }
   // 4. Aplica o fundo
   previewImgs.forEach((img) => {
@@ -274,25 +266,48 @@ function applyVisualEffects(previewImgs) {
 }
 
 function injectSvgFilters() {
-    if (document.getElementById('colorlens-svg-filters')) {
-        return;
-    }
+  if (document.getElementById('colorlens-svg-filters')) {
+      return;
+  }
 
-    const svgContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svgContainer.id = 'colorlens-svg-filters';
-    svgContainer.style.display = 'none';
+  const svgContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgContainer.id = 'colorlens-svg-filters';
+  svgContainer.style.display = 'none';
 
-    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    
-    for (const key in COLOR_FILTERS_DATA) {
-        if (COLOR_FILTERS_DATA[key].svg) {
-            defs.innerHTML += COLOR_FILTERS_DATA[key].svg;
-        }
-    }
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  
+  // 1. Injeta os filtros vindos do arquivo de dados (se houver)
+  for (const key in COLOR_FILTERS_DATA) {
+      if (COLOR_FILTERS_DATA[key].svg) {
+          defs.innerHTML += COLOR_FILTERS_DATA[key].svg;
+      }
+  }
 
-    svgContainer.appendChild(defs);
+  // 2. INJEÇÃO MANUAL DAS ANOMALIAS (Matrizes de Correção/Simulação)
+  // Se o seu filters.js não tiver esses SVGs, nós os criamos aqui.
+  // Estes valores são aproximações científicas para simulação.
+  
+  const anomalyFilters = `
+    <filter id="protanomaly">
+      <feColorMatrix type="matrix" values="0.817 0.183 0 0 0  0.333 0.667 0 0 0  0 0.125 0.875 0 0  0 0 0 1 0" />
+    </filter>
 
-    document.documentElement.appendChild(svgContainer);
+    <filter id="deuteranomaly">
+      <feColorMatrix type="matrix" values="0.8 0.2 0 0 0  0.258 0.742 0 0 0  0 0.142 0.858 0 0  0 0 0 1 0" />
+    </filter>
+
+    <filter id="tritanomaly">
+      <feColorMatrix type="matrix" values="0.967 0.033 0 0 0  0 0.733 0.267 0 0  0 0.183 0.817 0 0  0 0 0 1 0" />
+    </filter>
+  `;
+
+  // Adiciona apenas se não existirem no defs (evita duplicação se o filters.js já tiver)
+  if (!defs.innerHTML.includes('id="protanomaly"')) {
+      defs.innerHTML += anomalyFilters;
+  }
+
+  svgContainer.appendChild(defs);
+  document.documentElement.appendChild(svgContainer);
 }
 
 /* ---------- Modos: Leitura e Noturno ---------- */
