@@ -399,10 +399,9 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
       chrome.storage.local.set({ userProfiles: profiles }).then(() => {
         console.log("Perfil salvo:", profileData);
         alert("Perfil salvo com sucesso!");
-      });
-    
-    populateProfileSelector();
 
+        populateProfileSelector();
+      });
     });
   }
 

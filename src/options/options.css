@@ -295,7 +295,7 @@ select:focus {
 
 /* SWITCHES */
 .modes-toggle {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px 24px;
