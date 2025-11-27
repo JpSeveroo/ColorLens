@@ -93,7 +93,7 @@ function injectSvgFilters() {
     svgContainer.style.display = 'none'; // O SVG fica invisível
 
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    
+
     // Pega todas as definições de filtro do nosso objeto e as adiciona ao SVG
     for (const key in COLOR_FILTERS_DATA) {
         if (COLOR_FILTERS_DATA[key].svg) {
@@ -102,13 +102,12 @@ function injectSvgFilters() {
     }
 
     svgContainer.appendChild(defs);
-    
+
     // CORREÇÃO: Usar document.documentElement (o elemento <html>) é mais robusto
     // para injetar recursos globais como definições de filtros SVG, garantindo que
     // eles estejam disponíveis para o CSS antes que o <body> esteja totalmente carregado.
     document.documentElement.appendChild(svgContainer);
 }
-
 
 // Função que aplica os estilos com base nas configurações recebidas
 const applyFilters = (settings) => {
@@ -116,23 +115,36 @@ const applyFilters = (settings) => {
 
     let filterString = '';
 
-    // Busca o filtro de cor no objeto
+    // 1. Busca o filtro de cor no objeto (Daltonismo)
     const colorFilterData = COLOR_FILTERS_DATA[filter] || COLOR_FILTERS_DATA['none'];
 
-    // Se for um filtro SVG, usa a sintaxe de URL com o ID (#)
+    // Se for um filtro SVG
     if (colorFilterData.svg) {
         filterString += `url(#${colorFilterData.id}) `;
     } 
-    // Se for um valor CSS direto (como grayscale), usa o valor
+    // Se for um valor CSS direto (como grayscale)
     else if (colorFilterData.value) {
         filterString += `${colorFilterData.value} `;
     }
     
-    // Adiciona os filtros de ajuste
+    // 2. Adiciona os filtros de ajuste (Contraste e Saturação)
     filterString += `contrast(${contrast}%) `;
     filterString += `saturate(${saturation}%) `;
 
-    // Aplica a string final de filtros ao elemento raiz do HTML
+    // 3. Lógica do Modo Noturno (INTEGRADA AO JS)
+    // Removemos o isPageAlreadyDark(). O usuário tem o controle total agora.
+    if (nightVision) {
+        // Adiciona a inversão na mesma string de filtros
+        filterString += 'invert(1) hue-rotate(180deg) ';
+        
+        // Adiciona a classe APENAS para corrigir imagens e fundo, 
+        // não para aplicar o filtro principal.
+        document.documentElement.classList.add('colorlens-night-vision');
+    } else {
+        document.documentElement.classList.remove('colorlens-night-vision');
+    }
+
+    // 4. Aplica a string final de filtros ao elemento raiz
     document.documentElement.style.filter = filterString.trim();
 
     // Lógica para o modo de leitura
@@ -140,22 +152,6 @@ const applyFilters = (settings) => {
         document.body.classList.add('colorlens-reading-mode');
     } else {
         document.body.classList.remove('colorlens-reading-mode');
-    }
-
-    if (nightVision) {
-        // ANTES DE APLICAR, VERIFICA Essa casseta:
-        const isDark = isPageAlreadyDark();
-
-        if (isDark) {
-            console.log("ColorLens: Página já é escura. Modo noturno inteligente ignorou a inversão.");
-            // Remove a classe caso ela já estivesse lá por engano
-            document.documentElement.classList.remove('colorlens-night-vision');
-        } else {
-            // Página é clara, pode inverter!
-            document.documentElement.classList.add('colorlens-night-vision');
-        }
-    } else {
-        document.documentElement.classList.remove('colorlens-night-vision');
     }
 }
 
@@ -183,12 +179,12 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
 function hexToRgbNormalized(hex) {
     // Remove o # se presente
     hex = hex.replace('#', '');
-    
+
     // Converte para inteiros 0-255
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    
+
     // Normaliza para 0-1
     return {
         r: r / 255,
@@ -219,7 +215,7 @@ function buildColorMatrix(backgroundHex, textHex, highlightHex) {
     const bg = hexToRgbNormalized(backgroundHex);
     const text = hexToRgbNormalized(textHex);
     const highlight = hexToRgbNormalized(highlightHex);
-    
+
     // Matriz de transformação que mapeia canais RGB originais para cores completas:
     // 
     // R original (alto) → Cor de Fundo completa (bg.r, bg.g, bg.b)
@@ -230,41 +226,41 @@ function buildColorMatrix(backgroundHex, textHex, highlightHex) {
     // R' = R_original × bg.r + G_original × text.r + B_original × highlight.r
     // G' = R_original × bg.g + G_original × text.g + B_original × highlight.g
     // B' = R_original × bg.b + G_original × text.b + B_original × highlight.b
-    
+
     // Linha 1 (R' do resultado): Combinação dos canais originais mapeados para R de cada cor
     const r1 = bg.r;        // R original → R de fundo
     const r2 = text.r;      // G original → R de texto
     const r3 = highlight.r; // B original → R de links
     const r4 = 0;           // Alpha preservado
     const r5 = 0;           // Offset
-    
+
     // Linha 2 (G' do resultado): Combinação dos canais originais mapeados para G de cada cor
     const g1 = bg.g;        // R original → G de fundo
     const g2 = text.g;      // G original → G de texto
     const g3 = highlight.g; // B original → G de links
     const g4 = 0;           // Alpha preservado
     const g5 = 0;           // Offset
-    
+
     // Linha 3 (B' do resultado): Combinação dos canais originais mapeados para B de cada cor
     const b1 = bg.b;        // R original → B de fundo
     const b2 = text.b;      // G original → B de texto
     const b3 = highlight.b; // B original → B de links
     const b4 = 0;           // Alpha preservado
     const b5 = 0;           // Offset
-    
+
     // Linha 4 (A'): Preserva o alpha original
     const a1 = 0;
     const a2 = 0;
     const a3 = 0;
     const a4 = 1;           // Alpha inalterado
     const a5 = 0;           // Offset
-    
+
     // Formata a matriz como string para feColorMatrix
     // Os valores são separados por espaços e vírgulas alternadamente
     return `${r1}, ${r2}, ${r3}, ${r4}, ${r5} ` +
-           `${g1}, ${g2}, ${g3}, ${g4}, ${g5} ` +
-           `${b1}, ${b2}, ${b3}, ${b4}, ${b5} ` +
-           `${a1}, ${a2}, ${a3}, ${a4}, ${a5}`;
+        `${g1}, ${g2}, ${g3}, ${g4}, ${g5} ` +
+        `${b1}, ${b2}, ${b3}, ${b4}, ${b5} ` +
+        `${a1}, ${a2}, ${a3}, ${a4}, ${a5}`;
 }
 
 /**
@@ -276,36 +272,36 @@ function buildColorMatrix(backgroundHex, textHex, highlightHex) {
 function injectCustomColorFilter(backgroundHex, textHex, highlightHex) {
     // Garante que o container SVG existe
     injectSvgFilters();
-    
+
     let svgContainer = document.getElementById('colorlens-svg-filters');
     if (!svgContainer) {
         return;
     }
-    
+
     let defs = svgContainer.querySelector('defs');
     if (!defs) {
         defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
         svgContainer.appendChild(defs);
     }
-    
+
     // Remove o filtro customizado anterior se existir
     const existingFilter = defs.querySelector('#colorlens-custom-color-mapping');
     if (existingFilter) {
         defs.removeChild(existingFilter);
     }
-    
+
     // Constrói a matriz de transformação
     const matrixValues = buildColorMatrix(backgroundHex, textHex, highlightHex);
-    
+
     // Cria o elemento filter
     const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
     filter.setAttribute('id', 'colorlens-custom-color-mapping');
-    
+
     const feColorMatrix = document.createElementNS('http://www.w3.org/2000/svg', 'feColorMatrix');
     feColorMatrix.setAttribute('in', 'SourceGraphic');
     feColorMatrix.setAttribute('type', 'matrix');
     feColorMatrix.setAttribute('values', matrixValues);
-    
+
     filter.appendChild(feColorMatrix);
     defs.appendChild(filter);
 }
@@ -329,7 +325,7 @@ function applyCustomColors(colors) {
                 }
             }
         }
-        
+
         // Remove o filtro do elemento raiz
         const currentFilter = document.documentElement.style.filter || '';
         const newFilter = currentFilter
@@ -347,13 +343,13 @@ function applyCustomColors(colors) {
     // Aplica o filtro ao elemento raiz (html)
     // O filtro será combinado com outros filtros já existentes
     const currentFilter = document.documentElement.style.filter || '';
-    
+
     // Remove a referência anterior ao filtro customizado se existir
     let newFilter = currentFilter.replace(/url\(#colorlens-custom-color-mapping\)\s*/g, '');
-    
+
     // Adiciona o novo filtro customizado no início (para que seja aplicado primeiro)
     newFilter = `url(#colorlens-custom-color-mapping) ${newFilter}`.trim();
-    
+
     document.documentElement.style.filter = newFilter;
 }
 
@@ -384,7 +380,7 @@ function isPageAlreadyDark() {
     // 2. Análise da cor computada (Maneira mais precisa)
     const body = document.body;
     const html = document.documentElement;
-    
+
     if (!body) return false;
 
     // Pega a cor de fundo do body e do html
@@ -395,7 +391,7 @@ function isPageAlreadyDark() {
     const parseColor = (colorStr) => {
         // Se for transparente, retorna null
         if (colorStr === 'rgba(0, 0, 0, 0)' || colorStr === 'transparent') return null;
-        
+
         const match = colorStr.match(/\d+/g);
         if (!match) return null;
         return { r: parseInt(match[0]), g: parseInt(match[1]), b: parseInt(match[2]) };
@@ -426,13 +422,22 @@ function injectUtilityStyles() {
     const style = document.createElement('style');
     style.id = styleSheetId;
 
-    style.textContent = `
-        /* --- MODO NOTURNO APRIMORADO --- */
+    /* AQUI ESTÁ O ERRO ANTERIOR:
+       Antes você definia background-color: #121212 (Escuro).
+       Quando o filtro invert(1) rodava, #121212 virava #EDEDED (Claro).
+       
+       CORREÇÃO:
+       Definimos o fundo como BRANCO (#FFFFFF). 
+       O filtro invert(1) transformará isso em PRETO (#000000).
+    */
 
+    style.textContent = `
+        /* --- MODO NOTURNO AUXILIAR (CSS) --- */
+        
         html.colorlens-night-vision {
-            background-color: #121212 !important; /* Um cinza muito escuro, melhor que preto absoluto */
-            filter: invert(1) hue-rotate(180deg) !important;
-            scrollbar-color: #454a4d #202324 !important; /* Firefox scrollbar */
+            background-color: #FFFFFF !important; /* Fundo base CLARO para ser invertido para ESCURO */
+            scrollbar-color: #454a4d #e0e0e0 !important;
+            color: #000000 !important; /* Texto base PRETO para ser invertido para BRANCO */
         }
 
         /* Proteção contra inversão dupla: "Des-inverte" mídias para voltarem ao normal */
@@ -454,10 +459,10 @@ function injectUtilityStyles() {
         body.colorlens-reading-mode p,
         body.colorlens-reading-mode span,
         body.colorlens-reading-mode div {
-            font-family: inherit !important;
-            text-align: left !important;
+            font-family: 'Inter', sans-serif !important;
+            line-height: 1.6 !important;
+            letter-spacing: 0.5px !important;
         }
-            
     `;
 
     document.head.appendChild(style);
