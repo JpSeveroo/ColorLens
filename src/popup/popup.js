@@ -36,7 +36,6 @@ const applyProfileToUI = (profileData, controllers) => {
     document.getElementById('saturation-input').value = profileData.saturation || 100;
 
     // 2. Atualiza Modos
-    document.getElementById('reading-mode').checked = profileData.readingMode || false;
     document.getElementById('night-vision').checked = profileData.nightVision || false;
 
     // 3. Atualiza Cores Base (Mismatch: Mapeando colorMap.red/green/blue para customBg/Text/Highlight)
@@ -218,7 +217,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const standardFilterButtons = document.querySelectorAll('#tab-filters .filter-btn'); // Seleciona apenas os botões da aba de filtros padrão
     const resetButton = document.querySelector('.reset-btn');
     const adjustmentsResetBtn = document.getElementById('adjustmentsResetBtn');
-    const readingModeToggle = document.getElementById('reading-mode');
     const nightVisionToggle = document.getElementById('night-vision');
 
     // Color picker elements
@@ -381,7 +379,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             initialTab = 'filters';
         } else if (settings.activeProfileName) { // Prioriza a aba customizada se houver um perfil ativo
             initialTab = 'custom';
-        } else if (settings.contrast !== 100 || settings.saturation !== 100 || settings.readingMode || settings.nightVision) {
+        } else if (settings.contrast !== 100 || settings.saturation !== 100 || settings.nightVision) {
             initialTab = 'adjustments';
         }
         
