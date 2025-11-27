@@ -19,6 +19,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+/* ---------- Funções de Mapeamento (Consistência com Popup) ---------- */
+
+/**
+ * Traduz o valor VISUAL (0-200) do slider para o valor FUNCIONAL (50-200).
+ * Impede que o contraste chegue a 0% (tela preta).
+ */
+function mapContrastToFunctional(visualValue) {
+  const val = Number(visualValue);
+  
+  // Mapeia a primeira metade do slider (0-100) para o intervalo (50-100)
+  if (val <= 100) {
+      return 50 + (val / 100) * 50;
+  }
+  
+  // Mapeia a segunda metade (100-200) normalmente
+  return val;
+}
+
+/**
+ * Traduz o valor FUNCIONAL (50-200) salvo para o valor VISUAL (0-200) do slider.
+ */
+function mapFunctionalToVisual(functionalValue) {
+  const val = Number(functionalValue);
+
+  // Mapeia o intervalo (50-100) de volta para (0-100)
+  if (val < 100) {
+      return ((val - 50) / 50) * 100;
+  }
+  
+  return val;
+}
+
 /* ---------- Navegação entre abas ---------- */
 function initializeTabs() {
   const buttons = document.querySelectorAll(".options-btn");
@@ -211,17 +243,21 @@ function updateSliderLook(slider, valueInput) {
 function applyVisualEffects(previewImgs) {
   if (!previewImgs) return;
 
-  // 1. Coleta TODOS os valores
-  const contrast = document.getElementById("contrast").value;
+  // 1. Coleta TODOS os valores VISUAIS
+  const contrastVisual = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
   const filterType = document.getElementById("color-blindness-select").value;
 
-  // 2. Lógica dos Modos (Brilho, Saturação, Cor de Fundo)
+  // 2. Converte Contraste Visual -> Funcional (Proteção contra escurecimento total)
+  // O CSS na página de preview deve receber o valor real que será aplicado no site.
+  const contrastFunctional = mapContrastToFunctional(contrastVisual);
+
+  // 3. Lógica dos Modos (Brilho, Saturação, Cor de Fundo)
   let brightness = 100;
   let hueRotate = 0;
   let backgroundColor = "transparent";
 
-  // 3. Lógica dos Filtros de Daltonismo
+  // 4. Lógica dos Filtros de Daltonismo
   let filterCSS = "none";
 
   const filterDataMap = {};
@@ -246,18 +282,19 @@ function applyVisualEffects(previewImgs) {
       filterCSS = selectedFilter.value;
     }
     else { filterCSS = '' }
-    // Removemos o switch com grayscale/hue-rotate pois agora usamos SVG
   }
-  // 4. Aplica o fundo
+
+  // 5. Aplica o fundo
   previewImgs.forEach((img) => {
     img.style.backgroundColor = backgroundColor;
   });
 
-  // 5. Aplica TODOS os filtros de uma vez na ordem correta
+  // 6. Aplica TODOS os filtros de uma vez na ordem correta
+  // IMPORTANTE: Aqui usamos contrastFunctional, não contrastVisual
   previewImgs.forEach((img) => {
     img.style.filter = `
         ${filterCSS}
-        contrast(${contrast}%)
+        contrast(${contrastFunctional}%)
         saturate(${saturation}%)
         brightness(${brightness}%)
         hue-rotate(${hueRotate}deg)
@@ -284,9 +321,6 @@ function injectSvgFilters() {
   }
 
   // 2. INJEÇÃO MANUAL DAS ANOMALIAS (Matrizes de Correção/Simulação)
-  // Se o seu filters.js não tiver esses SVGs, nós os criamos aqui.
-  // Estes valores são aproximações científicas para simulação.
-  
   const anomalyFilters = `
     <filter id="protanomaly">
       <feColorMatrix type="matrix" values="0.817 0.183 0 0 0  0.333 0.667 0 0 0  0 0.125 0.875 0 0  0 0 0 1 0" />
@@ -301,7 +335,6 @@ function injectSvgFilters() {
     </filter>
   `;
 
-  // Adiciona apenas se não existirem no defs (evita duplicação se o filters.js já tiver)
   if (!defs.innerHTML.includes('id="protanomaly"')) {
       defs.innerHTML += anomalyFilters;
   }
@@ -331,7 +364,11 @@ function initializeModeToggles() {
 
 /* ---------- Salva valores ---------- */
 function saveVisualSettings() {
-  const contrast = document.getElementById("contrast").value;
+  const contrastVisual = document.getElementById("contrast").value;
+  
+  // Salva o valor FUNCIONAL (50-200) para manter consistência com o Content Script
+  const contrast = mapContrastToFunctional(contrastVisual);
+  
   const saturation = document.getElementById("saturation").value;
   const readingMode = document.getElementById("reading-mode").checked;
   const nightVision = document.getElementById("night-vision").checked;
@@ -349,7 +386,7 @@ function saveVisualSettings() {
 
   if (typeof chrome !== "undefined" && chrome.storage) {
     chrome.storage.local.set({ visualSettings: settings }).then(() => {
-      console.log("Configurações visuais salvas:", settings);
+      console.log("Configurações visuais salvas (Funcional):", settings);
       chrome.runtime?.sendMessage({
         action: "applyVisualSettings",
         settings,
@@ -389,7 +426,10 @@ function loadAllSavedSettings() {
           }
 
           if (contrastSlider && saturationSlider) {
-            contrastSlider.value = contrast || 100;
+            // Converte o valor salvo (Funcional) de volta para Visual (Slider)
+            const contrastVisual = mapFunctionalToVisual(contrast || 100);
+            
+            contrastSlider.value = contrastVisual;
             saturationSlider.value = saturation || 100;
             updateSliderLook(contrastSlider, contrastValueInput);
             updateSliderLook(saturationSlider, saturationValueInput);
@@ -425,10 +465,14 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
     return;
   }
 
+  // IMPORTANTE: Salvar o contraste FUNCIONAL no perfil
+  const contrastVisual = document.getElementById("contrast").value;
+  const contrastFunctional = mapContrastToFunctional(contrastVisual);
+
   const profileData = {
     name: profileName,
     baseFilter: document.getElementById("color-blindness-select").value,
-    contrast: document.getElementById("contrast").value,
+    contrast: contrastFunctional, // Salva o valor mapeado
     saturation: document.getElementById("saturation").value,
     readingMode: document.getElementById("reading-mode").checked,
     nightVision: document.getElementById("night-vision").checked,
@@ -603,7 +647,9 @@ function populateProfileSelector() {
       const contrastInput = document.getElementById("contrast-input");
       const saturationInput = document.getElementById("saturation-input");
 
-      contrastRange.value = profile.contrast;
+      // Converte o valor salvo (Funcional) para Visual na hora de carregar o perfil
+      contrastRange.value = mapFunctionalToVisual(profile.contrast);
+      
       saturationRange.value = profile.saturation;
       document.getElementById("reading-mode").checked = profile.readingMode;
       document.getElementById("night-vision").checked = profile.nightVision;
