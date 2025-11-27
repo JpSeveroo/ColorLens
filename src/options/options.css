@@ -61,6 +61,14 @@ body {
   margin: 16px 0;
 }
 
+.copyright {
+  margin-top: auto;
+  font-weight: bold;
+  text-align: center;
+  align-items: end;
+  justify-content: end;
+}
+
 .options-container {
   display: flex;
   flex-direction: column;
@@ -199,6 +207,7 @@ hr {
 }
 
 label {
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
   display: block;
@@ -746,8 +755,12 @@ input[type="submit"]:active {
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
+.team-badge a {
+  text-decoration: none;
+}
+
 .team-section {
-  text-align: center;
+  text-align: left;
   margin-top: 20px;
 }
 .team-section h3 {
