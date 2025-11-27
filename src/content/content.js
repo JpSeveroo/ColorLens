@@ -170,9 +170,9 @@ function buildColorMatrix(backgroundHex, textHex, highlightHex) {
     const a1 = 0;    const a2 = 0;    const a3 = 0;    const a4 = 1; const a5 = 0;
     
     return `${r1}, ${r2}, ${r3}, ${r4}, ${r5} ` +
-        `${g1}, ${g2}, ${g3}, ${g4}, ${g5} ` +
-        `${b1}, ${b2}, ${b3}, ${b4}, ${b5} ` +
-        `${a1}, ${a2}, ${a3}, ${a4}, ${a5}`;
+           `${g1}, ${g2}, ${g3}, ${g4}, ${g5} ` +
+           `${b1}, ${b2}, ${b3}, ${b4}, ${b5} ` +
+           `${a1}, ${a2}, ${a3}, ${a4}, ${a5}`;
 }
 
 function injectCustomColorFilter(backgroundHex, textHex, highlightHex) {
