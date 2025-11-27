@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+ <! -- o idioma será definido pelo configuracao do nave gador do usuário -- >
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ColorLens</title>
+    <title>__MSG_extensionName__</title>
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
@@ -12,40 +13,40 @@
         <header class="header">
             <div class="header-top">
             <img src="../../assets/images/colorlens-logo.svg" alt="ColorLens Logo" class="logo">
-            <h1>ColorLens</h1>
+            <h1>__MSG_extensionName__</h1>
             <img src="../../assets/icons/icone.png" alt="Open Options Page" class="profile-icon" id="options">
             </div>
-            <p>Aplique os filtros para simular diferentes tipos de daltonismo e outras funcionalidades</p>
+            <p>__MSG_extensionDescription__</p>
         </header>
 
         <nav id="tabs-nav">
-            <button class="tab-btn active" data-tab="filters">Filtros Padrões</button>
-            <button class="tab-btn" data-tab="adjustments">Ajustes Rápidos</button>
-            <button class="tab-btn" data-tab="custom">Personalização</button>
+            <button class="tab-btn active" data-tab="filters">__MSG_defaultFiltersTab__</button>
+            <button class="tab-btn" data-tab="adjustments">__MSG_quickAdjustmentsTab__</button>
+            <button class="tab-btn" data-tab="custom">__MSG_customizationTab__</button>
         </nav>
         
         <main class="main-content">
             
             <section id="tab-filters" class="tab-section">
-                <h2>Filtros Genéricos:</h2>
+                <h2>__MSG_genericFiltersTitle__</h2>
                 <div class="filters-grid">
-                    <button class="filter-btn">Protanopia</button>
-                    <button class="filter-btn">Deuteranopia</button>
-                    <button class="filter-btn">Tritanopia</button>
-                    <button class="filter-btn">Protanomalia</button>
-                    <button class="filter-btn">Deuteranomalia</button>
-                    <button class="filter-btn">Tritanomalia</button>
-                    <button class="filter-btn">Achromatopsia</button>
-                    <button class="filter-btn">Monocromia</button>
+                    <button class="filter-btn">__MSG_protanopiaFilter__</button>
+                    <button class="filter-btn">__MSG_deuteranopiaFilter__</button>
+                    <button class="filter-btn">__MSG_tritanopiaFilter__</button>
+                    <button class="filter-btn">__MSG_protanomalyFilter__</button>
+                    <button class="filter-btn">__MSG_deuteranomalyFilter__</button>
+                    <button class="filter-btn">__MSG_tritanomalyFilter__</button>
+                    <button class="filter-btn">__MSG_achromatopsiaFilter__</button>
+                    <button class="filter-btn">__MSG_monochromacyFilter__</button>
                 </div>
-                <button class="reset-btn">Resetar</button>
+                <button class="reset-btn">__MSG_resetButton__</button>
             </section>
-            
+            <! --   
             <section id="tab-adjustments" class="tab-section hidden">
-                <h3>Ajustes:</h3>
+                <h3>__MSG_adjustmentsTitle__</h3>
                 <div class="slider-control">
                     <div class="slider-label">
-                        <label for="contrast">Contraste</label>
+                        <label for="contrast">__MSG_contrastLabel__</label>
                         <div class="input-unit-group">
                             <input type="number" min="0" max="200" value="100" class="percentage-input" id="contrast-input">
                             <span class="unit-text">%</span>
@@ -55,7 +56,7 @@
                 </div>
                 <div class="slider-control">
                     <div class="slider-label">
-                        <label for="saturation">Saturação</label>
+                        <label for="saturation">__MSG_saturationLabel__</label>
                         <div class="input-unit-group">
                             <input type="number" min="0" max="200" value="100" class="percentage-input" id="saturation-input">
                             <span class="unit-text">%</span>
@@ -66,13 +67,13 @@
                 
                 <div class="modes-section">
                     <h3 style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--color-divider-subtle);">
-                      Modos Especiais:
+                      __MSG_specialModesTitle__
                     </h3>
                   
                     <div class="setting-row">
                       <div class="setting-label">
-                        <strong>Modo de Leitura Otimizado</strong>
-                        <span>Aplica fonte e espaçamento amigáveis.</span>
+                        <strong>__MSG_optimizedReadingModeLabel__</strong>
+                        <span>__MSG_optimizedReadingModeDescription__</span>
                       </div>
                       <label class="toggle-switch">
                         <input type="checkbox" id="reading-mode">
@@ -82,8 +83,8 @@
                   
                     <div class="setting-row">
                       <div class="setting-label">
-                        <strong>Modo Noturno</strong>
-                        <span>Reduz o cansaço visual.</span>
+                        <strong>__MSG_nightModeLabel__</strong>
+                        <span>__MSG_nightModeDescription__</span>
                       </div>
                       <label class="toggle-switch">
                         <input type="checkbox" id="night-vision">
@@ -91,32 +92,32 @@
                       </label>
                     </div>
                   </div>
-                  <button class="reset-btn" id="adjustmentsResetBtn">Resetar</button>
+                  <button class="reset-btn" id="adjustmentsResetBtn">__MSG_resetButton__</button>
             </section>
-
+                  <! -- ABA 3: Personalização -- >
             <section id="tab-custom" class="tab-section hidden">
-                <h3>Filtros Personalizados:</h3>
+                <h3>__MSG_customFiltersTitle__</h3>
                  <div class="custom-profiles-scroll-box">
                     <div id="custom-filters-grid" class="filters-grid">
                     </div>
                 </div>
                 
-                <h3 style="margin-top: 24px;">Cores Base:</h3>
+                <h3 style="margin-top: 24px;">__MSG_baseColorsTitle__</h3>
                 <div class="color-ball-container">
                     <div class="color-ball-control">
-                        <label>Vermelho</label>
+                        <label>__MSG_colorRed__</label>
                         <input type="color" id="customBg" value="#ff0000">
                     </div>
                     <div class="color-ball-control">
-                        <label>Verde</label>
+                        <label>__MSG_colorGreen__</label>
                         <input type="color" id="customText" value="#00ff00">
                     </div>
                     <div class="color-ball-control">
-                        <label>Azul</label>
+                        <label>__MSG_colorBlue__</label>
                         <input type="color" id="customHighlight" value="#0000ff">
                     </div>
                 </div>
-                <button id="customResetBtn" class="reset-btn">Resetar Cores</button>
+                <button id="customResetBtn" class="reset-btn">__MSG_resetColorsButton__</button>
             </section>
         </main>
 
