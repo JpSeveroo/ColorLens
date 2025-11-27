@@ -401,3 +401,63 @@ body {
     border-radius: 100%;
     padding: 0;
 }
+
+.language-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.language-pill-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    border: 1px solid var(--color-text-light);
+    color: var(--color-text-light);
+    padding: 6px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.language-pill-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+}
+
+.language-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: var(--color-setting-row);
+    border: 1px solid var(--color-divider-subtle);
+    border-radius: 8px;
+    padding: 4px;
+    min-width: 120px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 100;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.language-menu.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.lang-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.lang-option:hover {
+    background-color: var(--color-primary-accent);
+}
