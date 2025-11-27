@@ -1,7 +1,6 @@
-// Utilitários de armazenamento (copiados de utils/storage.js para evitar problemas de importação)
+
 const saveSettings = async (settings) => {
     return new Promise((resolve) => {
-        // Nota: Mantenho o sync para o ColorLensSettings, mas userProfiles usa local.
         chrome.storage.sync.set({ colorLensSettings: settings }, () => {
             resolve();
         });
@@ -252,9 +251,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById(`tab-${target}`).classList.remove('hidden');
         });
     });
-    // --- FIM DA LÓGICA NOVA ---
-    
-    // --- NOVO: Carregar e Ligar Perfis Customizados ---
+
+    const initializeLanguageSelector = () => {
+    const langBtn = document.getElementById('language-btn');
+    const langMenu = document.getElementById('language-menu');
+    const langText = document.getElementById('current-lang-text');
+    const langOptions = document.querySelectorAll('.lang-option');
+
+    langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+            langMenu.classList.add('hidden');
+        }
+    });
+
+    langOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const selectedLang = option.getAttribute('data-lang');
+            const label = option.textContent;
+            
+            langText.textContent = label;
+            langMenu.classList.add('hidden');
+            
+            console.log("Language selected:", selectedLang);
+            // Add your logic to save language setting here
+        });
+    });
+};
+    initializeLanguageSelector();
     let customProfiles = [];
     try {
         customProfiles = await loadCustomProfiles();
@@ -297,10 +325,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Seta os valores padrão nos elementos de ajuste
         contrastSlider.value = 100;
+        contrastSlider.dispatchEvent(new Event('input'));
         saturationSlider.value = 100;
+        saturationSlider.dispatchEvent(new Event('input'));
         contrastInput.value = 100;
         saturationInput.value = 100;
-        readingModeToggle.checked = false;
         nightVisionToggle.checked = false;
 
         // Chama o método de atualização da UI dos controladores
@@ -312,7 +341,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // ... (unmodified toggle and color picker logic) ...
-    readingModeToggle.addEventListener('change', gatherAndSendState);
     nightVisionToggle.addEventListener('change', gatherAndSendState);
 
     const colorPickers = [
@@ -394,7 +422,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             saturationSlider.value = settings.saturation || 100;
             saturationInput.value = settings.saturation || 100;
             
-            readingModeToggle.checked = settings.readingMode || false;
             nightVisionToggle.checked = settings.nightVision || false;
 
             // Load custom colors
@@ -429,7 +456,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             contrast: mapContrastToFunctional(contrastSlider.value),
             saturation: saturationSlider.value,
-            readingMode: readingModeToggle.checked,
             nightVision: nightVisionToggle.checked,
             customColors: {
                 background: customBg.value,
