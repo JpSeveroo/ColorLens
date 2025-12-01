@@ -96,7 +96,25 @@ const attachCustomFilterListener = (grid, standardFilterButtons, customProfileBu
             // 3. Aplica os dados do perfil salvo na UI do popup
             applyProfileToUI(button.profileData, controllers);
         } else {
-            // Se já estava ativo e foi clicado, desativa. A UI fica com os últimos valores.
+
+                // Reset Sliders
+                document.getElementById('contrast').value = 100;
+                document.getElementById('contrast-input').value = 100;
+                document.getElementById('saturation').value = 100;
+                document.getElementById('saturation-input').value = 100;
+
+                // Reset Night Vision
+                document.getElementById('night-vision').checked = false;
+
+                // Reset Colors (Red, Green, Blue defaults)
+                document.getElementById('customBg').value = document.getElementById('customBg').defaultValue;
+                document.getElementById('customText').value = '#00ff00';
+                document.getElementById('customHighlight').value = '#0000ff';
+
+                // Force visual update on the slider bars
+                if (controllers.contrastController) controllers.contrastController.updateUI();
+                if (controllers.saturationController) controllers.saturationController.updateUI();
+            
         }
 
         if (typeof stateUpdater === 'function') {
@@ -440,17 +458,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // --- MODIFICADA: gatherAndSendState function ---
     async function gatherAndSendState() {
         const activeStandardFilter = document.querySelector('#tab-filters .filter-btn.active');
         const activeCustomProfile = document.querySelector(`.${CUSTOM_PROFILE_CLASS}.active`);
         
+        let filterToSend = 'none';
+
+        if (activeCustomProfile && activeCustomProfile.profileData) {
+            const baseFilterId = activeCustomProfile.profileData.baseFilter;
+
+            if (baseFilterId && baseFilterId !== 'none') {
+                const matchingStandardBtn = document.querySelector(`#tab-filters .filter-btn[data-filter="${baseFilterId}"]`);
+                if (matchingStandardBtn) {
+                    filterToSend = matchingStandardBtn.textContent;
+                }
+            }
+        } else if (activeStandardFilter) {
+            filterToSend = activeStandardFilter.textContent;
+        }
+        
         const settings = {
-            // Se um perfil customizado estiver ativo, a UI já foi atualizada com seus dados. 
-            // O Content Script precisará de todo o objeto 'settings' para aplicar o filtro base e o mapeamento de cores.
-            // Para o campo 'filter', priorizamos o filtro padrão se ele estiver ativo.
-            filter: activeStandardFilter ? activeStandardFilter.textContent : 'none',
-            activeProfileName: activeCustomProfile ? activeCustomProfile.textContent : null, // NOVO: Salva o nome do perfil
+            filter: filterToSend,
+            activeProfileName: activeCustomProfile ? activeCustomProfile.textContent : null,
             
             contrast: mapContrastToFunctional(contrastSlider.value),
             saturation: saturationSlider.value,
@@ -476,7 +505,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         try {
-            // Tenta o envio direto (Caminho rápido)
             const response = await chrome.tabs.sendMessage(tab.id, messagePayload);
             console.log('Resposta do script de conteúdo:', response);
             
@@ -488,7 +516,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             
             if (!tab || !tab.id) {
-                console.error("Não é possível enviar mensagem de fallback: Tab ID indisponível.");
                 return; 
             }
             
