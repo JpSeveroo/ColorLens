@@ -130,7 +130,6 @@ hr {
   text-shadow: 0 0 15px rgba(124, 77, 255, 0.4);
 }
 
-/* CARDS */
 .profile-name,
 .base-filters,
 .visual-adjusts,
@@ -152,7 +151,7 @@ hr {
 
 .info-btn {
   position: relative;
-  background-color: var(--primary-dark); /* cor parecida com a da imagem */
+  background-color: var(--primary-dark);
   color: white;
   border: none;
   border-radius: 10px;
@@ -161,7 +160,7 @@ hr {
   font-weight: bold;
   cursor: pointer;
   margin-left: 8px;
-  flex-shrink: 0; /* evita o botão de encolher */
+  flex-shrink: 0; 
   box-shadow: 0 0 8px rgba(124, 77, 255, 0.4);
   transition: background 0.3s ease, transform 0.1s ease;
 }
@@ -302,7 +301,6 @@ select:focus {
   cursor: pointer;
 }
 
-/* SWITCHES */
 .modes-toggle {
   display: none;
   flex-wrap: wrap;
@@ -365,7 +363,6 @@ input:checked + .slider:before {
   transform: translateX(22px);
 }
 
-/* COLOR MAPPING */
 .color-mapping {
   margin-bottom: 0;
 }
@@ -403,17 +400,16 @@ input:checked + .slider:before {
   align-items: center;
   gap: 12px;
   margin-bottom: 15px;
-  background: #2c2248; /* Mesmo fundo dos outros toggles */
+  background: #2c2248;
   padding: 14px;
   border-radius: 10px;
 }
 
 .mapping-toggle label {
-  margin-bottom: 0; /* Remove a margem extra do label */
+  margin-bottom: 0; 
   font-weight: 600;
 }
 
-/* BOTÕES DO FORMULÁRIO */
 .form-buttons {
   display: flex;
   justify-content: center;
@@ -492,7 +488,6 @@ input[type="submit"]:active {
   transform: scale(0.97);
 }
 
-/* IMAGEM PREVIEW */
 .preview-container {
   display: flex;
   justify-content: center;
@@ -505,22 +500,21 @@ input[type="submit"]:active {
 /* Card padrão */
 .preview-img {
   position: relative;
-  width: 260px;          /* largura fixa igual para todos */
-  height: 260px;         /* altura igual */
+  width: 260px;          
+  height: 260px;         
   border-radius: 18px;
-  overflow: hidden;      /* IMPORTANTE: recorta a imagem */
+  overflow: hidden;     
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
-  background: #1e1b40;   /* cor de fundo enquanto carrega */
+  background: #1e1b40;   
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Imagem recortada proporcional */
 .preview-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;     /* mantém proporção sem distorcer */
+  object-fit: cover;     
   border-radius: inherit;
 }
 
@@ -532,7 +526,7 @@ input[type="submit"]:active {
   height: 100%;
   border-radius: 10px;
   pointer-events: none;
-  mix-blend-mode: overlay;   /* mistura as cores */
+  mix-blend-mode: overlay;   
   opacity: 0.7;
   transition: background 0.3s ease;
 }
@@ -588,8 +582,6 @@ input[type="submit"]:active {
   transform: scale(0.97);
 }
 
-
-/* RESPONSIVO */
 @media (max-width: 768px) {
   body {
     flex-direction: column;
@@ -608,8 +600,6 @@ input[type="submit"]:active {
   }
 }
 
-/* --- ESTILOS DA PÁGINA DE AJUDA/SOBRE --- */
-
 .help-header .subtitle {
   color: #b0b0b0;
   margin-top: -10px;
@@ -620,14 +610,13 @@ input[type="submit"]:active {
   text-align: center;
   margin-top: 40px;
   margin-bottom: 30px;
-  color: #fff; /* Título branco conforme imagem */
+  color: #fff; 
   font-weight: 700;
   font-size: 26px;
 }
 
-/* Caixas Roxas (Missão e Equipe) */
 .purple-box {
-  background: rgba(124, 77, 255, 0.15); /* Roxo translúcido */
+  background: rgba(124, 77, 255, 0.15); 
   border: 1px solid var(--primary);
   border-radius: 12px;
   padding: 20px 24px;
@@ -649,7 +638,6 @@ input[type="submit"]:active {
   margin: 0;
 }
 
-/* Grid de Funcionalidades (3 Colunas) */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -658,7 +646,7 @@ input[type="submit"]:active {
 }
 
 .feature-card {
-  background: var(--card); /* Usando a cor #3c2f5e definida no :root */
+  background: var(--card); 
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -679,7 +667,7 @@ input[type="submit"]:active {
   font-weight: 700;
   margin-top: 0;
   margin-bottom: 12px;
-  min-height: 40px; /* Alinha os textos verticalmente */
+  min-height: 40px; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -692,7 +680,6 @@ input[type="submit"]:active {
   margin: 0;
 }
 
-/* Grid do Tutorial (Como Usar) */
 .tutorial-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -737,7 +724,6 @@ input[type="submit"]:active {
   line-height: 1.4;
 }
 
-/* Badges da Equipe */
 .team-tags {
   display: flex;
   gap: 15px;
@@ -765,14 +751,13 @@ input[type="submit"]:active {
   margin-top: 20px;
 }
 .team-section h3 {
-  text-align: center; /* Força centralização no footer */
+  text-align: center; 
 }
 
-/* Responsividade para a Ajuda */
 @media (max-width: 900px) {
   .features-grid, 
   .tutorial-grid {
-    grid-template-columns: 1fr; /* Vira uma coluna só em telas pequenas */
+    grid-template-columns: 1fr; 
     gap: 20px;
   }
   

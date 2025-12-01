@@ -1,4 +1,3 @@
-// Utilitários de armazenamento
 const saveSettings = async (settings) => {
     return new Promise((resolve) => {
         chrome.storage.sync.set({ colorLensSettings: settings }, () => {
@@ -15,7 +14,6 @@ const loadSettings = async () => {
     });
 };
 
-// Dados dos filtros de cor
 const COLOR_FILTERS_DATA = {
     'Protanopia': {
         id: 'protanopia',
@@ -101,7 +99,7 @@ function injectSvgFilters() {
 }
 
 const applyFilters = (settings) => {
-    // REMOVIDO: readingMode
+
     const { filter, contrast, saturation, nightVision } = settings;
 
     let filterString = '';
@@ -115,18 +113,15 @@ const applyFilters = (settings) => {
         filterString += `${colorFilterData.value} `;
     }
     
-    // Ajustes
     filterString += `contrast(${contrast}%) `;
     filterString += `saturate(${saturation}%) `;
 
-    // Modo Noturno Suave (Sepia 20%)
     if (nightVision) {
         filterString += `brightness(80%) sepia(20%) `;
     }
 
     document.documentElement.style.filter = filterString.trim();
 
-    // REMOVIDO: Lógica de classe 'colorlens-reading-mode'
     if (nightVision) {
         document.documentElement.classList.add('colorlens-night-vision');
     } else {
@@ -134,7 +129,6 @@ const applyFilters = (settings) => {
     }
 }
 
-// Listener
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
     if (request.action === 'applySettings' && request.settings) {
         console.log('Configurações recebidas:', request.settings);

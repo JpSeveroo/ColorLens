@@ -19,31 +19,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-/* ---------- Funções de Mapeamento (Consistência com Popup) ---------- */
-
-/**
- * Traduz o valor VISUAL (0-200) do slider para o valor FUNCIONAL (50-200).
- * Impede que o contraste chegue a 0% (tela preta).
- */
 function mapContrastToFunctional(visualValue) {
   const val = Number(visualValue);
   
-  // Mapeia a primeira metade do slider (0-100) para o intervalo (50-100)
   if (val <= 100) {
       return 50 + (val / 100) * 50;
   }
   
-  // Mapeia a segunda metade (100-200) normalmente
   return val;
 }
 
-/**
- * Traduz o valor FUNCIONAL (50-200) salvo para o valor VISUAL (0-200) do slider.
- */
 function mapFunctionalToVisual(functionalValue) {
   const val = Number(functionalValue);
 
-  // Mapeia o intervalo (50-100) de volta para (0-100)
   if (val < 100) {
       return ((val - 50) / 50) * 100;
   }
@@ -51,7 +39,6 @@ function mapFunctionalToVisual(functionalValue) {
   return val;
 }
 
-/* ---------- Navegação entre abas ---------- */
 function initializeTabs() {
   const buttons = document.querySelectorAll(".options-btn");
   const sections = document.querySelectorAll(".content-section");
@@ -104,10 +91,8 @@ function populateFilterSelect() {
   }
 }
 
-/* ---------- Botões ---------- */
 const previewContainer = document.querySelector(".preview-container");
 
-// Cria imagem de pré-visualização se não existir
 if (previewContainer && previewContainer.children.length === 0) {
   const list = [
     "../../assets/images/imagem balao teste 1.jpg",
@@ -116,7 +101,7 @@ if (previewContainer && previewContainer.children.length === 0) {
   ];
   for (let i = 0; i < 3; i++) {
     const img = document.createElement("img");
-    img.src = list[i]; // substitua se necessário
+    img.src = list[i]; 
     img.alt = "Prévia de ajustes visuais";
     img.style.width = "100%";
     img.style.height = "100%";
@@ -132,7 +117,6 @@ const previewImgs = previewContainer?.querySelectorAll("img");
 const profileName = document.getElementById("profile-name-input");
 const baseFilter = document.getElementById("color-blindness-select");
 
-// IDs corrigidos
 const contrastSlider = document.getElementById("contrast");
 const saturationSlider = document.getElementById("saturation");
 const contrastValueInput = document.getElementById("contrast-input");
@@ -140,14 +124,10 @@ const saturationValueInput = document.getElementById("saturation-input");
 const resetBtn = document.querySelector(".reset-btn");
 
 resetBtn.addEventListener("click", (e) => {
-  // Impede o botão (que é type="reset") de limpar o formulário antes da hora
   e.preventDefault();
 
-  // Resetar Nome e Filtro Base
   profileName.value = "";
   baseFilter.value = "none";
-
-  // Resetar Sliders (valor e visualização)
   contrastSlider.value = 100;
   saturationSlider.value = 100;
   if (contrastValueInput) contrastValueInput.value = 100;
@@ -156,26 +136,22 @@ resetBtn.addEventListener("click", (e) => {
   const overlay = document.querySelector(".color-overlay");
   overlay.style.background = "none";
 
-  // Resetar Mapeamento de Cores
   document.getElementById('enable-color-mapping').checked = false;
   document.getElementById("color1-mapper").value = "#ff0000";
   document.getElementById("color2-mapper").value = "#00ff00";
   document.getElementById("color3-mapper").value = "#0000ff";
 
-  // Resetar Seletor de Perfil Salvo
   const profileSelector = document.getElementById("saved-profiles");
   if (profileSelector) {
-    profileSelector.value = ""; // Volta para "Selecione um perfil..."
+    profileSelector.value = ""; 
   }
 
-  // Sincroniza TODAS as atualizações visuais
   updateSliderLook(contrastSlider, contrastValueInput);
   updateSliderLook(saturationSlider, saturationValueInput);
-  applyVisualEffects(previewImgs); // Aplica filtros (com 'none') e modos (desligados)
+  applyVisualEffects(previewImgs); 
   applyColorMapping();
 });
 
-/* ---------- Sliders de Contraste e Saturação ---------- */
 function initializeSliders() {
   if (contrastSlider && saturationSlider) {
     updateSliderLook(contrastSlider, contrastValueInput);
@@ -225,11 +201,10 @@ const colorBlindnessSelect = document.getElementById("color-blindness-select");
 if (colorBlindnessSelect) {
   colorBlindnessSelect.addEventListener("change", () => {
     applyVisualEffects(previewImgs);
-    saveVisualSettings(); // salva o filtro no storage
+    saveVisualSettings(); 
   });
 }
 
-/* ---------- Atualização visual dos sliders ---------- */
 function updateSliderLook(slider, valueInput) {
   const min = parseInt(slider.min, 10);
   const max = parseInt(slider.max, 10);
@@ -239,25 +214,17 @@ function updateSliderLook(slider, valueInput) {
   slider.style.background = `linear-gradient(to right, #7B4EAC ${percentage}%, #352957 ${percentage}%)`;
 }
 
-/* ---------- Aplica contraste, saturação e modos ---------- */
 function applyVisualEffects(previewImgs) {
   if (!previewImgs) return;
 
-  // 1. Coleta TODOS os valores VISUAIS
   const contrastVisual = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
   const filterType = document.getElementById("color-blindness-select").value;
-
-  // 2. Converte Contraste Visual -> Funcional (Proteção contra escurecimento total)
-  // O CSS na página de preview deve receber o valor real que será aplicado no site.
   const contrastFunctional = mapContrastToFunctional(contrastVisual);
 
-  // 3. Lógica dos Modos (Brilho, Saturação, Cor de Fundo)
   let brightness = 100;
   let hueRotate = 0;
   let backgroundColor = "transparent";
-
-  // 4. Lógica dos Filtros de Daltonismo
   let filterCSS = "none";
 
   const filterDataMap = {};
@@ -268,14 +235,12 @@ function applyVisualEffects(previewImgs) {
   const selectedFilter = filterDataMap[filterType];
 
   if (selectedFilter) {
-    // Lista de filtros que devem usar SVG (Opias E Anomalias)
     const svgFilters = [
       'protanopia', 'deuteranopia', 'tritanopia', 
       'protanomaly', 'deuteranomaly', 'tritanomaly'
     ];
 
     if (svgFilters.includes(filterType)) {
-      // Agora todos usam a referência ao ID do SVG injetado
       filterCSS = `url("#${filterType}")`; 
     }
     else if (filterType === 'achromatopsia' || filterType === 'monocromia') {
@@ -284,13 +249,11 @@ function applyVisualEffects(previewImgs) {
     else { filterCSS = '' }
   }
 
-  // 5. Aplica o fundo
   previewImgs.forEach((img) => {
     img.style.backgroundColor = backgroundColor;
   });
 
-  // 6. Aplica TODOS os filtros de uma vez na ordem correta
-  // IMPORTANTE: Aqui usamos contrastFunctional, não contrastVisual
+
   previewImgs.forEach((img) => {
     img.style.filter = `
         ${filterCSS}
@@ -313,14 +276,12 @@ function injectSvgFilters() {
 
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   
-  // 1. Injeta os filtros vindos do arquivo de dados (se houver)
   for (const key in COLOR_FILTERS_DATA) {
       if (COLOR_FILTERS_DATA[key].svg) {
           defs.innerHTML += COLOR_FILTERS_DATA[key].svg;
       }
   }
 
-  // 2. INJEÇÃO MANUAL DAS ANOMALIAS (Matrizes de Correção/Simulação)
   const anomalyFilters = `
     <filter id="protanomaly">
       <feColorMatrix type="matrix" values="0.817 0.183 0 0 0  0.333 0.667 0 0 0  0 0.125 0.875 0 0  0 0 0 1 0" />
@@ -343,7 +304,6 @@ function injectSvgFilters() {
   document.documentElement.appendChild(svgContainer);
 }
 
-/* ---------- Modos: Leitura e Noturno ---------- */
 function initializeModeToggles() {
   const readingToggle = document.getElementById("reading-mode");
   const nightToggle = document.getElementById("night-vision");
@@ -362,13 +322,9 @@ function initializeModeToggles() {
   }
 }
 
-/* ---------- Salva valores ---------- */
 function saveVisualSettings() {
   const contrastVisual = document.getElementById("contrast").value;
-  
-  // Salva o valor FUNCIONAL (50-200) para manter consistência com o Content Script
   const contrast = mapContrastToFunctional(contrastVisual);
-  
   const saturation = document.getElementById("saturation").value;
   const readingMode = document.getElementById("reading-mode").checked;
   const nightVision = document.getElementById("night-vision").checked;
@@ -395,7 +351,6 @@ function saveVisualSettings() {
   }
 }
 
-/* ---------- Carrega configurações salvas ---------- */
 function loadAllSavedSettings() {
   if (typeof chrome !== "undefined" && chrome.storage) {
     chrome.storage.local
@@ -426,7 +381,6 @@ function loadAllSavedSettings() {
           }
 
           if (contrastSlider && saturationSlider) {
-            // Converte o valor salvo (Funcional) de volta para Visual (Slider)
             const contrastVisual = mapFunctionalToVisual(contrast || 100);
             
             contrastSlider.value = contrastVisual;
@@ -447,13 +401,11 @@ function loadAllSavedSettings() {
   }
 }
 
-/* ---------- Funções auxiliares originais ---------- */
 function updateUI(userProfiles, customColors) {
   if (userProfiles) console.log("Loading user profiles:", userProfiles);
   if (customColors) console.log("Loading custom colors:", customColors);
 }
 
-/* ---------- Salvar perfil completo ---------- */
 document.getElementById("profile-form")?.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -465,14 +417,13 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
     return;
   }
 
-  // IMPORTANTE: Salvar o contraste FUNCIONAL no perfil
   const contrastVisual = document.getElementById("contrast").value;
   const contrastFunctional = mapContrastToFunctional(contrastVisual);
 
   const profileData = {
     name: profileName,
     baseFilter: document.getElementById("color-blindness-select").value,
-    contrast: contrastFunctional, // Salva o valor mapeado
+    contrast: contrastFunctional, 
     saturation: document.getElementById("saturation").value,
     readingMode: document.getElementById("reading-mode").checked,
     nightVision: document.getElementById("night-vision").checked,
@@ -497,9 +448,9 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
 
       if (existingIndex >= 0) {
         if (!confirm("Já existe um perfil com esse nome. Deseja sobrescrevê-lo?")) return;
-        profiles[existingIndex] = profileData; // Atualiza
+        profiles[existingIndex] = profileData; 
       } else {
-        profiles.push(profileData); // Novo
+        profiles.push(profileData); 
       }
 
       chrome.storage.local.set({ userProfiles: profiles }).then(() => {
@@ -514,7 +465,6 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
   applyColorMapping();
 });
 
-/* ---------- Mapeamento de cores ---------- */
 function initializeColorMapping() {
   const colorInputs = [
     document.getElementById("color1-mapper"),
@@ -538,7 +488,6 @@ function initializeColorMapping() {
   }
 }
 
-/* ---------- Aplica as cores mapeadas na imagem ---------- */
 function applyColorMapping() {
   const overlays = document.querySelectorAll(".color-overlay");
   if (!overlays) return;
@@ -555,13 +504,11 @@ function applyColorMapping() {
   const green = document.getElementById("color2-mapper").value;
   const blue = document.getElementById("color3-mapper").value;
 
-  // Cria gradiente suave entre as cores mapeadas
   overlays.forEach(el => {
     el.style.background = `linear-gradient(135deg, ${red} 0%, ${green} 50%, ${blue} 100%)`;
   });
 }
 
-/* ---------- Salva apenas o mapeamento ---------- */
 function saveColorMapping() {
   const colorMap = {
     red: document.getElementById("color1-mapper").value,
@@ -577,7 +524,6 @@ function saveColorMapping() {
   }
 }
 
-/* ---------- Carrega mapeamento salvo ---------- */
 function loadColorMapping() {
   if (typeof chrome !== "undefined" && chrome.storage) {
     chrome.storage.local.get(["customColors"]).then((data) => {
@@ -597,7 +543,6 @@ function loadColorMapping() {
   }
 }
 
-/* ---------- Carregar e aplicar presets ---------- */
 function populateProfileSelector() {
   const profileNameDiv = document.querySelector(".profile-name");
   if (!profileNameDiv) return;
@@ -647,7 +592,6 @@ function populateProfileSelector() {
       const contrastInput = document.getElementById("contrast-input");
       const saturationInput = document.getElementById("saturation-input");
 
-      // Converte o valor salvo (Funcional) para Visual na hora de carregar o perfil
       contrastRange.value = mapFunctionalToVisual(profile.contrast);
       
       saturationRange.value = profile.saturation;
@@ -666,7 +610,6 @@ function populateProfileSelector() {
   });
 }
 
-/* ---------- Excluir perfil salvo ---------- */
 function initializeDeleteProfile() {
   const deleteBtn = document.getElementById('delete-profile-btn');
   const selector = document.getElementById('saved-profiles');
@@ -697,7 +640,6 @@ function initializeDeleteProfile() {
   });
 }
 
-/* ---------- Renomear perfil salvo ---------- */
 function initializeRenameProfile() {
   const renameBtn = document.getElementById('rename-profile-btn');
   const selector = document.getElementById('saved-profiles');
@@ -723,7 +665,6 @@ function initializeRenameProfile() {
         return;
       }
 
-      // Verifica se já existe outro com o mesmo nome
       const duplicate = profiles.some(p => p.name === newName.trim());
       if (duplicate) {
         alert('Já existe um perfil com esse nome.');
