@@ -85,6 +85,8 @@
                       <div class="setting-label">
                         <strong>__MSG_nightModeLabel__</strong>
                         <span>__MSG_nightModeDescription__</span>
+                        <strong>Modo Noturno</strong>
+                        <span>Reduz o cansaço visual.</span>
                       </div>
                       <label class="toggle-switch">
                         <input type="checkbox" id="night-vision">
@@ -93,6 +95,30 @@
                     </div>
                   </div>
                   <button class="reset-btn" id="adjustmentsResetBtn">__MSG_resetButton__</button>
+                    <div class="setting-row">
+                        <div class="setting-label">
+                            <strong>Idioma</strong>
+                            <span>Selecione o idioma da interface.</span>
+                        </div>
+                        <div class="language-dropdown-container">
+                            <button id="language-btn" class="language-pill-btn" style="border: none; background: rgba(255,255,255,0.05);">
+                            <svg class="icon-globe" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span id="current-lang-text">Português</span>
+                            <svg class="icon-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div id="language-menu" class="language-menu hidden">
+                            <div class="lang-option" data-lang="pt">Português</div>
+                            <div class="lang-option" data-lang="en">English</div>
+                            </div>
+                    </div>
+                </div>
+                  <button class="reset-btn" id="adjustmentsResetBtn">Resetar</button>
             </section>
                   <! -- ABA 3: Personalização -- >
             <section id="tab-custom" class="tab-section hidden">

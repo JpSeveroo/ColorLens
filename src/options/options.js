@@ -1,58 +1,44 @@
+import { COLOR_FILTERS_DATA } from "../utils/filters.js";
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Carrega os filtros compartilhados antes de inicializar a UI
-  loadSharedFilters().then(() => {
-    initializeTabs();
-    initializeSliders();
-    initializeModeToggles();
+  injectSvgFilters();
+  initializeTabs();
+  initializeSliders();
+  initializeModeToggles();
 
-    initializeColorMapping();
-    populateProfileSelector();
-    initializeDeleteProfile();
-    initializeRenameProfile();
-    loadColorMapping();
+  initializeColorMapping();
+  populateProfileSelector();
+  initializeDeleteProfile();
+  initializeRenameProfile();
+  loadColorMapping();
 
-    try {
-      loadAllSavedSettings();
-    } catch (error) {
-      console.warn("Erro ao carregar configurações:", error);
-    }
-  });
+  try {
+    loadAllSavedSettings();
+  } catch (error) {
+    console.warn("Erro ao carregar configurações:", error);
+  }
 });
 
-/* ---------- Navegação entre abas ---------- */
-
-// --- Carregamento dos filtros compartilhados (JSON) ---
-let SHARED_FILTERS = {};
-async function loadSharedFilters() {
-  try {
-    const url = chrome.runtime.getURL('src/utils/filters.json');
-    const res = await fetch(url);
-    SHARED_FILTERS = await res.json();
-    injectSvgFiltersForOptions();
-    console.log('Filtros compartilhados carregados (options)');
-  } catch (err) {
-    console.warn('Não foi possível carregar filtros compartilhados:', err);
-    SHARED_FILTERS = {};
+function mapContrastToFunctional(visualValue) {
+  const val = Number(visualValue);
+  
+  if (val <= 100) {
+      return 50 + (val / 100) * 50;
   }
+  
+  return val;
 }
 
-function injectSvgFiltersForOptions() {
-  if (!SHARED_FILTERS) return;
-  if (document.getElementById('colorlens-svg-filters-options')) return;
+function mapFunctionalToVisual(functionalValue) {
+  const val = Number(functionalValue);
 
-  const svgContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svgContainer.id = 'colorlens-svg-filters-options';
-  svgContainer.style.display = 'none';
-
-  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  for (const key in SHARED_FILTERS) {
-    const entry = SHARED_FILTERS[key];
-    if (entry && entry.svg) defs.innerHTML += entry.svg;
+  if (val < 100) {
+      return ((val - 50) / 50) * 100;
   }
-
-  svgContainer.appendChild(defs);
-  document.documentElement.appendChild(svgContainer);
+  
+  return val;
 }
+
 function initializeTabs() {
   const buttons = document.querySelectorAll(".options-btn");
   const sections = document.querySelectorAll(".content-section");
@@ -85,10 +71,28 @@ function initializeTabs() {
   }
 }
 
-/* ---------- Botões ---------- */
+function populateFilterSelect() {
+  const filterSelect = document.getElementById('color-blindness-select');
+  if (!filterSelect) return;
+
+  const noneOption = document.createElement('option');
+  noneOption.value = 'none';
+  noneOption.textContent = 'Nenhum';
+  filterSelect.appendChild(noneOption);
+
+  for (const key in COLOR_FILTERS_DATA) {
+    if (key === 'none') continue;
+
+    const filterData = COLOR_FILTERS_DATA[key];
+    const option = document.createElement('option');
+    option.value = filterData.id;
+    option.textContent = key;
+    filterSelect.appendChild(option);
+  }
+}
+
 const previewContainer = document.querySelector(".preview-container");
 
-// Cria imagem de pré-visualização se não existir
 if (previewContainer && previewContainer.children.length === 0) {
   const list = [
     "../../assets/images/imagem balao teste 1.jpg",
@@ -97,7 +101,7 @@ if (previewContainer && previewContainer.children.length === 0) {
   ];
   for (let i = 0; i < 3; i++) {
     const img = document.createElement("img");
-    img.src = list[i]; // substitua se necessário
+    img.src = list[i]; 
     img.alt = "Prévia de ajustes visuais";
     img.style.width = "100%";
     img.style.height = "100%";
@@ -113,7 +117,6 @@ const previewImgs = previewContainer?.querySelectorAll("img");
 const profileName = document.getElementById("profile-name-input");
 const baseFilter = document.getElementById("color-blindness-select");
 
-// IDs corrigidos
 const contrastSlider = document.getElementById("contrast");
 const saturationSlider = document.getElementById("saturation");
 const contrastValueInput = document.getElementById("contrast-input");
@@ -121,14 +124,10 @@ const saturationValueInput = document.getElementById("saturation-input");
 const resetBtn = document.querySelector(".reset-btn");
 
 resetBtn.addEventListener("click", (e) => {
-  // Impede o botão (que é type="reset") de limpar o formulário antes da hora
   e.preventDefault();
 
-  // Resetar Nome e Filtro Base
   profileName.value = "";
   baseFilter.value = "none";
-
-  // Resetar Sliders (valor e visualização)
   contrastSlider.value = 100;
   saturationSlider.value = 100;
   if (contrastValueInput) contrastValueInput.value = 100;
@@ -137,26 +136,22 @@ resetBtn.addEventListener("click", (e) => {
   const overlay = document.querySelector(".color-overlay");
   overlay.style.background = "none";
 
-  // Resetar Mapeamento de Cores
   document.getElementById('enable-color-mapping').checked = false;
   document.getElementById("color1-mapper").value = "#ff0000";
   document.getElementById("color2-mapper").value = "#00ff00";
   document.getElementById("color3-mapper").value = "#0000ff";
 
-  // Resetar Seletor de Perfil Salvo
   const profileSelector = document.getElementById("saved-profiles");
   if (profileSelector) {
-    profileSelector.value = ""; // Volta para "Selecione um perfil..."
+    profileSelector.value = ""; 
   }
 
-  // Sincroniza TODAS as atualizações visuais
   updateSliderLook(contrastSlider, contrastValueInput);
   updateSliderLook(saturationSlider, saturationValueInput);
-  applyVisualEffects(previewImgs); // Aplica filtros (com 'none') e modos (desligados)
+  applyVisualEffects(previewImgs); 
   applyColorMapping();
 });
 
-/* ---------- Sliders de Contraste e Saturação ---------- */
 function initializeSliders() {
   if (contrastSlider && saturationSlider) {
     updateSliderLook(contrastSlider, contrastValueInput);
@@ -206,11 +201,10 @@ const colorBlindnessSelect = document.getElementById("color-blindness-select");
 if (colorBlindnessSelect) {
   colorBlindnessSelect.addEventListener("change", () => {
     applyVisualEffects(previewImgs);
-    saveVisualSettings(); // salva o filtro no storage
+    saveVisualSettings(); 
   });
 }
 
-/* ---------- Atualização visual dos sliders ---------- */
 function updateSliderLook(slider, valueInput) {
   const min = parseInt(slider.min, 10);
   const max = parseInt(slider.max, 10);
@@ -220,55 +214,50 @@ function updateSliderLook(slider, valueInput) {
   slider.style.background = `linear-gradient(to right, #7B4EAC ${percentage}%, #352957 ${percentage}%)`;
 }
 
-/* ---------- Aplica contraste, saturação e modos ---------- */
 function applyVisualEffects(previewImgs) {
   if (!previewImgs) return;
 
-  // 1. Coleta TODOS os valores dos inputs
-  const contrast = document.getElementById("contrast").value;
+  const contrastVisual = document.getElementById("contrast").value;
   const saturation = document.getElementById("saturation").value;
   const filterType = document.getElementById("color-blindness-select").value;
+  const contrastFunctional = mapContrastToFunctional(contrastVisual);
 
-  // 2. Lógica dos Modos (Brilho, Saturação, Sepia, Cor de Fundo)
   let brightness = 100;
-  let sepia = 0;
   let hueRotate = 0;
   let backgroundColor = "transparent";
+  let filterCSS = "none";
 
-  // 3. Lógica dos Filtros de Daltonismo (usa os filtros carregados em SHARED_FILTERS)
-  let filterCSS = '';
-  try {
-    const key = (filterType || 'none').toLowerCase();
-    const entry = SHARED_FILTERS[key];
-    if (entry) {
-      if (entry.svg) {
-        filterCSS = `url("#${entry.id}")`;
-      } else if (entry.value) {
-        filterCSS = entry.value;
-      }
-    } else {
-      filterCSS = '';
+  const filterDataMap = {};
+  for (const key in COLOR_FILTERS_DATA) {
+    filterDataMap[COLOR_FILTERS_DATA[key].id] = COLOR_FILTERS_DATA[key];
+  }
+
+  const selectedFilter = filterDataMap[filterType];
+
+  if (selectedFilter) {
+    const svgFilters = [
+      'protanopia', 'deuteranopia', 'tritanopia', 
+      'protanomaly', 'deuteranomaly', 'tritanomaly'
+    ];
+
+    if (svgFilters.includes(filterType)) {
+      filterCSS = `url("#${filterType}")`; 
     }
-  } catch (err) {
-    console.warn('Erro ao aplicar filtro compartilhado:', err);
-    filterCSS = '';
+    else if (filterType === 'achromatopsia' || filterType === 'monocromia') {
+      filterCSS = selectedFilter.value;
+    }
+    else { filterCSS = '' }
   }
 
-  // 4. Aplica o fundo (importante para o modo noturno funcionar no preview)
-  // Se for uma NodeList (várias imagens), itera sobre elas. Se for um elemento só, aplica direto.
-  if (previewImgs.length !== undefined) {
-      previewImgs.forEach((img) => {
-        img.style.backgroundColor = backgroundColor;
-      });
-  } else {
-      previewImgs.style.backgroundColor = backgroundColor;
-  }
+  previewImgs.forEach((img) => {
+    img.style.backgroundColor = backgroundColor;
+  });
 
-  // 5. Aplica TODOS os filtros de uma vez na ordem correta
+
   previewImgs.forEach((img) => {
     img.style.filter = `
         ${filterCSS}
-        contrast(${contrast}%)
+        contrast(${contrastFunctional}%)
         saturate(${saturation}%)
         brightness(${brightness}%)
         hue-rotate(${hueRotate}deg)
@@ -276,10 +265,69 @@ function applyVisualEffects(previewImgs) {
   });
 }
 
-/* ---------- Salva valores ---------- */
+function injectSvgFilters() {
+  if (document.getElementById('colorlens-svg-filters')) {
+      return;
+  }
+
+  const svgContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgContainer.id = 'colorlens-svg-filters';
+  svgContainer.style.display = 'none';
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  
+  for (const key in COLOR_FILTERS_DATA) {
+      if (COLOR_FILTERS_DATA[key].svg) {
+          defs.innerHTML += COLOR_FILTERS_DATA[key].svg;
+      }
+  }
+
+  const anomalyFilters = `
+    <filter id="protanomaly">
+      <feColorMatrix type="matrix" values="0.817 0.183 0 0 0  0.333 0.667 0 0 0  0 0.125 0.875 0 0  0 0 0 1 0" />
+    </filter>
+
+    <filter id="deuteranomaly">
+      <feColorMatrix type="matrix" values="0.8 0.2 0 0 0  0.258 0.742 0 0 0  0 0.142 0.858 0 0  0 0 0 1 0" />
+    </filter>
+
+    <filter id="tritanomaly">
+      <feColorMatrix type="matrix" values="0.967 0.033 0 0 0  0 0.733 0.267 0 0  0 0.183 0.817 0 0  0 0 0 1 0" />
+    </filter>
+  `;
+
+  if (!defs.innerHTML.includes('id="protanomaly"')) {
+      defs.innerHTML += anomalyFilters;
+  }
+
+  svgContainer.appendChild(defs);
+  document.documentElement.appendChild(svgContainer);
+}
+
+function initializeModeToggles() {
+  const readingToggle = document.getElementById("reading-mode");
+  const nightToggle = document.getElementById("night-vision");
+  const previewImgs = document.querySelectorAll(".preview-img img");
+
+  if (readingToggle && nightToggle) {
+    readingToggle.addEventListener("change", () => {
+      applyVisualEffects(previewImgs);
+      saveVisualSettings();
+    });
+
+    nightToggle.addEventListener("change", () => {
+      applyVisualEffects(previewImgs);
+      saveVisualSettings();
+    });
+  }
+}
+
 function saveVisualSettings() {
-  const contrast = document.getElementById("contrast").value;
+  const contrastVisual = document.getElementById("contrast").value;
+  const contrast = mapContrastToFunctional(contrastVisual);
   const saturation = document.getElementById("saturation").value;
+  const readingMode = document.getElementById("reading-mode").checked;
+  const nightVision = document.getElementById("night-vision").checked;
   const colorBlindness = document.getElementById(
     "color-blindness-select"
   ).value;
@@ -287,12 +335,14 @@ function saveVisualSettings() {
   const settings = {
     contrast,
     saturation,
+    readingMode,
+    nightVision,
     colorBlindness,
   };
 
   if (typeof chrome !== "undefined" && chrome.storage) {
     chrome.storage.local.set({ visualSettings: settings }).then(() => {
-      console.log("Configurações visuais salvas:", settings);
+      console.log("Configurações visuais salvas (Funcional):", settings);
       chrome.runtime?.sendMessage({
         action: "applyVisualSettings",
         settings,
@@ -301,7 +351,6 @@ function saveVisualSettings() {
   }
 }
 
-/* ---------- Carrega configurações salvas ---------- */
 function loadAllSavedSettings() {
   if (typeof chrome !== "undefined" && chrome.storage) {
     chrome.storage.local
@@ -314,13 +363,17 @@ function loadAllSavedSettings() {
             colorBlindness,
             contrast,
             saturation,
+            readingMode,
+            nightVision,
           } = data.visualSettings;
 
           const contrastSlider = document.getElementById("contrast");
           const saturationSlider = document.getElementById("saturation");
           const contrastValueInput = document.getElementById("contrast-input");
           const saturationValueInput = document.getElementById("saturation-input");
-          const previewImg = document.querySelector(".preview-img img");
+          const previewImgs = document.querySelectorAll(".preview-img img");
+          const readingToggle = document.getElementById("reading-mode");
+          const nightToggle = document.getElementById("night-vision");
 
           if (colorBlindness) {
             document.getElementById("color-blindness-select").value =
@@ -328,13 +381,18 @@ function loadAllSavedSettings() {
           }
 
           if (contrastSlider && saturationSlider) {
-            contrastSlider.value = contrast || 100;
+            const contrastVisual = mapFunctionalToVisual(contrast || 100);
+            
+            contrastSlider.value = contrastVisual;
             saturationSlider.value = saturation || 100;
             updateSliderLook(contrastSlider, contrastValueInput);
             updateSliderLook(saturationSlider, saturationValueInput);
           }
 
-          applyVisualEffects(previewImg);
+          if (readingToggle) readingToggle.checked = !!readingMode;
+          if (nightToggle) nightToggle.checked = !!nightVision;
+
+          applyVisualEffects(previewImgs);
         }
       })
       .catch((error) => {
@@ -343,13 +401,11 @@ function loadAllSavedSettings() {
   }
 }
 
-/* ---------- Funções auxiliares originais ---------- */
 function updateUI(userProfiles, customColors) {
   if (userProfiles) console.log("Loading user profiles:", userProfiles);
   if (customColors) console.log("Loading custom colors:", customColors);
 }
 
-/* ---------- Salvar perfil completo ---------- */
 document.getElementById("profile-form")?.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -361,11 +417,16 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
     return;
   }
 
+  const contrastVisual = document.getElementById("contrast").value;
+  const contrastFunctional = mapContrastToFunctional(contrastVisual);
+
   const profileData = {
     name: profileName,
     baseFilter: document.getElementById("color-blindness-select").value,
-    contrast: document.getElementById("contrast").value,
+    contrast: contrastFunctional, 
     saturation: document.getElementById("saturation").value,
+    readingMode: document.getElementById("reading-mode").checked,
+    nightVision: document.getElementById("night-vision").checked,
     colorMap: {
       red: document.getElementById("color1-mapper").value,
       green: document.getElementById("color2-mapper").value,
@@ -387,25 +448,23 @@ document.getElementById("profile-form")?.addEventListener("submit", (e) => {
 
       if (existingIndex >= 0) {
         if (!confirm("Já existe um perfil com esse nome. Deseja sobrescrevê-lo?")) return;
-        profiles[existingIndex] = profileData; // Atualiza
+        profiles[existingIndex] = profileData; 
       } else {
-        profiles.push(profileData); // Novo
+        profiles.push(profileData); 
       }
 
       chrome.storage.local.set({ userProfiles: profiles }).then(() => {
         console.log("Perfil salvo:", profileData);
         alert("Perfil salvo com sucesso!");
-      });
-    
-    populateProfileSelector();
 
+        populateProfileSelector();
+      });
     });
   }
 
   applyColorMapping();
 });
 
-/* ---------- Mapeamento de cores ---------- */
 function initializeColorMapping() {
   const colorInputs = [
     document.getElementById("color1-mapper"),
@@ -429,7 +488,6 @@ function initializeColorMapping() {
   }
 }
 
-/* ---------- Aplica as cores mapeadas na imagem ---------- */
 function applyColorMapping() {
   const overlays = document.querySelectorAll(".color-overlay");
   if (!overlays) return;
@@ -446,13 +504,11 @@ function applyColorMapping() {
   const green = document.getElementById("color2-mapper").value;
   const blue = document.getElementById("color3-mapper").value;
 
-  // Cria gradiente suave entre as cores mapeadas
   overlays.forEach(el => {
     el.style.background = `linear-gradient(135deg, ${red} 0%, ${green} 50%, ${blue} 100%)`;
   });
 }
 
-/* ---------- Salva apenas o mapeamento ---------- */
 function saveColorMapping() {
   const colorMap = {
     red: document.getElementById("color1-mapper").value,
@@ -468,7 +524,6 @@ function saveColorMapping() {
   }
 }
 
-/* ---------- Carrega mapeamento salvo ---------- */
 function loadColorMapping() {
   if (typeof chrome !== "undefined" && chrome.storage) {
     chrome.storage.local.get(["customColors"]).then((data) => {
@@ -488,7 +543,6 @@ function loadColorMapping() {
   }
 }
 
-/* ---------- Carregar e aplicar presets ---------- */
 function populateProfileSelector() {
   const profileNameDiv = document.querySelector(".profile-name");
   if (!profileNameDiv) return;
@@ -538,8 +592,11 @@ function populateProfileSelector() {
       const contrastInput = document.getElementById("contrast-input");
       const saturationInput = document.getElementById("saturation-input");
 
-      contrastRange.value = profile.contrast;
+      contrastRange.value = mapFunctionalToVisual(profile.contrast);
+      
       saturationRange.value = profile.saturation;
+      document.getElementById("reading-mode").checked = profile.readingMode;
+      document.getElementById("night-vision").checked = profile.nightVision;
       document.getElementById("color1-mapper").value = profile.colorMap.red;
       document.getElementById("color2-mapper").value = profile.colorMap.green;
       document.getElementById("color3-mapper").value = profile.colorMap.blue;
@@ -553,7 +610,6 @@ function populateProfileSelector() {
   });
 }
 
-/* ---------- Excluir perfil salvo ---------- */
 function initializeDeleteProfile() {
   const deleteBtn = document.getElementById('delete-profile-btn');
   const selector = document.getElementById('saved-profiles');
@@ -584,7 +640,6 @@ function initializeDeleteProfile() {
   });
 }
 
-/* ---------- Renomear perfil salvo ---------- */
 function initializeRenameProfile() {
   const renameBtn = document.getElementById('rename-profile-btn');
   const selector = document.getElementById('saved-profiles');
@@ -610,7 +665,6 @@ function initializeRenameProfile() {
         return;
       }
 
-      // Verifica se já existe outro com o mesmo nome
       const duplicate = profiles.some(p => p.name === newName.trim());
       if (duplicate) {
         alert('Já existe um perfil com esse nome.');

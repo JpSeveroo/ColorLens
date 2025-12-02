@@ -1,5 +1,5 @@
 export const COLOR_FILTERS_DATA = {
-    'Protanopia': {
+    'protanopia': { // Chave agora é minúscula
         id: 'protanopia',
         svg: `
             <filter id="protanopia">
@@ -8,7 +8,7 @@ export const COLOR_FILTERS_DATA = {
             </filter>
         `
     },
-    'Deuteranopia': {
+    'deuteranopia': {
         id: 'deuteranopia',
         svg: `
             <filter id="deuteranopia">
@@ -17,7 +17,7 @@ export const COLOR_FILTERS_DATA = {
             </filter>
         `
     },
-    'Tritanopia': {
+    'tritanopia': {
         id: 'tritanopia',
         svg: `
             <filter id="tritanopia">
@@ -26,7 +26,7 @@ export const COLOR_FILTERS_DATA = {
             </filter>
         `
     },
-    'Protanomalia': {
+    'protanomaly': { // Atenção: ID em inglês (protanomaly) e minúsculo
         id: 'protanomaly',
         svg: `
             <filter id="protanomaly">
@@ -35,7 +35,7 @@ export const COLOR_FILTERS_DATA = {
             </filter>
         `
     },
-    'Deuteranomalia': {
+    'deuteranomaly': {
         id: 'deuteranomaly',
         svg: `
             <filter id="deuteranomaly">
@@ -44,7 +44,7 @@ export const COLOR_FILTERS_DATA = {
             </filter>
         `
     },
-    'Tritanomalia': {
+    'tritanomaly': {
         id: 'tritanomaly',
         svg: `
             <filter id="tritanomaly">
@@ -53,8 +53,7 @@ export const COLOR_FILTERS_DATA = {
             </filter>
         `
     },
-    // Filtros que não dependem de SVG
-    'Achromatopsia': { id: 'achromatopsia', value: 'grayscale(100%)' },
-    'Monocromia': { id: 'monocromia', value: 'grayscale(100%)' },
+    'achromatopsia': { id: 'achromatopsia', value: 'grayscale(100%)' },
+    'monocromia': { id: 'monocromia', value: 'grayscale(100%)' },
     'none': { id: 'none', value: '' }
 };

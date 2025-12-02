@@ -1,22 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-/* --- CSS CUSTOM PROPERTIES (Theming) --- */
 :root {
-    --color-primary-accent: #7B4EAC;   /* Primary purple/magenta */
-    --color-secondary-dark: #49273F;   /* Darker accent for non-active elements */
-    --color-background-deep: #2C2B3E;  /* Main background color */
-    --color-text-light: #F0F0F0;       /* Light text color */
-    --color-divider-subtle: #352957;   /* Subtle divider line color */
-    --color-reset-button: #706F8B;     /* Muted color for reset action */
-    --color-setting-row: #38354D;      /* Background for setting rows (lighter than main) */
-    --color-slider-track: #44475a;     /* Track color for the range input */
-    --color-slider-thumb: #F0F0F0;     /* Thumb color for visibility */
+    --color-primary-accent: #7B4EAC;  
+    --color-secondary-dark: #49273F;    
+    --color-background-deep: #2C2B3E;  
+    --color-text-light: #F0F0F0;       
+    --color-divider-subtle: #352957;   
+    --color-reset-button: #706F8B;     
+    --color-setting-row: #38354D;      
+    --color-slider-track: #44475a;    
+    --color-slider-thumb: #F0F0F0;     
     --spacing-default: 16px;
     --spacing-large: 24px;
     color-scheme: dark;
 }
 
-/* --- BASE STYLES & CONTAINER --- */
 body {
     width: 340px; 
     margin: 0;
@@ -29,7 +27,6 @@ body {
     padding: var(--spacing-default);
 }
 
-/* --- HEADER STYLES --- */
 .header {
     margin-bottom: 6px; 
 }
@@ -62,25 +59,24 @@ body {
 
 .header p {
     font-size: 0.85rem;
-    color: #b0b0b0; /* Slightly desaturated text for the description */
+    color: #b0b0b0; 
     margin: 0;
     padding-bottom: var(--spacing-default);
     border-bottom: 1px solid var(--color-divider-subtle);
 }
 
-/* --- NAVIGATION TABS --- */
 #tabs-nav {
     display: flex;
     margin: var(--spacing-default) 0;
 }
 
 .tab-btn {
-    flex-grow: 10; /* Makes all tabs equal width and fill the container */
+    flex-grow: 10;
     padding: 10px 0;
     text-align: center;
     border: none;
     border-radius: 4px;
-    margin-right: 6px; /* Small space between tabs */
+    margin-right: 6px; 
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 
@@ -100,7 +96,6 @@ body {
     background-color: #5A447F; 
 }
 
-/* --- MAIN CONTENT SECTIONS --- */
 .main-content h2, .main-content h3 {
     font-size: 1.1rem;
     margin-top: var(--spacing-default);
@@ -112,7 +107,6 @@ body {
     display: none;
 }
 
-/* --- CUSTOM PROFILES SCROLL BOX --- */
 .custom-profiles-scroll-box {
     max-height: 180px;
     overflow-y: auto;
@@ -136,10 +130,9 @@ body {
     background: var(--color-background-deep);
 }
 
-/* --- FILTER GRID --- */
 .filters-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two columns for buttons */
+    grid-template-columns: 1fr 1fr; 
     gap: 10px;
     margin-bottom: 0;
 }
@@ -163,7 +156,6 @@ body {
     border-color: var(--color-primary-accent);
 }
 
-/* --- RESET BUTTON --- */
 .reset-btn {
     width: 100%;
     padding: 10px;
@@ -177,10 +169,8 @@ body {
     margin-top: 8px;
 }
 
-/* --- ADJUSTMENTS SLIDER CONTROLS --- */
-
 .slider-control {
-    margin-bottom: 6px; /* Separation between contrast and saturation */
+    margin-bottom: 6px; 
 }
 
 .slider-label {
@@ -195,12 +185,10 @@ body {
     font-size: 0.9rem;
 }
 
-/* Group for the Number Input and '%' unit */
 .input-unit-group {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    /* Added background for visual separation from the dark background */
     background-color: var(--color-setting-row); 
     border-radius: 4px;
     padding: 4px 8px;
@@ -225,15 +213,11 @@ body {
     width: 30px;
     outline: none;   
 }
-/* Hide the default number input arrows/spinners */
 .percentage-input::-webkit-inner-spin-button, 
 .percentage-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-
-/* --- RANGE SLIDER STYLING (The Custom Slider) --- */
 
 .range-slider {
     -webkit-appearance: none;
@@ -242,26 +226,21 @@ body {
     height: 8px;
     border-radius: 4px;
     cursor: pointer;
-    /* Initial gradient is set to 50% for a mid-range default look */
     background: linear-gradient(to right, var(--color-primary-accent) 50%, var(--color-slider-track) 50%);
     transition: background 0.1s;
 }
 
-/* Slider Thumb (Handle) */
 .range-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    /* Use a light color to stand out against the dark track */
     background: var(--color-slider-thumb); 
     cursor: pointer;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
     transition: background 0.2s;
 }
-
-/* --- MODES SECTION (Toggle Switches) --- */
 
 .modes-section h3 {
     margin-top: 0px;
@@ -295,7 +274,6 @@ body {
     color: #a0a0a0;
 }
 
-/* --- TOGGLE SWITCH STYLING (MATCHING IMAGE AESTHETIC) --- */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -304,14 +282,12 @@ body {
     flex-shrink: 0; 
 }
 
-/* Hide default checkbox */
 .toggle-switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-/* The slider/track */
 .toggle-switch .slider {
     position: absolute;
     cursor: pointer;
@@ -319,32 +295,27 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    /* Off-state matches the setting-row background */
-    background-color: #55507A; /* Slightly darker shade for contrast against the row, or you can use var(--color-setting-row) */
+    background-color: #55507A; 
     transition: 0.4s;
     border-radius: 28px;
 }
 
-/* The thumb/handle */
 .toggle-switch .slider:before {
     position: absolute;
     content: "";
-    /* Sizing the thumb relative to the track */
     height: 20px; 
     width: 20px;
-    left: 4px; /* Starting position */
+    left: 4px; 
     bottom: 4px;
-    background-color: var(--color-text-light); /* White thumb */
+    background-color: var(--color-text-light); 
     transition: 0.4s;
     border-radius: 50%;
 }
 
-/* When checked: change track color to accent */
 .toggle-switch input:checked + .slider {
     background-color: var(--color-primary-accent);
 }
 
-/* When checked: move the thumb to the right */
 .toggle-switch input:checked + .slider:before {
     transform: translateX(18px);
 }
@@ -358,8 +329,6 @@ body {
     margin-bottom: 8px;
     background-color: var(--color-setting-row);
 }
-
-/* --- CUSTOMIZATION (Color Pickers) --- */
 
 .color-ball-container {
     display: flex;
@@ -379,7 +348,6 @@ body {
     margin-bottom: 8px;
 }
 
-/* Style the color input to look like a small ball */
 .color-ball-control input[type="color"] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -400,4 +368,64 @@ body {
     border: none;
     border-radius: 100%;
     padding: 0;
+}
+
+.language-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.language-pill-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    border: 1px solid var(--color-text-light);
+    color: var(--color-text-light);
+    padding: 6px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.language-pill-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+}
+
+.language-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: var(--color-setting-row);
+    border: 1px solid var(--color-divider-subtle);
+    border-radius: 8px;
+    padding: 4px;
+    min-width: 120px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 100;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.language-menu.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.lang-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.lang-option:hover {
+    background-color: var(--color-primary-accent);
 }

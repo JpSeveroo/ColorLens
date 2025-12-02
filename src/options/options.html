@@ -23,7 +23,9 @@
         <button class="options-btn active" data-tab="profile-creation">
           Criação de Perfil
         </button> 
-        <button class="options-btn" data-tab="help">Sobre / Ajuda</button>
+        <button class="options-btn" data-tab="help">
+          Sobre / Ajuda
+        </button>
       </nav>
     </div>
 
@@ -31,24 +33,10 @@
       <section id="profile-creation" class="content-section active">
         <h2>Criação de Perfil</h2>
         <hr />
-        <p>
-          Crie um perfil de visualização adaptado às suas próprias necessidades. Sinta-se à vontade para configurar cores que são difíceis de distinguir e substituí-las por tonalidades mais perceptíveis ao seu tipo de visão.
+        <p style="font-size: 15px;">
+          Crie um perfil de visualização adaptado às suas próprias necessidades. Sinta-se à vontade para configurar cores que são difíceis de distinguir e substituí-las por tonalidades mais perceptíveis à sua visão.
         </p>
         <hr />
-        <div class="preview-container">
-          <div class="preview-img">
-            <img src="../../assets/images/imagem balao teste 1.jpg" alt="Prévia de ajustes visuais">
-            <div class="color-overlay"></div>
-          </div>
-          <div class="preview-img">
-            <img src="../../assets/images/lapiz de cor 4k.jpg" alt="Prévia de ajustes visuais">
-            <div class="color-overlay"></div>
-          </div>
-          <div class="preview-img">
-            <img src="../../assets/images/arara 4k1.jpeg" alt="Prévia de ajustes visuais">
-            <div class="color-overlay"></div>
-          </div>
-        </div>
         <form id="profile-form">
           <div class="profile-name">
             <div class="with-info-label">
@@ -92,41 +80,12 @@
               <option value="protanopia">Protanopia</option>
               <option value="deuteranopia">Deuteranopia</option>
               <option value="tritanopia">Tritanopia</option>
-              <option value="protanomalia">Protanomalia</option>
-              <option value="deuteranomalia">Deuteranomalia</option>
-              <option value="tritanomalia">Tritanomalia</option>
+              <option value="protanomaly">Protanomalia</option>
+              <option value="deuteranomaly">Deuteranomalia</option>
+              <option value="tritanomaly">Tritanomalia</option>
               <option value="achromatopsia">Achromatopsia</option>
               <option value="monocromia">Monocromia</option>
             </select>
-          </div>
-          <div class="visual-adjusts">
-            <div class="with-info-label">
-              <label class="visual-label">Acessibilidade Visual:</label>
-              <button type="button" class="info-btn">?
-                <span class="info-btn-text">Ajuste o contraste e a saturação para o seu perfil, 
-                  e escolha os modos visuais que deseja utilizar</span>
-              </button>
-            </div>
-            <div class="slider-control">
-              <div class="slider-label">
-                  <label for="contrast">Contraste</label>
-                  <div class="input-unit-group">
-                      <input type="number" min="0" max="200" value="100" class="percentage-input" id="contrast-input">
-                      <span class="unit-text">%</span>
-                  </div>
-              </div>
-              <input type="range" id="contrast" min="0" max="200" value="100" class="range-slider">
-          </div>
-          <div class="slider-control">
-              <div class="slider-label">
-                  <label for="saturation">Saturação</label>
-                  <div class="input-unit-group">
-                      <input type="number" min="0" max="200" value="100" class="percentage-input" id="saturation-input">
-                      <span class="unit-text">%</span>
-                  </div>
-              </div>
-              <input type="range" id="saturation" min="0" max="200" value="100" class="range-slider">
-            </div>
           </div>
           <div class="color-mapping">
             <div class="with-info-label">
@@ -165,8 +124,67 @@
               <label for="color3-mapper" class="mapping-label">
                 Cor Original (Azul)<span style="opacity: 0;">........</span>
                 <input type="color" value="#0000ff" disabled class="color-selector-disabled">
-                -->
                 <input type="color" id="color3-mapper" value="#0000ff" class="color-selector">
+              </label>
+            </div>
+          </div>
+          <div class="preview-container">
+          <div class="preview-img">
+            <img src="../../assets/images/imagem balao teste 1.jpg" alt="Prévia de ajustes visuais">
+            <div class="color-overlay"></div>
+          </div>
+          <div class="preview-img">
+            <img src="../../assets/images/lapiz de cor 4k.jpg" alt="Prévia de ajustes visuais">
+            <div class="color-overlay"></div>
+          </div>
+          <div class="preview-img">
+            <img src="../../assets/images/arara 4k1.jpeg" alt="Prévia de ajustes visuais">
+            <div class="color-overlay"></div>
+          </div>
+        </div>
+        <div class="visual-adjusts">
+            <div class="with-info-label">
+              <label class="visual-label">Acessibilidade Visual:</label>
+              <button type="button" class="info-btn">?
+                <span class="info-btn-text">Ajuste o contraste e a saturação para o seu perfil. </span>
+              </button>
+            </div>
+            <div class="slider-control">
+              <div class="slider-label">
+                  <label for="contrast">Contraste</label>
+                  <div class="input-unit-group">
+                      <input type="number" min="0" max="200" value="100" class="percentage-input" id="contrast-input">
+                      <span class="unit-text">%</span>
+                  </div>
+              </div>
+              <input type="range" id="contrast" min="0" max="200" value="100" class="range-slider">
+          </div>
+          <div class="slider-control">
+              <div class="slider-label">
+                  <label for="saturation">Saturação</label>
+                  <div class="input-unit-group">
+                      <input type="number" min="0" max="200" value="100" class="percentage-input" id="saturation-input">
+                      <span class="unit-text">%</span>
+                  </div>
+              </div>
+              <input type="range" id="saturation" min="0" max="200" value="100" class="range-slider">
+            </div>
+              <div class="modes-toggle">
+              <label for="reading-mode">Modo de Leitura</label>
+              <label class="switch">
+                <input 
+                type="checkbox"
+                id="reading-mode"
+                >
+                <span class="slider"></span>
+              </label>
+              <label for="night-vision">Visão Noturna</label>
+              <label class="switch">
+                <input 
+                type="checkbox"
+                id="night-vision"
+                >
+                <span class="slider"></span>
               </label>
             </div>
           </div>
@@ -175,44 +193,99 @@
             <button type="reset" class="reset-btn" id="reset-form-btn">Resetar Configurações</button>
           </div>
         </form>
+        <br>
+        <br>
+        <p class="copyright">ColorLens © 2025. Todos os direitos reservados.</p>
       </section>
       <section id="help" class="content-section">
-        <h2>Sobre / Ajuda</h2>
-        <hr />
-        <p>Entenda como o ColorLens funciona e como tirar o máximo proveito.</p>
-        <hr />
-        <p>
-          <strong>ColorLens</strong> é uma ferramenta projetada para ajudar
-          pessoas com daltonismo e outras dificuldades de visão a navegar na web
-          com mais conforto e clareza.
+      <div class="help-header">
+        <h2>ColorLens: Sua Web, Acessível e Personalizada</h2>
+        <p class="subtitle">
+          Entenda a missão do ColorLens e aprenda a otimizar sua experiência de navegação.
         </p>
-        <p>
-          Use os filtros para ajustar as cores das páginas, crie perfis
-          personalizados para mapear cores específicas e utilize as ferramentas
-          de acessibilidade para melhorar sua experiência de leitura.
-        </p>
-        <br />
+      </div>
 
-        <h2>Como Usar o ColorLens</h2><br />
+      <hr />
+
+      <div class="info-box purple-box">
+        <h3>O que é o ColorLens?</h3>
         <p>
-          <strong>Filtros de Daltonismo:</strong> Escolha um tipo de daltonismo
-          para que a extensão aplique uma correção de cor em tempo real a todas
-          as páginas.
+          O <strong>ColorLens</strong> é uma extensão de navegador focada em <strong>acessibilidade digital</strong> para indivíduos com daltonismo e outras dificuldades de distinção cromática. Nosso objetivo é transformar a experiência de navegação, permitindo que você personalize e otimize o contraste e as cores de qualquer página da web, garantindo maior conforto, clareza e precisão visual.
         </p>
+      </div>
+
+      <h2 class="centered-title">Funcionalidades Principais</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h4>Correção Cromática Dinâmica (Filtros Genéricos)</h4>
+          <p>
+            Aplicação de <strong>filtros de matriz de cores em tempo real</strong> sobre todas as páginas web. Inclui filtros essenciais para os tipos de daltonismo mais comuns e suas anomalias. Esta funcionalidade usa algoritmos de correção visual para otimizar a percepção de cores com um clique.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h4>Mapeamento e Personalização de Cores</h4>
+          <p>
+            Solução inovadora baseada em <strong>presets e ajuste manual</strong>. Permite ao usuário remapear cores específicas em um site usando valores RGB customizáveis. Ideal para gráficos e elementos de UI que dependem de códigos de cores, oferecendo controle total sobre a interface.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h4>Aprimoramento de Contraste e Luminosidade</h4>
+          <p>
+            Ferramentas essenciais para usuários com <strong>baixa visão</strong> e para melhor legibilidade. Permite o ajuste global do contraste e da saturação para reduzir a fadiga visual e garantir que o texto atenda aos padrões de acessibilidade.
+          </p>
+        </div>
+      </div>
+
+      <h2 class="centered-title">Como Usar o ColorLens</h2>
+      <div class="tutorial-grid">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <h4>Acesse a Criação de Perfil</h4>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <h4>Comece Com um Filtro Base</h4>
+          <p>Opcionalmente, selecione um Filtro Base para uma correção inicial.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <h4>Ajuste Fino</h4>
+          <p>Use os sliders de Contraste e Saturação.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-number">4</div>
+          <h4>Personalize com o Mapeamento</h4>
+          <p>Defina suas regras de substituição para obter distinção cromática exata.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-number">5</div>
+          <h4>Pré-visualização em Tempo Real</h4>
+          <p>Utilize as imagens de demonstração no topo da página para visualizar o efeito das suas configurações.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-number">6</div>
+          <h4>Salvar e Aplicar</h4>
+          <p>Dê um nome ao perfil e clique em "Salvar Perfil".</p>
+        </div>
+      </div>
+
+      <div class="team-section info-box purple-box">
+        <h3>Equipe por Trás do ColorLens</h3>
         <p>
-          <strong>Personalização de Cores:</strong>Ideal para casos específicos
-          onde você precisa diferenciar cores que parecem iguais. Mapeie uma cor
-          de origem (ex: vermelho) para uma cor de destino (ex: azul) que você
-          consiga ver bem.
+          O ColorLens é uma iniciativa acadêmica desenvolvida por estudantes de Engenharia de Software da Universidade de Pernambuco (UPE), comprometidos com a pesquisa e implementação de tecnologias assistivas aplicadas à web. 
+          Nosso objetivo é fornecer ferramentas que ampliem a acessibilidade visual e contribuam para uma experiência digital mais inclusiva.
         </p>
-        <p>
-          <strong>Acessibilidade Visual:</strong> Ajuste o contraste e a
-          saturação de forma global ou ative modos especiais como o de leitura
-          ou noturno para reduzir o cansaço visual.
-        </p>
-      </section>
+        <div class="team-tags">
+          <span class="team-badge"><a href="https://github.com/JpSeveroo"><span style="color: aliceblue; text-decoration: none;">João Pedro</span></a></span>
+          <span class="team-badge"><a href="https://github.com/Severoabreu"><span style="color: aliceblue; text-decoration: none;">José Severo</span></a></span>
+          <span class="team-badge"><a href="https://github.com/mateusmtorres23"><span style="color: aliceblue; text-decoration: none;">Mateus Torres</span></a></span>
+          <span class="team-badge"><a href="https://github.com/muliroZ"><span style="color: aliceblue; text-decoration: none;">Murilo Andrade</span></a></span>
+        </div>
+      </div>
+      <p class="copyright">ColorLens © 2025. Todos os direitos reservados.</p>
+    </section>
     </main>
 
-    <script src="options.js"></script>
+    <script type="module" src="options.js"></script>
   </body>
 </html>
