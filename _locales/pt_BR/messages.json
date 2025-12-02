@@ -66,5 +66,253 @@
   "colorRed": { "message": "Vermelho" },
   "colorGreen": { "message": "Verde" },
   "colorBlue": { "message": "Azul" },
-  "resetColorsButton": { "message": "Resetar Cores" }
+  "resetColorsButton": { "message": "Resetar Cores" },
+  {
+  /* --- Chaves da Barra Lateral --- */
+  "profileCreationTab": {
+    "message": "Criação de Perfil",
+    "description": "Rótulo para a aba de criação de perfis."
+  },
+  "helpTab": {
+    "message": "Sobre / Ajuda",
+    "description": "Rótulo para a aba de ajuda e informações."
+  },
+  "copyrightText": {
+    "message": "ColorLens © 2025. Todos os direitos reservados.",
+    "description": "Texto de direitos autorais no rodapé."
+  },
+
+  /* --- Seção 1: Criação de Perfil --- */
+  "profileCreationTitle": {
+    "message": "Criação de Perfil",
+    "description": "Título principal da seção de criação de perfil."
+  },
+  "profileCreationDescription": {
+    "message": "Crie um perfil de visualização adaptado às suas próprias necessidades. Sinta-se à vontade para configurar cores que são difíceis de distinguir e substituí-las por tonalidades mais perceptíveis à sua visão.",
+    "description": "Descrição introdutória da seção de perfil."
+  },
+  "profileNameLabel": {
+    "message": "Nome do Perfil:",
+    "description": "Rótulo do campo para nomear o perfil."
+  },
+  "profileNameTooltip": {
+    "message": "Defina um nome descritivo para este perfil. Ele ajudará você a identificar rapidamente o conjunto de ajustes configurados.",
+    "description": "Tooltip de ajuda para o campo de nome do perfil."
+  },
+  "profileNamePlaceholder": {
+    "message": "Ex.: Leitura Noturna, Videos...",
+    "description": "Placeholder de exemplo no campo de nome do perfil."
+  },
+  "savedProfilesLabel": {
+    "message": "Perfis Salvos:",
+    "description": "Rótulo do seletor de perfis salvos."
+  },
+  "savedProfilesTooltip": {
+    "message": "Selecione um perfil existente para editar suas configurações, renomeá-lo ou removê-lo.",
+    "description": "Tooltip de ajuda para o seletor de perfis salvos."
+  },
+  "selectProfileOption": {
+    "message": "Selecione um perfil...",
+    "description": "Opção padrão do seletor de perfis salvos."
+  },
+  "renameProfileButton": {
+    "message": "Renomear Perfil",
+    "description": "Rótulo do botão para renomear perfil."
+  },
+  "deleteProfileButton": {
+    "message": "Excluir Perfil",
+    "description": "Rótulo do botão para excluir perfil."
+  },
+  "baseFilterLabel": {
+    "message": "Filtro Base:",
+    "description": "Rótulo do seletor de filtro base."
+  },
+  "baseFilterTooltip": {
+    "message": "Escolha um filtro inicial que corresponda ao seu tipo de daltonismo. Ele servirá como base para os ajustes visuais do seu perfil.",
+    "description": "Tooltip de ajuda para o seletor de filtro base."
+  },
+  "noneFilterOption": {
+    "message": "Nenhum",
+    "description": "Opção para desativar o filtro base."
+  },
+  "colorMappingLabel": {
+    "message": "Mapeamento de Cores:",
+    "description": "Rótulo da seção de mapeamento de cores."
+  },
+  "colorMappingTooltip": {
+    "message": "Indique quais cores você tem dificuldade em diferenciar e selecione alternativas mais visíveis para seu tipo de visão.",
+    "description": "Tooltip de ajuda para o mapeamento de cores."
+  },
+  "enableColorMappingLabel": {
+    "message": "Ativar Mapeamento de Cores",
+    "description": "Rótulo do toggle para ativar o mapeamento de cores."
+  },
+  "originalColorRedLabel": {
+    "message": "Cor Original (Vermelho)",
+    "description": "Rótulo do seletor de cor original (vermelho)."
+  },
+  "originalColorGreenLabel": {
+    "message": "Cor Original (Verde)",
+    "description": "Rótulo do seletor de cor original (verde)."
+  },
+  "originalColorBlueLabel": {
+    "message": "Cor Original (Azul)",
+    "description": "Rótulo do seletor de cor original (azul)."
+  },
+  "previewImageAlt": {
+    "message": "Prévia de ajustes visuais",
+    "description": "Texto alternativo para as imagens de pré-visualização."
+  },
+  "visualAccessibilityLabel": {
+    "message": "Acessibilidade Visual:",
+    "description": "Rótulo da seção de ajustes visuais."
+  },
+  "visualAccessibilityTooltip": {
+    "message": "Ajuste o contraste e a saturação para o seu perfil. ",
+    "description": "Tooltip de ajuda para ajustes de contraste/saturação."
+  },
+  "contrastLabel": {
+    "message": "Contraste",
+    "description": "Rótulo do slider/input de contraste."
+  },
+  "saturationLabel": {
+    "message": "Saturação",
+    "description": "Rótulo do slider/input de saturação."
+  },
+  "readingModeLabel": {
+    "message": "Modo de Leitura",
+    "description": "Rótulo do toggle para Modo de Leitura."
+  },
+  "nightVisionLabel": {
+    "message": "Visão Noturna",
+    "description": "Rótulo do toggle para Visão Noturna."
+  },
+  "saveProfileButton": {
+    "message": "Salvar Perfil",
+    "description": "Rótulo do botão de submissão para salvar perfil."
+  },
+  "resetSettingsButton": {
+    "message": "Resetar Configurações",
+    "description": "Rótulo do botão para resetar todas as configurações do formulário."
+  },
+  
+  /* --- Seção 2: Sobre / Ajuda --- */
+  "helpPageTitle": {
+    "message": "ColorLens: Sua Web, Acessível e Personalizada",
+    "description": "Título principal da seção Sobre / Ajuda."
+  },
+  "helpPageSubtitle": {
+    "message": "Entenda a missão do ColorLens e aprenda a otimizar sua experiência de navegação.",
+    "description": "Subtítulo da seção Sobre / Ajuda."
+  },
+  "whatIsColorLensTitle": {
+    "message": "O que é o ColorLens?",
+    "description": "Título da caixa de informações sobre a extensão."
+  },
+  "whatIsColorLensBody": {
+    "message": "O ColorLens é uma extensão de navegador focada em acessibilidade digital para indivíduos com daltonismo e outras dificuldades de distinção cromática. Nosso objetivo é transformar a experiência de navegação, permitindo que você personalize e otimize o contraste e as cores de qualquer página da web, garantindo maior conforto, clareza e precisão visual.",
+    "description": "Corpo de texto descrevendo o que é o ColorLens."
+  },
+  "mainFeaturesTitle": {
+    "message": "Funcionalidades Principais",
+    "description": "Título da seção de funcionalidades principais."
+  },
+  "feature1Title": {
+    "message": "Correção Cromática Dinâmica (Filtros Genéricos)",
+    "description": "Título da funcionalidade 1."
+  },
+  "feature1Body": {
+    "message": "Aplicação de filtros de matriz de cores em tempo real sobre todas as páginas web. Inclui filtros essenciais para os tipos de daltonismo mais comuns e suas anomalias. Esta funcionalidade usa algoritmos de correção visual para otimizar a percepção de cores com um clique.",
+    "description": "Descrição da funcionalidade 1."
+  },
+  "feature2Title": {
+    "message": "Mapeamento e Personalização de Cores",
+    "description": "Título da funcionalidade 2."
+  },
+  "feature2Body": {
+    "message": "Solução inovadora baseada em presets e ajuste manual. Permite ao usuário remapear cores específicas em um site usando valores RGB customizáveis. Ideal para gráficos e elementos de UI que dependem de códigos de cores, oferecendo controle total sobre a interface.",
+    "description": "Descrição da funcionalidade 2."
+  },
+  "feature3Title": {
+    "message": "Aprimoramento de Contraste e Luminosidade",
+    "description": "Título da funcionalidade 3."
+  },
+  "feature3Body": {
+    "message": "Ferramentas essenciais para usuários com baixa visão e para melhor legibilidade. Permite o ajuste global do contraste e da saturação para reduzir a fadiga visual e garantir que o texto atenda aos padrões de acessibilidade.",
+    "description": "Descrição da funcionalidade 3."
+  },
+  "howToUseTitle": {
+    "message": "Como Usar o ColorLens",
+    "description": "Título da seção de tutorial passo a passo."
+  },
+  "step1Title": {
+    "message": "Acesse a Criação de Perfil",
+    "description": "Título do passo 1 do tutorial."
+  },
+  "step2Title": {
+    "message": "Comece Com um Filtro Base",
+    "description": "Título do passo 2 do tutorial."
+  },
+  "step2Body": {
+    "message": "Opcionalmente, selecione um Filtro Base para uma correção inicial.",
+    "description": "Corpo do passo 2 do tutorial."
+  },
+  "step3Title": {
+    "message": "Ajuste Fino",
+    "description": "Título do passo 3 do tutorial."
+  },
+  "step3Body": {
+    "message": "Use os sliders de Contraste e Saturação.",
+    "description": "Corpo do passo 3 do tutorial."
+  },
+  "step4Title": {
+    "message": "Personalize com o Mapeamento",
+    "description": "Título do passo 4 do tutorial."
+  },
+  "step4Body": {
+    "message": "Defina suas regras de substituição para obter distinção cromática exata.",
+    "description": "Corpo do passo 4 do tutorial."
+  },
+  "step5Title": {
+    "message": "Pré-visualização em Tempo Real",
+    "description": "Título do passo 5 do tutorial."
+  },
+  "step5Body": {
+    "message": "Utilize as imagens de demonstração no topo da página para visualizar o efeito das suas configurações.",
+    "description": "Corpo do passo 5 do tutorial."
+  },
+  "step6Title": {
+    "message": "Salvar e Aplicar",
+    "description": "Título do passo 6 do tutorial."
+  },
+  "step6Body": {
+    "message": "Dê um nome ao perfil e clique em 'Salvar Perfil'.",
+    "description": "Corpo do passo 6 do tutorial."
+  },
+  "teamTitle": {
+    "message": "Equipe por Trás do ColorLens",
+    "description": "Título da seção da equipe."
+  },
+  "teamBody": {
+    "message": "O ColorLens é uma iniciativa acadêmica desenvolvida por estudantes de Engenharia de Software da Universidade de Pernambuco (UPE), comprometidos com a pesquisa e implementação de tecnologias assistivas aplicadas à web. Nosso objetivo é fornecer ferramentas que ampliem a acessibilidade visual e contribuam para uma experiência digital mais inclusiva.",
+    "description": "Corpo de texto sobre a equipe."
+  },
+  "teamMember1": {
+    "message": "João Pedro",
+    "description": "Nome do membro 1 da equipe."
+  },
+  "teamMember2": {
+    "message": "José Severo",
+    "description": "Nome do membro 2 da equipe."
+  },
+  "teamMember3": {
+    "message": "Mateus Torres",
+    "description": "Nome do membro 3 da equipe."
+  },
+  "teamMember4": {
+    "message": "Murilo Andrade",
+    "description": "Nome do membro 4 da equipe."
+  }
+}
+
 }

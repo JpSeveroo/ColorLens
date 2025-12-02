@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ColorLens - Perfil</title>
+    <title>__MSG_profileCreationTitle__</title>
     <link rel="stylesheet" href="options.css" />
   </head>
 
@@ -15,87 +15,87 @@
           alt="ColorLens Logo"
           class="logo"
         />
-        <h1>ColorLens</h1>
+        <h1>__MSG_extensionName__</h1>
         <hr />
       </header>
 
       <nav class="options-container">
         <button class="options-btn active" data-tab="profile-creation">
-          Criação de Perfil
+          __MSG_profileCreationTab__
         </button> 
         <button class="options-btn" data-tab="help">
-          Sobre / Ajuda
+          __MSG_helpTab__
         </button>
       </nav>
     </div>
 
     <main class="main-content">
       <section id="profile-creation" class="content-section active">
-        <h2>Criação de Perfil</h2>
+        <h2>__MSG_profileCreationTitle__</h2>
         <hr />
         <p style="font-size: 15px;">
-          Crie um perfil de visualização adaptado às suas próprias necessidades. Sinta-se à vontade para configurar cores que são difíceis de distinguir e substituí-las por tonalidades mais perceptíveis à sua visão.
+          __MSG_profileCreationDescription__
         </p>
         <hr />
         <form id="profile-form">
           <div class="profile-name">
             <div class="with-info-label">
-              <label for="profile-name-input"><strong>Nome do Perfil:</strong></label>
+              <label for="profile-name-input"><strong>__MSG_profileNameLabel__:</strong></label>
               <button type="button" class="info-btn">?
-                <span class="info-btn-text">Defina um nome descritivo para este perfil. Ele ajudará você a identificar rapidamente o conjunto de ajustes configurados.</span>
+                <span class="info-btn-text">__MSG_profileNameTooltip__</span>
               </button>
             </div>
             <input
             type="text",
             id="profile-name-input",
-            placeholder="Ex.: Leitura Noturna, Videos...",
+            placeholder="__MSG_profileNamePlaceholder__",
             size="30",
             required
             >
             <div>
               <div class="with-info-label">
-                <label style="margin-top: 10px;">Perfis Salvos:</label>
+                <label style="margin-top: 10px;">__MSG_savedProfilesLabel__:</label>
                 <button type="button" class="info-btn">?
-                  <span class="info-btn-text">Selecione um perfil existente para editar suas configurações, renomeá-lo ou removê-lo.</span>
+                  <span class="info-btn-text">__MSG_savedProfilesTooltip__</span>
                 </button>
               </div>
               <select id="saved-profiles">
-                <option value="">Selecione um perfil...</option>
+                <option value="">__MSG_selectProfileOption__</option>
               </select>
             </div>
             <div class="edit-profile">
-              <button type="button" id="rename-profile-btn">Renomear Perfil</button>
-              <button type="button" id="delete-profile-btn">Excluir Perfil</button>
+              <button type="button" id="rename-profile-btn">__MSG_renameProfileButton__</button>
+              <button type="button" id="delete-profile-btn">__MSG_deleteProfileButton__</button>
             </div>
           </div>
           <div class="base-filters">
             <div class="with-info-label">
-              <label for="color-blindness-select"><strong>Filtro Base:</strong></label>
+              <label for="color-blindness-select"><strong>__MSG_baseFilterLabel__:</strong></label>
               <button type="button" class="info-btn">?
-                <span class="info-btn-text">Escolha um filtro inicial que corresponda ao seu tipo de daltonismo. Ele servirá como base para os ajustes visuais do seu perfil.</span>
+                <span class="info-btn-text">__MSG_baseFilterTooltip__</span>
               </button>
             </div>
             <select id="color-blindness-select">
-              <option value="none">Nenhum</option>
-              <option value="protanopia">Protanopia</option>
-              <option value="deuteranopia">Deuteranopia</option>
-              <option value="tritanopia">Tritanopia</option>
-              <option value="protanomaly">Protanomalia</option>
-              <option value="deuteranomaly">Deuteranomalia</option>
-              <option value="tritanomaly">Tritanomalia</option>
-              <option value="achromatopsia">Achromatopsia</option>
-              <option value="monocromia">Monocromia</option>
+              <option value="none">__MSG_noneFilterOption__</option>
+              <option value="protanopia">__MSG_protanopiaFilter__</option>
+              <option value="deuteranopia">__MSG_deuteranopiaFilter__</option>
+              <option value="tritanopia">__MSG_tritanopiaFilter__</option>
+              <option value="protanomaly">__MSG_protanomalyFilter__</option>
+              <option value="deuteranomaly">__MSG_deuteranomalyFilter__</option>
+              <option value="tritanomaly">__MSG_tritanomalyFilter__</option>
+              <option value="achromatopsia">__MSG_achromatopsiaFilter__</option>
+              <option value="monocromia">__MSG_monochromacyFilter__</option>
             </select>
           </div>
           <div class="color-mapping">
             <div class="with-info-label">
-              <label>Mapeamento de Cores:</label>
+              <label>__MSG_colorMappingLabel__:</label>
               <button type="button" class="info-btn">?
-                <span class="info-btn-text">Indique quais cores você tem dificuldade em diferenciar e selecione alternativas mais visíveis para seu tipo de visão.</span>
+                <span class="info-btn-text">__MSG_colorMappingTooltip__</span>
               </button>
             </div>
             <div class="mapping-toggle">
-              <label for="enable-color-mapping">Ativar Mapeamento de Cores</label>
+              <label for="enable-color-mapping">__MSG_enableColorMappingLabel__</label>
               <label class="switch">
                 <input 
                   type="checkbox"
@@ -106,7 +106,7 @@
             </div>
             <div class="mapper1">
               <label for="color1-mapper" class="mapping-label">
-                Cor Original (Vermelho)
+                __MSG_originalColorRedLabel__
                 <input type="color" value="#ff0000" disabled class="color-selector-disabled">
                 -->
                 <input type="color" id="color1-mapper" value="#ff0000" class="color-selector">
@@ -114,7 +114,7 @@
             </div>
             <div class="mapper2">
               <label for="color2-mapper" class="mapping-label">
-                Cor Original (Verde)<span style="opacity: 0;">......</span>
+                __MSG_originalColorGreenLabel__<span style="opacity: 0;">......</span>
                 <input type="color" value="#00ff00" disabled class="color-selector-disabled">
                 -->
                 <input type="color" id="color2-mapper" value="#00ff00" class="color-selector">
@@ -122,7 +122,7 @@
             </div>
             <div class="mapper3">
               <label for="color3-mapper" class="mapping-label">
-                Cor Original (Azul)<span style="opacity: 0;">........</span>
+                __MSG_originalColorBlueLabel__<span style="opacity: 0;">........</span>
                 <input type="color" value="#0000ff" disabled class="color-selector-disabled">
                 <input type="color" id="color3-mapper" value="#0000ff" class="color-selector">
               </label>
@@ -130,28 +130,28 @@
           </div>
           <div class="preview-container">
           <div class="preview-img">
-            <img src="../../assets/images/imagem balao teste 1.jpg" alt="Prévia de ajustes visuais">
+            <img src="../../assets/images/imagem balao teste 1.jpg" alt="__MSG_previewImageAlt__">
             <div class="color-overlay"></div>
           </div>
           <div class="preview-img">
-            <img src="../../assets/images/lapiz de cor 4k.jpg" alt="Prévia de ajustes visuais">
+            <img src="../../assets/images/lapiz de cor 4k.jpg" alt="__MSG_previewImageAlt__">
             <div class="color-overlay"></div>
           </div>
           <div class="preview-img">
-            <img src="../../assets/images/arara 4k1.jpeg" alt="Prévia de ajustes visuais">
+            <img src="../../assets/images/arara 4k1.jpeg" alt="__MSG_previewImageAlt__">
             <div class="color-overlay"></div>
           </div>
         </div>
         <div class="visual-adjusts">
             <div class="with-info-label">
-              <label class="visual-label">Acessibilidade Visual:</label>
+              <label class="visual-label">__MSG_visualAccessibilityLabel__:</label>
               <button type="button" class="info-btn">?
-                <span class="info-btn-text">Ajuste o contraste e a saturação para o seu perfil. </span>
+                <span class="info-btn-text">__MSG_visualAccessibilityTooltip__</span>
               </button>
             </div>
             <div class="slider-control">
               <div class="slider-label">
-                  <label for="contrast">Contraste</label>
+                  <label for="contrast">__MSG_contrastLabel__</label>
                   <div class="input-unit-group">
                       <input type="number" min="0" max="200" value="100" class="percentage-input" id="contrast-input">
                       <span class="unit-text">%</span>
@@ -161,7 +161,7 @@
           </div>
           <div class="slider-control">
               <div class="slider-label">
-                  <label for="saturation">Saturação</label>
+                  <label for="saturation">__MSG_saturationLabel__</label>
                   <div class="input-unit-group">
                       <input type="number" min="0" max="200" value="100" class="percentage-input" id="saturation-input">
                       <span class="unit-text">%</span>
@@ -170,7 +170,7 @@
               <input type="range" id="saturation" min="0" max="200" value="100" class="range-slider">
             </div>
               <div class="modes-toggle">
-              <label for="reading-mode">Modo de Leitura</label>
+              <label for="reading-mode">__MSG_readingModeLabel__</label>
               <label class="switch">
                 <input 
                 type="checkbox"
@@ -178,7 +178,7 @@
                 >
                 <span class="slider"></span>
               </label>
-              <label for="night-vision">Visão Noturna</label>
+              <label for="night-vision">__MSG_nightVisionLabel__</label>
               <label class="switch">
                 <input 
                 type="checkbox"
@@ -189,100 +189,99 @@
             </div>
           </div>
           <div class="form-buttons">
-            <input type="submit" value="Salvar Perfil" id="save-profile">
-            <button type="reset" class="reset-btn" id="reset-form-btn">Resetar Configurações</button>
+            <input type="submit" value="__MSG_saveProfileButton__" id="save-profile">
+            <button type="reset" class="reset-btn" id="reset-form-btn">__MSG_resetSettingsButton__</button>
           </div>
         </form>
         <br>
         <br>
-        <p class="copyright">ColorLens © 2025. Todos os direitos reservados.</p>
+        <p class="copyright">__MSG_copyrightText__</p>
       </section>
       <section id="help" class="content-section">
       <div class="help-header">
-        <h2>ColorLens: Sua Web, Acessível e Personalizada</h2>
+        <h2>__MSG_helpPageTitle__</h2>
         <p class="subtitle">
-          Entenda a missão do ColorLens e aprenda a otimizar sua experiência de navegação.
+          __MSG_helpPageSubtitle__
         </p>
       </div>
 
       <hr />
 
       <div class="info-box purple-box">
-        <h3>O que é o ColorLens?</h3>
+        <h3>__MSG_whatIsColorLensTitle__</h3>
         <p>
-          O <strong>ColorLens</strong> é uma extensão de navegador focada em <strong>acessibilidade digital</strong> para indivíduos com daltonismo e outras dificuldades de distinção cromática. Nosso objetivo é transformar a experiência de navegação, permitindo que você personalize e otimize o contraste e as cores de qualquer página da web, garantindo maior conforto, clareza e precisão visual.
+          O <strong>ColorLens</strong> __MSG_whatIsColorLensBody__
         </p>
       </div>
 
-      <h2 class="centered-title">Funcionalidades Principais</h2>
+      <h2 class="centered-title">__MSG_mainFeaturesTitle__</h2>
       <div class="features-grid">
         <div class="feature-card">
-          <h4>Correção Cromática Dinâmica (Filtros Genéricos)</h4>
+          <h4>__MSG_feature1Title__</h4>
           <p>
-            Aplicação de <strong>filtros de matriz de cores em tempo real</strong> sobre todas as páginas web. Inclui filtros essenciais para os tipos de daltonismo mais comuns e suas anomalias. Esta funcionalidade usa algoritmos de correção visual para otimizar a percepção de cores com um clique.
+            __MSG_feature1Body__
           </p>
         </div>
         <div class="feature-card">
-          <h4>Mapeamento e Personalização de Cores</h4>
+          <h4>__MSG_feature2Title__</h4>
           <p>
-            Solução inovadora baseada em <strong>presets e ajuste manual</strong>. Permite ao usuário remapear cores específicas em um site usando valores RGB customizáveis. Ideal para gráficos e elementos de UI que dependem de códigos de cores, oferecendo controle total sobre a interface.
+            __MSG_feature2Body__
           </p>
         </div>
         <div class="feature-card">
-          <h4>Aprimoramento de Contraste e Luminosidade</h4>
+          <h4>__MSG_feature3Title__</h4>
           <p>
-            Ferramentas essenciais para usuários com <strong>baixa visão</strong> e para melhor legibilidade. Permite o ajuste global do contraste e da saturação para reduzir a fadiga visual e garantir que o texto atenda aos padrões de acessibilidade.
+            __MSG_feature3Body__
           </p>
         </div>
       </div>
 
-      <h2 class="centered-title">Como Usar o ColorLens</h2>
+      <h2 class="centered-title">__MSG_howToUseTitle__</h2>
       <div class="tutorial-grid">
         <div class="step-item">
           <div class="step-number">1</div>
-          <h4>Acesse a Criação de Perfil</h4>
+          <h4>__MSG_step1Title__</h4>
         </div>
         <div class="step-item">
           <div class="step-number">2</div>
-          <h4>Comece Com um Filtro Base</h4>
-          <p>Opcionalmente, selecione um Filtro Base para uma correção inicial.</p>
+          <h4>__MSG_step2Title__</h4>
+          <p>__MSG_step2Body__</p>
         </div>
         <div class="step-item">
           <div class="step-number">3</div>
-          <h4>Ajuste Fino</h4>
-          <p>Use os sliders de Contraste e Saturação.</p>
+          <h4>__MSG_step3Title__</h4>
+          <p>__MSG_step3Body__</p>
         </div>
         <div class="step-item">
           <div class="step-number">4</div>
-          <h4>Personalize com o Mapeamento</h4>
-          <p>Defina suas regras de substituição para obter distinção cromática exata.</p>
+          <h4>__MSG_step4Title__</h4>
+          <p>__MSG_step4Body__</p>
         </div>
         <div class="step-item">
           <div class="step-number">5</div>
-          <h4>Pré-visualização em Tempo Real</h4>
-          <p>Utilize as imagens de demonstração no topo da página para visualizar o efeito das suas configurações.</p>
+          <h4>__MSG_step5Title__</h4>
+          <p>__MSG_step5Body__</p>
         </div>
         <div class="step-item">
           <div class="step-number">6</div>
-          <h4>Salvar e Aplicar</h4>
-          <p>Dê um nome ao perfil e clique em "Salvar Perfil".</p>
+          <h4>__MSG_step6Title__</h4>
+          <p>__MSG_step6Body__</p>
         </div>
       </div>
 
       <div class="team-section info-box purple-box">
-        <h3>Equipe por Trás do ColorLens</h3>
+        <h3>__MSG_teamTitle__</h3>
         <p>
-          O ColorLens é uma iniciativa acadêmica desenvolvida por estudantes de Engenharia de Software da Universidade de Pernambuco (UPE), comprometidos com a pesquisa e implementação de tecnologias assistivas aplicadas à web. 
-          Nosso objetivo é fornecer ferramentas que ampliem a acessibilidade visual e contribuam para uma experiência digital mais inclusiva.
+          __MSG_teamBody__ 
         </p>
         <div class="team-tags">
-          <span class="team-badge"><a href="https://github.com/JpSeveroo"><span style="color: aliceblue; text-decoration: none;">João Pedro</span></a></span>
-          <span class="team-badge"><a href="https://github.com/Severoabreu"><span style="color: aliceblue; text-decoration: none;">José Severo</span></a></span>
-          <span class="team-badge"><a href="https://github.com/mateusmtorres23"><span style="color: aliceblue; text-decoration: none;">Mateus Torres</span></a></span>
-          <span class="team-badge"><a href="https://github.com/muliroZ"><span style="color: aliceblue; text-decoration: none;">Murilo Andrade</span></a></span>
+          <span class="team-badge"><a href="https://github.com/JpSeveroo"><span style="color: aliceblue; text-decoration: none;">__MSG_teamMember1__</span></a></span>
+          <span class="team-badge"><a href="https://github.com/Severoabreu"><span style="color: aliceblue; text-decoration: none;">__MSG_teamMember2__</span></a></span>
+          <span class="team-badge"><a href="https://github.com/mateusmtorres23"><span style="color: aliceblue; text-decoration: none;">__MSG_teamMember3__</span></a></span>
+          <span class="team-badge"><a href="https://github.com/muliroZ"><span style="color: aliceblue; text-decoration: none;">__MSG_teamMember4__</span></a></span>
         </div>
       </div>
-      <p class="copyright">ColorLens © 2025. Todos os direitos reservados.</p>
+      <p class="copyright">__MSG_copyrightText__</p>
     </section>
     </main>
 

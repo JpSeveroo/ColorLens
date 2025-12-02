@@ -43,7 +43,6 @@
     "message": "Adjustments:",
     "description": "Title for the adjustments section (Contrast, Saturation)."
   },
-  "contrastLabel": { "message": "Contrast" },
   "saturationLabel": { "message": "Saturation" },
   "specialModesTitle": {
     "message": "Special Modes:",
@@ -66,5 +65,111 @@
   "colorRed": { "message": "Red" },
   "colorGreen": { "message": "Green" },
   "colorBlue": { "message": "Blue" },
-  "resetColorsButton": { "message": "Reset Colors" }
+"resetColorsButton": { "message": "Reset Colors" },
+
+
+  /* --- Chaves da Barra Lateral e Rodapé (OPTIONS PAGE) --- */
+  "profileCreationTab": {
+    "message": "Profile Creation",
+    "description": "Label for the profile creation tab."
+  },
+  "helpTab": {
+    "message": "About / Help",
+    "description": "Label for the help and information tab."
+  },
+  "copyrightText": {
+    "message": "ColorLens © 2025. All rights reserved.",
+    "description": "Copyright text in the footer."
+  },
+
+  /* --- Seção 1: Criação de Perfil --- */
+  "profileCreationTitle": { "message": "Profile Creation" },
+  "profileCreationDescription": {
+    "message": "Create a viewing profile adapted to your own needs. Feel free to configure colors that are difficult to distinguish and replace them with shades more perceptible to your vision."
+  },
+  "profileNameLabel": { "message": "Profile Name:" },
+  "profileNameTooltip": {
+    "message": "Define a descriptive name for this profile. It will help you quickly identify the set of configured adjustments."
+  },
+  "profileNamePlaceholder": { "message": "Ex: Night Reading, Videos..." },
+  "savedProfilesLabel": { "message": "Saved Profiles:" },
+  "savedProfilesTooltip": {
+    "message": "Select an existing profile to edit its settings, rename it, or remove it."
+  },
+  "selectProfileOption": { "message": "Select a profile..." },
+  "renameProfileButton": { "message": "Rename Profile" },
+  "deleteProfileButton": { "message": "Delete Profile" },
+  "baseFilterLabel": { "message": "Base Filter:" },
+  "baseFilterTooltip": {
+    "message": "Choose an initial filter that corresponds to your type of color blindness. It will serve as the basis for the visual adjustments of your profile."
+  },
+  "noneFilterOption": { "message": "None" },
+  "colorMappingLabel": { "message": "Color Mapping:" },
+  "colorMappingTooltip": {
+    "message": "Indicate which colors you have difficulty differentiating and select more visible alternatives for your type of vision."
+  },
+  "enableColorMappingLabel": { "message": "Enable Color Mapping" },
+  "originalColorRedLabel": { "message": "Original Color (Red)" },
+  "originalColorGreenLabel": { "message": "Original Color (Green)" },
+  "originalColorBlueLabel": { "message": "Original Color (Blue)" },
+  "previewImageAlt": { "message": "Visual adjustments preview" },
+  "visualAccessibilityLabel": { "message": "Visual Accessibility:" },
+  "visualAccessibilityTooltip": {
+    "message": "Adjust contrast and saturation for your profile."
+  },
+  "contrastLabel": { "message": "Contrast" },
+  "visualSaturationLabel": { "message": "Saturation" },
+  "readingModeLabel": { "message": "Reading Mode" },
+  "nightVisionLabel": { "message": "Night Vision" },
+  "saveProfileButton": { "message": "Save Profile" },
+  "resetSettingsButton": { "message": "Reset Settings" },
+
+  /* --- Seção 2: Sobre / Ajuda --- */
+  "helpPageTitle": { "message": "ColorLens: Your Web, Accessible and Personalized" },
+  "helpPageSubtitle": {
+    "message": "Understand the mission of ColorLens and learn how to optimize your browsing experience."
+  },
+  "whatIsColorLensTitle": { "message": "What is ColorLens?" },
+  "whatIsColorLensBody": {
+    "message": "ColorLens is a browser extension focused on digital accessibility for individuals with color blindness and other difficulties in chromatic distinction. Our goal is to transform the browsing experience, allowing you to personalize and optimize the contrast and colors of any web page, ensuring greater comfort, clarity, and visual precision."
+  },
+  "mainFeaturesTitle": { "message": "Main Features" },
+  "feature1Title": { "message": "Dynamic Chromatic Correction (Generic Filters)" },
+  "feature1Body": {
+    "message": "Real-time application of color matrix filters over all web pages. Includes essential filters for the most common types of color blindness and their anomalies. This feature uses visual correction algorithms to optimize color perception with a single click."
+  },
+  "feature2Title": { "message": "Color Mapping and Personalization" },
+  "feature2Body": {
+    "message": "Innovative solution based on presets and manual adjustment. Allows the user to remap specific colors on a website using customizable RGB values. Ideal for graphics and UI elements that depend on color codes, offering total control over the interface."
+  },
+  "feature3Title": { "message": "Contrast and Luminosity Enhancement" },
+  "feature3Body": {
+    "message": "Essential tools for users with low vision and for better readability. Allows global adjustment of contrast and saturation to reduce visual fatigue and ensure text meets accessibility standards."
+  },
+  "howToUseTitle": { "message": "How to Use ColorLens" },
+  "step1Title": { "message": "Access Profile Creation" },
+  "step2Title": { "message": "Start With a Base Filter" },
+  "step2Body": { "message": "Optionally, select a Base Filter for an initial correction." },
+  "step3Title": { "message": "Fine Adjustment" },
+  "step3Body": { "message": "Use the Contrast and Saturation sliders." },
+  "step4Title": { "message": "Customize with Mapping" },
+  "step4Body": {
+    "message": "Define your replacement rules to achieve exact chromatic distinction."
+  },
+  "step5Title": { "message": "Real-Time Preview" },
+  "step5Body": {
+    "message": "Use the demonstration images at the top of the page to visualize the effect of your settings."
+  },
+  "step6Title": { "message": "Save and Apply" },
+  "step6Body": { "message": "Give the profile a name and click 'Save Profile'." },
+  "teamTitle": { "message": "Team Behind ColorLens" },
+  "teamBody": {
+    "message": "ColorLens is an academic initiative developed by Software Engineering students from the University of Pernambuco (UPE), committed to the research and implementation of assistive web technologies. Our goal is to provide tools that enhance visual accessibility and contribute to a more inclusive digital experience."
+  },
+  "teamMember1": { "message": "João Pedro" },
+  "teamMember2": { "message": "José Severo" },
+  "teamMember3": { "message": "Mateus Torres" },
+  "teamMember4": { "message": "Murilo Andrade" }
+
+
 }
