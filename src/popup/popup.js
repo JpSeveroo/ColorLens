@@ -195,36 +195,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    const initializeLanguageSelector = () => {
-    const langBtn = document.getElementById('language-btn');
-    const langMenu = document.getElementById('language-menu');
-    const langText = document.getElementById('current-lang-text');
-    const langOptions = document.querySelectorAll('.lang-option');
-
-    langBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        langMenu.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
-            langMenu.classList.add('hidden');
-        }
-    });
-
-    langOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            const selectedLang = option.getAttribute('data-lang');
-            const label = option.textContent;
-            
-            langText.textContent = label;
-            langMenu.classList.add('hidden');
-            
-            console.log("Language selected:", selectedLang);
-        });
-    });
-};
-    initializeLanguageSelector();
     let customProfiles = [];
     try {
         customProfiles = await loadCustomProfiles();
