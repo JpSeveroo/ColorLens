@@ -40,7 +40,7 @@ Como este projeto ainda não está na Chrome Web Store, você deve instalá-lo m
 3.  Ative o **Modo do desenvolvedor** (canto superior direito).
 4.  Clique em **Carregar sem compactação** (Load unpacked).
 5.  Selecione a pasta raiz do projeto `ColorLens`.
-
+6. [EXTRA] : Link para dowload simplificado na chrome web store https://chromewebstore.google.com/detail/colorlens/edjapphbjiacdcgponphdfmaeedofegk?hl=pt-br
 ---
 
 ## 🛠️ Arquitetura do Projeto
@@ -75,5 +75,6 @@ Desenvolvido por estudantes de Engenharia de Software da UPE:
 ---
 
 ## 📜 Licença
+
 
 Distribuído sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
